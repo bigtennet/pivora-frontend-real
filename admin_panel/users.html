@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Users - Pivora Admin</title>
+    <link rel="stylesheet" href="shared-admin-styles.css" />
+    <style>
+        /* Page-specific styles */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(145deg, var(--card-dark) 0%, #2a2a2a 100%);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all var(--transition-speed);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 183, 0.2);
+            border-color: var(--main-color);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--main-color), #00e6a8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 0.8rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .user-email {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .verification-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .verification-icon {
+            font-size: 0.8rem;
+        }
+        
+        .verification-icon.verified {
+            color: var(--main-color);
+        }
+        
+        .verification-icon.pending {
+            color: #ffc107;
+        }
+        
+        .verification-icon.rejected {
+            color: #ff4444;
+        }
+        
+        /* Horizontal scrollable table */
+        .table-container {
+            overflow-x: scroll !important;
+            overflow-y: hidden !important;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            background: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1.5rem;
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+        
+        .table-container table {
+            min-width: 1000px !important;
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+        
+        /* Custom scrollbar for table container */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .table-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 4px;
+        }
+        
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #00e6a8;
+        }
+        
+        /* Firefox scrollbar */
+        .table-container {
+            scrollbar-width: thin;
+            scrollbar-color: var(--main-color) rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 255, 183, 0.9);
+            color: #000;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 10;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        /* Show scroll indicator on smaller screens */
+        @media (max-width: 768px) {
+            .scroll-indicator {
+                display: block;
+            }
+        }
+        
+        /* Ensure table cells don't wrap */
+        .table-container th,
+        .table-container td {
+            white-space: nowrap;
+            min-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* User actions column should be wider */
+        .table-container th:last-child,
+        .table-container td:last-child {
+            min-width: 200px;
+        }
+        
+        /* Responsive table adjustments */
+        @media (max-width: 1200px) {
+            .table-container {
+                overflow-x: scroll !important;
+            }
+            .table-container table {
+                min-width: 900px !important;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .table-container {
+                overflow-x: scroll !important;
+            }
+            .table-container table {
+                min-width: 800px !important;
+            }
+            
+            .table-container th,
+            .table-container td {
+                min-width: 100px;
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .table-container th:last-child,
+            .table-container td:last-child {
+                min-width: 180px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                margin-top: 1rem;
+                border-radius: 8px;
+                overflow-x: scroll !important;
+            }
+            
+            .table-container table {
+                min-width: 700px !important;
+            }
+            
+            .table-container th,
+            .table-container td {
+                min-width: 90px;
+                padding: 0.5rem 0.25rem;
+                font-size: 0.8rem;
+            }
+            
+            .table-container th:last-child,
+            .table-container td:last-child {
+                min-width: 160px;
+            }
+            
+            /* Make user actions more compact on mobile */
+            .user-actions {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .user-actions .btn {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .table-container {
+                overflow-x: scroll !important;
+            }
+            .table-container table {
+                min-width: 600px !important;
+            }
+            
+            .table-container th,
+            .table-container td {
+                min-width: 80px;
+                padding: 0.25rem 0.125rem;
+                font-size: 0.75rem;
+            }
+            
+            .table-container th:last-child,
+            .table-container td:last-child {
+                min-width: 140px;
+            }
+            
+            /* Hide some less important columns on very small screens */
+            .table-container th:nth-child(4),
+            .table-container td:nth-child(4),
+            .table-container th:nth-child(6),
+            .table-container td:nth-child(6) {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .table-container {
+                overflow-x: scroll !important;
+            }
+            .table-container table {
+                min-width: 500px !important;
+            }
+            
+            .table-container th,
+            .table-container td {
+                min-width: 70px;
+                padding: 0.125rem;
+                font-size: 0.7rem;
+            }
+            
+            .table-container th:last-child,
+            .table-container td:last-child {
+                min-width: 120px;
+            }
+        }
+        
+        /* User detail modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background: var(--card-dark);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+        
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color var(--transition-speed);
+        }
+        
+        .close:hover {
+            color: var(--main-color);
+        }
+        
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .detail-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-label {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* Header styling */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .header-right .btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Responsive adjustments for users page */
+        @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 1.5rem;
+            }
+            
+            .user-detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Ensure search and filter container is responsive */
+            .search-filter-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .filter-group {
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+            }
+            
+            /* Header responsive */
+            .header-right {
+                gap: 0.5rem;
+            }
+            
+            .header-right .btn span {
+                display: none;
+            }
+            
+            .header-right .btn {
+                padding: 0.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-card {
+                padding: 0.875rem;
+            }
+            
+            .stat-number {
+                font-size: 1.25rem;
+            }
+            
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.7rem;
+            }
+            
+            /* Improve search and filter on very small screens */
+            .search-filter-container {
+                gap: 0.75rem;
+            }
+            
+            .filter-group {
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.8rem;
+            }
+            
+            /* Make modal more compact */
+            .modal-content {
+                padding: 1rem;
+                margin: 5% auto;
+            }
+            
+            .modal-title {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Shared Admin Styles -->
+    <link rel="stylesheet" href="shared-admin-alerts.css" />
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <!-- Navigation Overlay for Mobile -->
+    <div class="nav-overlay" id="navOverlay"></div>
+    
+    <nav id="sidebar">
+        <div class="logo">
+            <i class="fas fa-chart-line"></i>
+            <span>Pivora</span>
+        </div>
+        <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+        <ul>
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.html" class="active">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="withdrawal.html">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Withdrawals</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit_requests.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Admin Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="trading-management.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trading Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="verifications.html">
+                    <i class="fas fa-id-card"></i>
+                    <span>Verifications</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <li>
+                <a href="logs.html">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="admins.html">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </li>
+            <li>
+                <a href="support.html">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main" id="main">
+        <header>
+            <div class="header-left">
+                <button class="toggle-nav" id="toggleNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2>Users Management</h2>
+            </div>
+            <div class="header-right">
+            <button class="toggle-mode" onclick="toggleMode()">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
+                <button class="btn btn-danger" onclick="logout()" style="margin-left: 1rem;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="content">
+            <div id="messageContainer"></div>
+
+            <!-- Stats Overview -->
+            <div class="stats-overview" id="statsOverview">
+                <div class="loading">
+                    <span class="spinner"></span> Loading user statistics...
+                </div>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="search-filter-container">
+                <div class="search-box">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search users by name, email, or ID...">
+                </div>
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">All Users</button>
+                    <button class="filter-btn" data-filter="active">Active</button>
+                    <button class="filter-btn" data-filter="suspended">Suspended</button>
+                    <button class="filter-btn" data-filter="verified">Verified</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-container">
+                <div class="scroll-indicator" id="scrollIndicator">
+                    <i class="fas fa-arrows-alt-h"></i> Scroll horizontally to see more data
+                </div>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Verification</th>
+                            <th>Balance</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">
+                                <span class="spinner"></span> Loading users...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div id="userDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">User Details</h3>
+                <span class="close" onclick="closeUserModal()">&times;</span>
+            </div>
+            <div id="userDetailContent">
+                <!-- User details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Action</h3>
+                <span class="close" onclick="closeConfirmationModal()">&times;</span>
+            </div>
+            <div id="confirmationContent">
+                <!-- Confirmation content will be loaded here -->
+            </div>
+            <div class="modal-actions" style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="closeConfirmationModal()">Cancel</button>
+                <button class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        // Set SERVER_URL
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+        
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleNav = document.getElementById('toggleNav');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navOverlay = document.getElementById('navOverlay');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const statsOverview = document.getElementById('statsOverview');
+        const pagination = document.getElementById('pagination');
+        const userDetailModal = document.getElementById('userDetailModal');
+        const userDetailContent = document.getElementById('userDetailContent');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const confirmationContent = document.getElementById('confirmationContent');
+        const confirmActionBtn = document.getElementById('confirmActionBtn');
+        
+        // State variables
+        let users = [];
+        let filteredUsers = [];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let currentFilter = 'all';
+        let searchTerm = '';
+        
+        // Navigation Toggle
+        function toggleNavigation() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('open');
+                navOverlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+            } else {
+                sidebar.classList.toggle('collapsed');
+                main.classList.toggle('expanded');
+            }
+        }
+        
+        // Event Listeners
+        toggleNav.addEventListener('click', toggleNavigation);
+        mobileMenuBtn.addEventListener('click', toggleNavigation);
+        navOverlay.addEventListener('click', toggleNavigation);
+        
+        // Close mobile menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('open');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Theme Toggle
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            localStorage.setItem('adminTheme', isLight ? 'light' : 'dark');
+            
+            // Update button text
+            const toggleBtn = document.querySelector('.toggle-mode');
+            const icon = toggleBtn.querySelector('i');
+            const text = toggleBtn.querySelector('span');
+            
+            if (isLight) {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark Mode';
+            }
+        }
+        
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('adminTheme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                const toggleBtn = document.querySelector('.toggle-mode');
+                const icon = toggleBtn.querySelector('i');
+                const text = toggleBtn.querySelector('span');
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
+            }
+            
+                    // Check if admin token exists
+        const adminToken = localStorage.getItem('adminToken');
+        if (!adminToken) {
+            console.warn('No admin token found. Redirecting to admin login.');
+            window.location.href = '../login.html?redirect=admin';
+            return;
+            }
+            
+            // Load users data
+            loadUsersData();
+            loadUserStats();
+            
+            // Set up event listeners
+            setupEventListeners();
+        });
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                searchTerm = e.target.value.toLowerCase();
+                filterUsers();
+            });
+            
+            // Filter functionality
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    filterUsers();
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target === userDetailModal) {
+                    closeUserModal();
+                }
+                if (event.target === confirmationModal) {
+                    closeConfirmationModal();
+                }
+            });
+            
+            // Hide scroll indicator when user scrolls
+            const tableContainer = document.querySelector('.table-container');
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            
+            if (tableContainer && scrollIndicator) {
+                tableContainer.addEventListener('scroll', () => {
+                    scrollIndicator.style.display = 'none';
+                });
+                
+                // Show indicator again after 5 seconds of no scrolling
+                let scrollTimeout;
+                tableContainer.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        if (window.innerWidth <= 768) {
+                            scrollIndicator.style.display = 'block';
+                        }
+                    }, 5000);
+                });
+            }
+        }
+        
+        // Load Users Data
+        async function loadUsersData() {
+            try {
+                const adminToken = localStorage.getItem('adminToken');
+                if (!adminToken) {
+                    window.location.href = '../login.html?redirect=admin';
+                    return;
+                }
+
+                console.log('Loading users data from:', `${SERVER_URL}/api/admin/users`);
+                const response = await fetch(`${SERVER_URL}/api/admin/users`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Load users response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Users data received:', data);
+                    users = data.data || [];
+                    filteredUsers = [...users];
+                    renderUsersTable();
+                    renderPagination();
+                } else {
+                    const errorText = await response.text();
+                    console.error('Load users error response:', errorText);
+                    throw new Error(`Failed to load users data: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showMessage(`Failed to load users data: ${error.message}`, 'error');
+                displayFallbackUsers();
+            }
+        }
+        
+        // Load User Statistics
+        async function loadUserStats() {
+            try {
+                const adminToken = localStorage.getItem('adminToken');
+                if (!adminToken) {
+                    window.location.href = '../login.html?redirect=admin';
+                    return;
+                }
+
+                const response = await fetch(`${SERVER_URL}/api/admin/user-stats`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    displayUserStats(data);
+                } else {
+                    throw new Error('Failed to load user statistics');
+                }
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+                displayFallbackStats();
+            }
+        }
+        
+        // Display User Statistics
+        function displayUserStats(data) {
+            const stats = data.data || {};
+            statsOverview.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalUsers || 0}</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.activeUsers || 0}</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.verifiedUsers || 0}</div>
+                    <div class="stat-label">Verified Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.newUsersToday || 0}</div>
+                    <div class="stat-label">New Today</div>
+                </div>
+            `;
+        }
+        
+        // Display Fallback Statistics
+        function displayFallbackStats() {
+            statsOverview.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">1,234</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">987</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">456</div>
+                    <div class="stat-label">Verified Users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">23</div>
+                    <div class="stat-label">New Today</div>
+                </div>
+            `;
+        }
+        
+        // Filter Users
+        function filterUsers() {
+            filteredUsers = users.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    user.fullName?.toLowerCase().includes(searchTerm) ||
+                    user.email?.toLowerCase().includes(searchTerm) ||
+                    user._id?.toLowerCase().includes(searchTerm);
+                
+                const matchesFilter = currentFilter === 'all' ||
+                    (currentFilter === 'active' && user.status === 'active') ||
+                    (currentFilter === 'suspended' && user.status === 'suspended') ||
+                    (currentFilter === 'verified' && user.isVerified) ||
+                    (currentFilter === 'pending' && !user.isVerified);
+                
+                return matchesSearch && matchesFilter;
+            });
+            
+            currentPage = 1;
+            renderUsersTable();
+            renderPagination();
+        }
+        
+        // Render Users Table
+        function renderUsersTable() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageUsers = filteredUsers.slice(startIndex, endIndex);
+            
+            if (pageUsers.length === 0) {
+                usersTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2rem;">
+                            No users found matching your criteria
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            usersTableBody.innerHTML = pageUsers.map(user => `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                ${user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U'}
+                            </div>
+                            <div class="user-details">
+                                <div class="user-name">${user.fullName || 'N/A'}</div>
+                                <div class="user-email">ID: ${user._id || 'N/A'}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td>
+                        <span class="status-badge ${user.isSuspended ? 'status-suspended' : 'status-active'}">
+                            ${user.isSuspended ? 'Suspended' : 'Active'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="verification-status">
+                            <i class="fas fa-${user.isVerified ? 'check-circle' : 'clock'} verification-icon ${user.isVerified ? 'verified' : 'pending'}"></i>
+                            <span>${user.isVerified ? 'Verified' : 'Pending'}</span>
+                        </div>
+                    </td>
+                    <td>$${(user.balance || 0).toFixed(2)}</td>
+                    <td>${new Date(user.createdAt || Date.now()).toLocaleDateString()}</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="editUser('${user._id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-${user.isSuspended ? 'primary' : 'danger'}" onclick="confirmToggleUserStatus('${user._id}', '${user.isSuspended ? 'unsuspend' : 'suspend'}', '${user.fullName || user.email}')">
+                                <i class="fas fa-${user.isSuspended ? 'check' : 'ban'}"></i>
+                                ${user.isSuspended ? 'UnSuspend' : 'Suspend'}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        // Render Pagination
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                    paginationHTML += `
+                        <button onclick="changePage(${i})" class="${i === currentPage ? 'active' : ''}">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 3 || i === currentPage + 3) {
+                    paginationHTML += '<span>...</span>';
+                }
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+        
+        // Change Page
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderUsersTable();
+                renderPagination();
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminUser');
+                window.location.href = '../login.html?redirect=admin';
+            }
+        }
+        
+        // User Actions
+        async function viewUser(userId) {
+            console.log('Viewing user:', userId);
+            try {
+                const adminToken = localStorage.getItem('adminToken');
+                if (!adminToken) {
+                    window.location.href = '../login.html?redirect=admin';
+                    return;
+                }
+
+                const response = await fetch(`${SERVER_URL}/api/admin/users/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('View user response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User data:', data);
+                    const user = data.data || data;
+                    displayUserDetails(user);
+                } else {
+                    const errorText = await response.text();
+                    console.error('View user error response:', errorText);
+                    throw new Error(`Failed to load user details: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error loading user details:', error);
+                showMessage(`Failed to load user details: ${error.message}`, 'error');
+            }
+        }
+        
+        function displayUserDetails(user) {
+            userDetailContent.innerHTML = `
+                <div class="user-detail-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Full Name</div>
+                        <div class="detail-value">${user.fullName || 'N/A'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Email</div>
+                        <div class="detail-value">${user.email || 'N/A'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">User ID</div>
+                        <div class="detail-value">${user._id || 'N/A'}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div class="detail-value">
+                            <span class="status-badge ${user.isSuspended ? 'status-suspended' : 'status-active'}">
+                                ${user.isSuspended ? 'Suspended' : 'Active'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Verification</div>
+                        <div class="detail-value">
+                            <i class="fas fa-${user.advanceVerification ? 'check-circle' : 'clock'} verification-icon ${user.advanceVerification ? 'verified' : 'pending'}"></i>
+                            ${user.advanceVerification ? 'Verified' : 'Pending'}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Balance</div>
+                        <div class="detail-value">$${(user.balance || 0).toFixed(2)}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Joined Date</div>
+                        <div class="detail-value">${new Date(user.createdAt || Date.now()).toLocaleDateString()}</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">Last Login</div>
+                        <div class="detail-value">${user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'N/A'}</div>
+                    </div>
+                </div>
+                <div class="user-actions" style="justify-content: center; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="editUser('${user._id}')">
+                        <i class="fas fa-edit"></i> Edit User
+                    </button>
+                    <button class="btn btn-${user.isSuspended ? 'primary' : 'danger'}" onclick="confirmToggleUserStatus('${user._id}', '${user.isSuspended ? 'unsuspend' : 'suspend'}', '${user.fullName || user.email}')">
+                        <i class="fas fa-${user.isSuspended ? 'check' : 'ban'}"></i>
+                        ${user.isSuspended ? 'UnSuspend' : 'Suspend'}
+                    </button>
+                </div>
+            `;
+            userDetailModal.style.display = 'block';
+        }
+        
+        function closeUserModal() {
+            userDetailModal.style.display = 'none';
+        }
+        
+        function closeConfirmationModal() {
+            confirmationModal.style.display = 'none';
+        }
+        
+        function confirmToggleUserStatus(userId, action, userName) {
+            const actionText = action === 'suspend' ? 'suspend' : 'unsuspend';
+            const actionColor = action === 'suspend' ? 'danger' : 'primary';
+            
+            confirmationContent.innerHTML = `
+                <p>Are you sure you want to <strong>${actionText}</strong> the user:</p>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                    <strong>${userName}</strong>
+                </div>
+                <p style="color: #ffc107; font-size: 0.9rem;">
+                    <i class="fas fa-exclamation-triangle"></i> This action cannot be undone immediately.
+                </p>
+            `;
+            
+            // Update confirm button style
+            confirmActionBtn.className = `btn btn-${actionColor}`;
+            confirmActionBtn.textContent = action === 'suspend' ? 'Suspend User' : 'UnSuspend User';
+            
+            // Store action data for when confirmed
+            confirmActionBtn.onclick = () => {
+                toggleUserStatus(userId, action);
+                closeConfirmationModal();
+            };
+            
+            confirmationModal.style.display = 'block';
+        }
+        
+        function editUser(userId) {
+            console.log('Editing user:', userId);
+            // For now, just show a message. You can implement a full edit modal later
+            showMessage(`Edit functionality for user ${userId} - Coming soon!`, 'success');
+        }
+        
+        async function toggleUserStatus(userId, action) {
+            console.log('Toggling user status:', userId, 'action:', action);
+            try {
+                const adminToken = localStorage.getItem('adminToken');
+                if (!adminToken) {
+                    window.location.href = '../login.html?redirect=admin';
+                    return;
+                }
+
+                                if (action === 'suspend') {
+                    // Use the suspend endpoint
+                    console.log('Suspending user with endpoint:', `${SERVER_URL}/api/admin/users/${userId}/suspend`);
+                    
+                    const requestBody = {
+                        reason: "Violation of terms of service",
+                        action: true
+                    };
+                    
+                    console.log('Request body:', requestBody);
+                    console.log('JSON stringified body:', JSON.stringify(requestBody));
+                    
+                    const response = await fetch(`${SERVER_URL}/api/admin/users/${userId}/suspend`, {
+                        method: 'POST',
+                    headers: {
+                            'Authorization': `Bearer ${adminToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                        body: JSON.stringify(requestBody)
+                });
+                    
+                    console.log('Suspend response status:', response.status);
+                
+                if (response.ok) {
+                        showMessage('User suspended successfully', 'success');
+                    loadUsersData(); // Reload data
+                        closeUserModal(); // Close modal if open
+                } else {
+                        const errorText = await response.text();
+                        console.error('Suspend error response:', errorText);
+                        throw new Error(`Failed to suspend user: ${response.status} ${response.statusText}`);
+                    }
+                } else if (action === 'unsuspend') {
+                    // Use the update user endpoint to unsuspend
+                    console.log('Unsuspending user with endpoint:', `${SERVER_URL}/api/admin/users/${userId}/suspend`);
+                    
+                    const requestBody = {
+                        reason: "User account reactivated",
+                        action: false
+                    };
+                    
+                    console.log('Request body:', requestBody);
+                    console.log('JSON stringified body:', JSON.stringify(requestBody));
+                    
+                    const response = await fetch(`${SERVER_URL}/api/admin/users/${userId}/suspend`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${adminToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    });
+                    
+                    console.log('Unsuspend response status:', response.status);
+                    
+                    if (response.ok) {
+                        showMessage('User unsuspended successfully', 'success');
+                        loadUsersData(); // Reload data
+                        closeUserModal(); // Close modal if open
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Unsuspend error response:', errorText);
+                        throw new Error(`Failed to unsuspend user: ${response.status} ${response.statusText}`);
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating user status:', error);
+                showMessage(`Failed to update user status: ${error.message}`, 'error');
+            }
+        }
+        
+        // Display Fallback Users
+        function displayFallbackUsers() {
+            usersTableBody.innerHTML = `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <div class="user-avatar">J</div>
+                            <div class="user-details">
+                                <div class="user-name">John Doe</div>
+                                <div class="user-email">ID: 507f1f77bcf86cd799439011</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>john.doe@example.com</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        <div class="verification-status">
+                            <i class="fas fa-check-circle verification-icon verified"></i>
+                            <span>Verified</span>
+                        </div>
+                    </td>
+                    <td>$1,234.56</td>
+                    <td>12/01/2024</td>
+                    <td>
+                        <div class="user-actions">
+                            <button class="btn btn-sm btn-primary">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn btn-sm btn-secondary">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger">
+                                <i class="fas fa-ban"></i> Suspend
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        // Show Message
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = `<div class="message ${type}">${message}</div>`;
+            
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+    <!-- Shared Admin Polling Script -->
+    <script src="shared-admin-polling.js"></script>
+</body>
+
+</html>

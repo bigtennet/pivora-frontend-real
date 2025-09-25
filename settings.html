@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coinwybi - Settings</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+            --divider-color: #333;
+            --card-bg: #1e1e1e;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            padding-bottom: 100px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        /* Page Header */
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        /* Settings Content */
+        
+        .settings-container {
+            padding: 20px;
+        }
+        
+        .settings-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .settings-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--main-color);
+            border-radius: 3px;
+        }
+        
+        .settings-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .settings-item {
+            padding: 18px 15px;
+            border-bottom: 1px solid var(--divider-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settings-item:hover {
+            background: rgba(0, 255, 183, 0.05);
+        }
+        
+        .settings-item:active {
+            transform: scale(0.98);
+        }
+        
+        .item-label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .item-value {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        /* Sign Out Button */
+        
+        .signout-btn {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 30px auto 0;
+            padding: 16px;
+            background: rgba(255, 75, 75, 0.2);
+            border: 1px solid rgba(255, 75, 75, 0.5);
+            color: #ff4b4b;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .signout-btn:hover {
+            background: rgba(255, 75, 75, 0.3);
+            box-shadow: 0 0 15px rgba(255, 75, 75, 0.2);
+        }
+        /* Bottom Navigation - Same as index.html */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle - Same as index.html */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --divider-color: #ddd;
+            --card-bg: #ffffff;
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav {
+            background-color: #ffffff;
+            border-color: #ddd;
+        }
+        
+        body.light-mode .page-header {
+            border-bottom-color: #ddd;
+        }
+        
+        body.light-mode .settings-list {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: #333;
+        }
+        /* Animation for list items */
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .settings-item {
+            animation: slideIn 0.4s ease forwards;
+            opacity: 0;
+        }
+        
+        .settings-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        
+        .settings-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .settings-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        
+        .settings-item:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+        
+        .settings-item:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .settings-item:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        /* Email Verification Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 10% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--main-color);
+        }
+
+        .close {
+            color: var(--text-secondary);
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: var(--main-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .verification-status {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(0, 255, 183, 0.1);
+            border: 1px solid rgba(0, 255, 183, 0.3);
+        }
+
+        .verification-status.verified {
+            background-color: rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .verification-status.unverified {
+            background-color: rgba(255, 165, 0, 0.1);
+            border-color: rgba(255, 165, 0, 0.3);
+        }
+
+        .otp-input {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .otp-input input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            border: 2px solid var(--divider-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .otp-input input:focus {
+            border-color: var(--main-color);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background-color: var(--main-color);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 183, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--divider-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--divider-color);
+            color: var(--text-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--main-color);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Light mode adjustments for modal */
+        body.light-mode .modal-content {
+            background-color: #ffffff;
+        }
+
+        body.light-mode .otp-input input {
+            background-color: #f5f5f5;
+            border-color: #ddd;
+        }
+
+        /* Form styles for modals */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--divider-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: var(--main-color);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Light mode adjustments for form controls */
+        body.light-mode .form-control {
+            background-color: #f5f5f5;
+            border-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div style="flex: 1;"></div>
+        <!-- Empty spacer for title alignment -->
+    </div>
+
+    <div class="settings-container">
+        <h2 class="settings-title">Settings</h2>
+
+        <ul class="settings-list">
+            <li class="settings-item" onclick="showIdInfo()">
+                <span class="item-label">ID</span>
+                <span class="item-value" id="userIdDisplay">Loading...</span>
+            </li>
+            <li class="settings-item" onclick="showEmailVerification()">
+                <span class="item-label">Email Verification</span>
+                <span class="item-value" id="emailVerificationStatus">Loading...</span>
+            </li>
+            <li class="settings-item" onclick="showChangePasswordModal()">
+                <span class="item-label">Login password</span>
+                <span class="item-value">Change password</span>
+            </li>
+            <li class="settings-item" onclick="showFundPasswordModal()">
+                <span class="item-label">PIN Code</span>
+                <span class="item-value" id="fundPasswordStatus">Set PIN</span>
+            </li>
+            <li class="settings-item" onclick="window.location.href='language.html'">
+                <span class="item-label">Choose a language</span>
+                <span class="item-value">Language change</span>
+            </li>
+            <li class="settings-item" onclick="window.location.href='help_center.html'">
+                <span class="item-label">Help Center</span>
+                <span class="item-value"></span>
+            </li>
+        </ul>
+
+        <button class="signout-btn" onclick="signOut()">Sign out</button>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <!-- Email Verification Modal -->
+    <div id="emailVerificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Email Verification</h3>
+                <span class="close" onclick="closeEmailVerification()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="verificationStatus" class="verification-status">
+                    <div id="statusContent">Loading...</div>
+                </div>
+                
+                <div id="otpSection" style="display: none;">
+                    <p style="text-align: center; margin-bottom: 15px;">Enter the 6-digit OTP sent to your email</p>
+                    <div class="otp-input">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 1)" onkeydown="moveToPrevious(this, 1)" onpaste="handlePaste(event, 1)">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 2)" onkeydown="moveToPrevious(this, 2)" onpaste="handlePaste(event, 2)">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 3)" onkeydown="moveToPrevious(this, 3)" onpaste="handlePaste(event, 3)">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 4)" onkeydown="moveToPrevious(this, 4)" onpaste="handlePaste(event, 4)">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 5)" onkeydown="moveToPrevious(this, 5)" onpaste="handlePaste(event, 5)">
+                        <input type="text" maxlength="1" onkeyup="moveToNext(this, 6)" onkeydown="moveToPrevious(this, 6)" onpaste="handlePaste(event, 6)">
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="verifyOTP()" id="verifyBtn">
+                            <span id="verifyText">Verify OTP</span>
+                            <span id="verifyLoading" style="display: none;">
+                                <span class="loading"></span> Verifying...
+                            </span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="requestOTP()" id="resendBtn">
+                            <span id="resendText">Resend OTP</span>
+                            <span id="resendLoading" style="display: none;">
+                                <span class="loading"></span> Sending...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <span class="close" onclick="closeChangePasswordModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm" onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" id="changePasswordBtn">
+                            <span id="changePasswordText">Change Password</span>
+                            <span id="changePasswordLoading" style="display: none;">
+                                <span class="loading"></span> Changing...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Code Modal -->
+    <div id="fundPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>PIN Code</h3>
+                <span class="close" onclick="closeFundPasswordModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="fundPasswordForm" onsubmit="updateFundPassword(event)">
+                    <div class="form-group">
+                        <label for="currentFundPassword">Current PIN Code</label>
+                        <input type="password" id="currentFundPassword" class="form-control" placeholder="Enter current PIN code (if set)">
+                    </div>
+                    <div class="form-group">
+                        <label for="newFundPassword">New PIN Code</label>
+                        <input type="password" id="newFundPassword" class="form-control" required placeholder="Enter 4-digit PIN code">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmFundPassword">Confirm New PIN Code</label>
+                        <input type="password" id="confirmFundPassword" class="form-control" required placeholder="Confirm 4-digit PIN code">
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary" id="fundPasswordBtn">
+                            <span id="fundPasswordText">Update PIN Code</span>
+                            <span id="fundPasswordLoading" style="display: none;">
+                                <span class="loading"></span> Updating...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Set SERVER_URL
+        const SERVER_URL = 'https://pivora-back-end.pxxl.xyz';
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Sign out function
+        function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                // In a real app, this would clear session/token and redirect
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Show ID info (example function)
+        function showIdInfo() {
+            console.log('showIdInfo function called');
+            const userIdElement = document.getElementById('userIdDisplay');
+            const displayedId = userIdElement.textContent;
+            const userData = localStorage.getItem('userData');
+            
+            if (userData) {
+                const user = JSON.parse(userData);
+                console.log("User", user);
+                const fullId = user._id || 'N/A';
+                alert(`Your account ID: ${fullId}\nDisplayed: ${displayedId} (first 5 digits)\nThis is your unique identifier on our platform.`);
+            } else {
+                alert(`Your account ID: ${displayedId}\nThis is your unique identifier on our platform.`);
+            }
+        }
+
+        // Animation for sign out button
+        const signoutBtn = document.querySelector('.signout-btn');
+        signoutBtn.addEventListener('mouseenter', () => {
+            signoutBtn.style.transform = 'translateY(-2px)';
+        });
+        signoutBtn.addEventListener('mouseleave', () => {
+            signoutBtn.style.transform = 'translateY(0)';
+        });
+
+        // Email Verification Functions
+        let userEmail = '';
+        let isEmailVerified = false;
+
+        // Check authentication and load user data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndLoadUserData();
+        });
+
+        // Check if user is authenticated
+        function checkAuthAndLoadUserData() {
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                // No token found, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load user profile
+            loadUserProfile(token);
+        }
+
+        // Load user profile from API
+        async function loadUserProfile(token) {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    console.log('Profile data received:', data.data);
+                    userEmail = data.data.email;
+                    isEmailVerified = data.data.emailVerified;
+                    userFundPassword = data.data.fundPassword || null;
+                    updateEmailVerificationStatus();
+                    updateFundPasswordStatus();
+                    updateUserIdDisplay(data.data._id);
+                    
+                    // Store updated user data
+                    localStorage.setItem('userData', JSON.stringify(data.data));
+                } else {
+                    // Token might be invalid, redirect to login
+                    console.error('Profile load failed:', data.message);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                // Network error, try to use cached data
+                const cachedUserData = localStorage.getItem('userData');
+                if (cachedUserData) {
+                    const userData = JSON.parse(cachedUserData);
+                    userEmail = userData.email;
+                    isEmailVerified = userData.emailVerified;
+                    userFundPassword = userData.fundPassword || null;
+                    updateEmailVerificationStatus();
+                    updateFundPasswordStatus();
+                    updateUserIdDisplay(userData._id);
+                } else {
+                    // No cached data, redirect to login
+                    window.location.href = 'login.html';
+                }
+            }
+        }
+
+        // Update email verification status display
+        function updateEmailVerificationStatus() {
+            const statusElement = document.getElementById('emailVerificationStatus');
+            if (isEmailVerified) {
+                statusElement.textContent = 'Verified ✓';
+                statusElement.style.color = '#00ff88';
+            } else {
+                statusElement.textContent = 'Not Verified';
+                statusElement.style.color = '#ffa500';
+            }
+        }
+
+        // Update user ID display
+        function updateUserIdDisplay(userId) {
+            console.log('updateUserIdDisplay called with:', userId);
+            const userIdElement = document.getElementById('userIdDisplay');
+            if (userId) {
+                // Convert to string and get first 5 digits
+                const userIdStr = userId.toString();
+                const firstFiveDigits = userIdStr.substring(0, 5);
+                userIdElement.textContent = firstFiveDigits;
+                console.log('Set user ID display to:', firstFiveDigits);
+            } else {
+                userIdElement.textContent = 'N/A';
+                console.log('User ID is null/undefined, set to N/A');
+            }
+        }
+
+        // Show email verification modal
+        function showEmailVerification() {
+            const modal = document.getElementById('emailVerificationModal');
+            const statusDiv = document.getElementById('verificationStatus');
+            const statusContent = document.getElementById('statusContent');
+            const otpSection = document.getElementById('otpSection');
+            
+            modal.style.display = 'block';
+            
+            if (isEmailVerified) {
+                statusDiv.className = 'verification-status verified';
+                statusContent.innerHTML = `
+                    <h4 style="margin: 0; color: #00ff88;">✓ Email Verified</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 14px;">Your email ${userEmail} is verified</p>
+                `;
+                otpSection.style.display = 'none';
+            } else {
+                statusDiv.className = 'verification-status unverified';
+                statusContent.innerHTML = `
+                    <h4 style="margin: 0; color: #ffa500;">⚠ Email Not Verified</h4>
+                    <p style="margin: 5px 0 0 0; font-size: 14px;">Please verify your email ${userEmail}</p>
+                `;
+                otpSection.style.display = 'block';
+            }
+        }
+
+        // Close email verification modal
+        function closeEmailVerification() {
+            const modal = document.getElementById('emailVerificationModal');
+            modal.style.display = 'none';
+            // Clear OTP inputs
+            const otpInputs = document.querySelectorAll('.otp-input input');
+            otpInputs.forEach(input => input.value = '');
+        }
+
+        // Request OTP for email verification
+        async function requestOTP() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const resendBtn = document.getElementById('resendBtn');
+            const resendText = document.getElementById('resendText');
+            const resendLoading = document.getElementById('resendLoading');
+
+            resendBtn.disabled = true;
+            resendText.style.display = 'none';
+            resendLoading.style.display = 'inline';
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/verify-email`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('OTP sent to your email successfully!');
+                } else {
+                    alert(data.message || 'Failed to send OTP');
+                }
+            } catch (error) {
+                console.error('Error requesting OTP:', error);
+                alert('Network error. Please try again.');
+            } finally {
+                resendBtn.disabled = false;
+                resendText.style.display = 'inline';
+                resendLoading.style.display = 'none';
+            }
+        }
+
+        // Verify OTP
+        async function verifyOTP() {
+            const otpInputs = document.querySelectorAll('.otp-input input');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            
+            if (otp.length !== 6) {
+                alert('Please enter the complete 6-digit OTP');
+                return;
+            }
+
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const verifyBtn = document.getElementById('verifyBtn');
+            const verifyText = document.getElementById('verifyText');
+            const verifyLoading = document.getElementById('verifyLoading');
+
+            verifyBtn.disabled = true;
+            verifyText.style.display = 'none';
+            verifyLoading.style.display = 'inline';
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/verify-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        otp: otp
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    alert('Email verified successfully!');
+                    isEmailVerified = true;
+                    updateEmailVerificationStatus();
+                    closeEmailVerification();
+                    // Reload user data to get updated status
+                    loadUserProfile(token);
+                } else {
+                    alert(data.message || 'Invalid OTP');
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                alert('Network error. Please try again.');
+            } finally {
+                verifyBtn.disabled = false;
+                verifyText.style.display = 'inline';
+                verifyLoading.style.display = 'none';
+            }
+        }
+
+        // OTP input navigation functions
+        function moveToNext(input, currentIndex) {
+            if (input.value.length === 1) {
+                const nextInput = input.parentNode.querySelector(`input:nth-child(${currentIndex + 1})`);
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+
+        function moveToPrevious(input, currentIndex) {
+            if (input.value.length === 0 && event.key === 'Backspace') {
+                const prevInput = input.parentNode.querySelector(`input:nth-child(${currentIndex - 1})`);
+                if (prevInput) {
+                    prevInput.focus();
+                }
+            }
+        }
+
+        // Handle paste event for OTP inputs
+        function handlePaste(event, currentIndex) {
+            event.preventDefault();
+            
+            // Get pasted text
+            const pastedText = (event.clipboardData || window.clipboardData).getData('text');
+            
+            // Clean the pasted text (remove non-numeric characters)
+            const cleanText = pastedText.replace(/\D/g, '');
+            
+            // If it's a 6-digit number, fill all inputs
+            if (cleanText.length === 6) {
+                const otpInputs = document.querySelectorAll('.otp-input input');
+                otpInputs.forEach((input, index) => {
+                    input.value = cleanText[index] || '';
+                });
+                
+                // Focus on the last input
+                const lastInput = otpInputs[5];
+                if (lastInput) {
+                    lastInput.focus();
+                }
+            } else if (cleanText.length > 0) {
+                // If it's not 6 digits but has some numbers, fill what we can
+                const otpInputs = document.querySelectorAll('.otp-input input');
+                const maxLength = Math.min(cleanText.length, 6);
+                
+                for (let i = 0; i < maxLength; i++) {
+                    otpInputs[i].value = cleanText[i];
+                }
+                
+                // Focus on the next empty input or the last filled one
+                const nextEmptyIndex = Math.min(maxLength, 5);
+                const nextInput = otpInputs[nextEmptyIndex];
+                if (nextInput) {
+                    nextInput.focus();
+                }
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const emailModal = document.getElementById('emailVerificationModal');
+            const passwordModal = document.getElementById('changePasswordModal');
+            const fundPasswordModal = document.getElementById('fundPasswordModal');
+            if (event.target === emailModal) {
+                closeEmailVerification();
+            }
+            if (event.target === passwordModal) {
+                closeChangePasswordModal();
+            }
+            if (event.target === fundPasswordModal) {
+                closeFundPasswordModal();
+            }
+        }
+
+        // Password Change Functions
+        function showChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            modal.style.display = 'block';
+            // Clear form
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        function closeChangePasswordModal() {
+            const modal = document.getElementById('changePasswordModal');
+            modal.style.display = 'none';
+            // Clear form
+            document.getElementById('changePasswordForm').reset();
+        }
+
+        async function changePassword(event) {
+            event.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New password and confirm password do not match');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                alert('New password must be at least 6 characters long');
+                return;
+            }
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const changePasswordBtn = document.getElementById('changePasswordBtn');
+            const changePasswordText = document.getElementById('changePasswordText');
+            const changePasswordLoading = document.getElementById('changePasswordLoading');
+            
+            changePasswordBtn.disabled = true;
+            changePasswordText.style.display = 'none';
+            changePasswordLoading.style.display = 'inline';
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/change-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('Password changed successfully!');
+                    closeChangePasswordModal();
+                } else {
+                    alert(data.message || 'Failed to change password');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                alert('Network error. Please try again.');
+            } finally {
+                changePasswordBtn.disabled = false;
+                changePasswordText.style.display = 'inline';
+                changePasswordLoading.style.display = 'none';
+            }
+        }
+
+        // Fund Password Functions
+        let userFundPassword = null;
+
+        // Update fund password status display
+        function updateFundPasswordStatus() {
+            const statusElement = document.getElementById('fundPasswordStatus');
+            if (userFundPassword) {
+                statusElement.textContent = 'Change password';
+                statusElement.style.color = '#00ff88';
+            } else {
+                statusElement.textContent = 'Set password';
+                statusElement.style.color = '#ffa500';
+            }
+        }
+
+        // Show fund password modal
+        function showFundPasswordModal() {
+            const modal = document.getElementById('fundPasswordModal');
+            modal.style.display = 'block';
+            // Clear form
+            document.getElementById('fundPasswordForm').reset();
+            
+            // Update current password field based on whether fund password is set
+            const currentPasswordField = document.getElementById('currentFundPassword');
+            if (userFundPassword) {
+                currentPasswordField.required = true;
+                currentPasswordField.placeholder = 'Enter current PIN code';
+            } else {
+                currentPasswordField.required = false;
+                currentPasswordField.placeholder = 'Enter current PIN code (if set)';
+            }
+        }
+
+        // Close fund password modal
+        function closeFundPasswordModal() {
+            const modal = document.getElementById('fundPasswordModal');
+            modal.style.display = 'none';
+            // Clear form
+            document.getElementById('fundPasswordForm').reset();
+        }
+
+        // Update fund password
+        async function updateFundPassword(event) {
+            event.preventDefault();
+            
+            const currentFundPassword = document.getElementById('currentFundPassword').value;
+            const newFundPassword = document.getElementById('newFundPassword').value;
+            const confirmFundPassword = document.getElementById('confirmFundPassword').value;
+            
+            // Validation
+            if (!newFundPassword || !confirmFundPassword) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (newFundPassword !== confirmFundPassword) {
+                alert('New PIN code and confirm PIN code do not match');
+                return;
+            }
+            
+            // Validate 4-digit numeric password
+            if (!/^\d{4}$/.test(newFundPassword)) {
+                alert('PIN code must be exactly 4 digits');
+                return;
+            }
+            
+            // If user has existing fund password, current password is required
+            if (userFundPassword && !currentFundPassword) {
+                alert('Please enter your current PIN code');
+                return;
+            }
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const fundPasswordBtn = document.getElementById('fundPasswordBtn');
+            const fundPasswordText = document.getElementById('fundPasswordText');
+            const fundPasswordLoading = document.getElementById('fundPasswordLoading');
+            
+            fundPasswordBtn.disabled = true;
+            fundPasswordText.style.display = 'none';
+            fundPasswordLoading.style.display = 'inline';
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/update-fund-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        fundPassword: newFundPassword
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('PIN code updated successfully!');
+                    userFundPassword = newFundPassword;
+                    updateFundPasswordStatus();
+                    closeFundPasswordModal();
+                    // Reload user data to get updated status
+                    loadUserProfile(token);
+                } else {
+                    alert(data.message || 'Failed to update PIN code');
+                }
+            } catch (error) {
+                console.error('Error updating PIN code:', error);
+                alert('Network error. Please try again.');
+            } finally {
+                fundPasswordBtn.disabled = false;
+                fundPasswordText.style.display = 'inline';
+                fundPasswordLoading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

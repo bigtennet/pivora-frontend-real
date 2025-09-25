@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - Deposit</title>
+    <!-- Add QR Code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            padding-bottom: 70px;
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .instruction-text {
+            padding: 15px;
+            color: #aaa;
+            font-size: 14px;
+            text-align: center;
+        }
+        
+        .recharge-list {
+            margin: 0 15px;
+        }
+        
+        .recharge-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .recharge-item:hover {
+            transform: translateX(5px);
+            background: rgba(0, 255, 183, 0.05);
+        }
+        
+        .recharge-item:last-child {
+            border-bottom: none;
+        }
+        
+        .recharge-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+        
+        .recharge-icon.usdt {
+            background-color: #26a17b;
+        }
+        
+        .recharge-icon.usdc {
+            background-color: #2775ca;
+        }
+        
+        .recharge-icon.eth {
+            background-color: #627eea;
+        }
+        
+        .recharge-icon.btc {
+            background-color: #f7931a;
+        }
+        
+        .recharge-icon img {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .recharge-label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .recharge-arrow {
+            margin-left: auto;
+            opacity: 0.5;
+            transition: transform 0.3s;
+        }
+        
+        .recharge-item:hover .recharge-arrow {
+            transform: translateX(5px);
+            opacity: 1;
+        }
+        /* Deposit Modal Styles */
+        
+        .deposit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            animation: fadeIn 0.4s ease-out;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: var(--bg-dark);
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            border: 1px solid var(--main-color);
+            box-shadow: 0 0 30px rgba(0, 255, 183, 0.3);
+            position: relative;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        .network-tag {
+            background: var(--main-color);
+            color: #000;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .qr-code-container {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+        
+        .deposit-title {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+            margin: 15px 0;
+            color: var(--main-color);
+        }
+        
+        .deposit-address {
+            background: #1e1e1e;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            text-align: center;
+            margin: 15px 0;
+            border: 1px solid #333;
+            position: relative;
+        }
+        
+        .copy-btn {
+            background: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 183, 0.4);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #1e1e1e;
+            color: white;
+        }
+        
+        .upload-area {
+            border: 2px dashed #444;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: border 0.3s;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--main-color);
+        }
+        
+        .upload-area.dragover {
+            border-color: var(--main-color);
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        #filePreview {
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        #fileName {
+            background: rgba(0, 255, 183, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--main-color);
+        }
+        
+        .submit-btn {
+            background: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 16px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 255, 183, 0.4);
+        }
+        
+        .notes {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .note-item {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .note-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--main-color);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        /* Animations */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 4px var(--main-color));
+            }
+            50% {
+                filter: drop-shadow(0 0 8px var(--main-color));
+            }
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: #000;
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+        }
+        
+        body.light-mode .instruction-text {
+            color: #666;
+        }
+        
+        body.light-mode .recharge-item {
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.light-mode .page-header {
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.light-mode .modal-content {
+            background: #fff;
+            border: 1px solid #ddd;
+        }
+        
+        body.light-mode .deposit-address {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        body.light-mode .form-group input {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        body.light-mode .notes {
+            color: #666;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Recharge channel</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="instruction-text">Please select recharge channel</div>
+
+    <div class="recharge-list">
+        <div class="recharge-item" onclick="showDepositModal('USDT', 'TRC20')">
+            <div class="recharge-icon usdt">
+                <img src="/assets/icons/usdt.png" alt="USDT">
+            </div>
+            <div class="recharge-label">USDT Recharge</div>
+            <div class="recharge-arrow">
+                <img src="/assets/icons/next.png" width="16" alt="">
+            </div>
+        </div>
+
+        <div class="recharge-item" onclick="showDepositModal('USDC', 'ERC20')">
+            <div class="recharge-icon usdc">
+                <img src="/assets/icons/usdc.png" alt="USDC">
+            </div>
+            <div class="recharge-label">USDC Recharge</div>
+            <div class="recharge-arrow">
+                <img src="/assets/icons/next.png" width="16" alt="">
+            </div>
+        </div>
+
+        <div class="recharge-item" onclick="showDepositModal('ETH', 'ERC20')">
+            <div class="recharge-icon eth">
+                <img src="/assets/icons/eth.png" alt="ETH">
+            </div>
+            <div class="recharge-label">ETH Recharge</div>
+            <div class="recharge-arrow">
+                <img src="/assets/icons/next.png" width="16" alt="">
+            </div>
+        </div>
+
+        <div class="recharge-item" onclick="showDepositModal('BTC', 'BTC')">
+            <div class="recharge-icon btc">
+                <img src="/assets/icons/btc.png" alt="BTC">
+            </div>
+            <div class="recharge-label">BTC Recharge</div>
+            <div class="recharge-arrow">
+                <img src="/assets/icons/next.png" width="16" alt="">
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="deposit-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">×</button>
+            <div class="network-tag" id="networkTag">ERC20</div>
+
+            <div class="qr-code-container">
+                <div class="qr-code" id="qrCode"></div>
+            </div>
+
+            <div class="deposit-title">Deposit <span id="cryptoName">USDT</span></div>
+
+            <div class="deposit-address" id="depositAddress">
+                0x82cc844005fA1bb93516f2e088231D824fca
+            </div>
+
+            <button class="copy-btn" onclick="copyAddress()">Copy Address</button>
+
+            <div class="form-group">
+                <label for="depositAmount">Deposit amount</label>
+                <input type="text" id="depositAmount" placeholder="Enter amount">
+            </div>
+
+            <div class="form-group">
+                <label>Upload screenshot</label>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📷</div>
+                    <div id="uploadText">Click to upload transaction screenshot</div>
+                    <div id="filePreview" style="display: none; margin-top: 10px;">
+                        <img id="previewImage" style="max-width: 200px; max-height: 150px; border-radius: 8px;" />
+                        <div id="fileName" style="margin-top: 5px; font-size: 12px; color: #aaa;"></div>
+                    </div>
+                    <input type="file" id="fileInput" style="display: none;" accept="image/jpeg,image/jpg,image/png,image/webp" onchange="handleFileSelect(this)">
+                </div>
+            </div>
+
+            <button class="submit-btn" onclick="submitDeposit()">Submit</button>
+
+            <div class="notes">
+                <div class="note-item">Please do not deposit any non-<span id="cryptoNote">USDT</span> Assets, otherwise the assets will not be displayed.</div>
+                <div class="note-item">Your account will be checked in after 3-6 network confirmations.</div>
+                <div class="note-item">All platform deposit addresses are multi-signature cold wallet addresses, and all wallets have never been read by networked machines.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            
+            // Check authentication and load deposit addresses
+            checkAuthenticationAndLoadAddresses();
+            
+            // Setup drag and drop for file upload
+            setupDragAndDrop();
+        })();
+
+        // Check if user is authenticated and load deposit addresses
+        function checkAuthenticationAndLoadAddresses() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                // No token found, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load deposit addresses
+            loadDepositAddresses(token);
+        }
+
+        // Load deposit addresses from API
+        async function loadDepositAddresses(token) {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/deposit-addresses`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Store deposit addresses globally
+                    window.depositAddresses = data.data;
+                    console.log('Deposit addresses loaded:', data.data);
+                } else {
+                    console.error('Failed to load deposit addresses:', data.message);
+                    // Show error message to user
+                    showError('Failed to load deposit addresses. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error loading deposit addresses:', error);
+                showError('Network error. Please check your connection and try again.');
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            // Create a temporary notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #ff6b6b;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                font-weight: bold;
+                z-index: 10001;
+                box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+                animation: slideDown 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            // Create a temporary notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #4CAF50;
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                font-weight: bold;
+                z-index: 10001;
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+                animation: slideDown 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Deposit Modal Functions
+        function showDepositModal(crypto, network) {
+            const modal = document.getElementById('depositModal');
+            const cryptoName = document.getElementById('cryptoName');
+            const cryptoNote = document.getElementById('cryptoNote');
+            const networkTag = document.getElementById('networkTag');
+
+            // Reset form first
+            resetDepositForm();
+
+            // Update modal content based on selected crypto
+            cryptoName.textContent = crypto;
+            cryptoNote.textContent = crypto;
+            networkTag.textContent = network;
+
+            // Get real address and QR image from API data
+            const realAddress = getDepositAddress(crypto, network);
+            const qrImage = getQRImage(crypto, network);
+            
+            if (realAddress) {
+                document.getElementById('depositAddress').textContent = realAddress;
+                
+                // Use QR image from backend if available, otherwise generate QR code
+                if (qrImage) {
+                    displayQRImage(qrImage);
+                } else {
+                    // Generate QR code for real address if no image is provided
+                    generateQRCode(realAddress);
+                }
+            } else {
+                // Fallback if address not found
+                const fallbackAddress = generateCryptoAddress(crypto, network);
+                document.getElementById('depositAddress').textContent = fallbackAddress;
+                generateQRCode(fallbackAddress);
+                console.warn(`No deposit address found for ${crypto} on ${network}`);
+            }
+
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Get deposit address and QR image from API data
+        function getDepositAddress(crypto, network) {
+            if (!window.depositAddresses) {
+                return null;
+            }
+            
+            const address = window.depositAddresses.find(addr => 
+                addr.currency === crypto && addr.network === network
+            );
+            
+            return address ? address.address : null;
+        }
+
+        // Get QR image from API data
+        function getQRImage(crypto, network) {
+            if (!window.depositAddresses) {
+                return null;
+            }
+            
+            const address = window.depositAddresses.find(addr => 
+                addr.currency === crypto && addr.network === network
+            );
+            
+            return address ? address.qrImage : null;
+        }
+
+        function closeModal() {
+            document.getElementById('depositModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Reset form
+            resetDepositForm();
+        }
+
+        function resetDepositForm() {
+            // Clear form fields
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('fileInput').value = '';
+            
+            // Reset file preview
+            document.getElementById('uploadText').style.display = 'block';
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('previewImage').src = '';
+            document.getElementById('fileName').textContent = '';
+        }
+
+        function copyAddress() {
+            const address = document.getElementById('depositAddress').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                // Show success message instead of alert
+                showCopySuccess();
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = address;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopySuccess();
+            });
+        }
+
+        // Show copy success message
+        function showCopySuccess() {
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copied!';
+            copyBtn.style.background = '#4CAF50';
+            
+            setTimeout(() => {
+                copyBtn.textContent = originalText;
+                copyBtn.style.background = '';
+            }, 2000);
+        }
+
+        function submitDeposit() {
+            const amount = document.getElementById('depositAmount').value.trim();
+            const crypto = document.getElementById('cryptoName').textContent;
+            const network = document.getElementById('networkTag').textContent;
+            const fileInput = document.getElementById('fileInput');
+            const submitBtn = document.querySelector('.submit-btn');
+            
+            // Get authentication token
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showError('Please login first');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Validation
+            if (!amount) {
+                showError('Please enter deposit amount');
+                return;
+            }
+            
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showError('Please upload a transaction screenshot');
+                return;
+            }
+            
+            // Validate amount (must be a positive number)
+            const amountNum = parseFloat(amount);
+            if (isNaN(amountNum) || amountNum <= 0) {
+                showError('Please enter a valid amount');
+                return;
+            }
+            
+            // Validate file type
+            const file = fileInput.files[0];
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!allowedTypes.includes(file.type)) {
+                showError('Invalid file type. Only JPEG, PNG, and WebP images are allowed.');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            if (file.size > maxSize) {
+                showError('File size too large. Please upload an image smaller than 5MB.');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // Get user data from localStorage
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userId = userData._id || userData.id;
+            
+            if (!userId) {
+                showError('User data not found. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Create FormData
+            const formData = new FormData();
+            formData.append('user', userId);
+            formData.append('currency', crypto);
+            formData.append('network', network);
+            formData.append('amount', amount);
+            formData.append('screenshot', file);
+            
+            // Submit deposit request
+            fetch(`${SERVER_URL}/api/user/deposit`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                    // Don't set Content-Type header when using FormData
+                    // The browser will set it automatically with the boundary
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Handle HTTP error responses
+                    if (response.status === 401) {
+                        throw new Error('Authentication failed. Please login again.');
+                    } else if (response.status === 400) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Invalid request data.');
+                        });
+                    } else if (response.status === 404) {
+                        throw new Error('Deposit address not found for this currency and network.');
+                    } else if (response.status >= 500) {
+                        throw new Error('Server error. Please try again later.');
+                    } else {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showSuccess(`✅ ${data.message}`);
+                    // Clear form
+                    document.getElementById('depositAmount').value = '';
+                    fileInput.value = '';
+                    resetDepositForm();
+                    // Close modal after a delay
+                    setTimeout(() => {
+                        closeModal();
+                    }, 2000);
+                } else {
+                    showError(data.message || 'Deposit request failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Deposit submission error:', error);
+                showError(error.message || 'Network error. Please check your connection and try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit';
+            });
+        }
+
+        // Helper functions
+        function generateCryptoAddress(crypto, network) {
+            const prefix = crypto === 'BTC' ? 'bc1q' : '0x';
+            const randomPart = Math.random().toString(36).substring(2, 18);
+            return `${prefix}${randomPart}${network === 'BTC' ? '' : '...' + randomPart.substring(0, 4)}`;
+        }
+
+        // Display QR image from backend
+        function displayQRImage(qrImageUrl) {
+            const qrCode = document.getElementById('qrCode');
+            qrCode.innerHTML = `
+                <img src="${qrImageUrl}" alt="QR Code" style="width: 100%; height: 100%; object-fit: contain; border-radius: 5px;" onclick="openQRModal('${qrImageUrl}')">
+            `;
+        }
+
+        // Generate QR code using qrcode.js library
+        function generateQRCode(address) {
+            const qrCode = document.getElementById('qrCode');
+            qrCode.innerHTML = ''; // Clear previous content
+            
+            // Use the QRCode library to generate QR code
+            QRCode.toCanvas(qrCode, address, {
+                width: 200,
+                height: 200,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('Error generating QR code:', error);
+                    // Fallback to placeholder
+                    qrCode.innerHTML = `
+                        <div style="text-align:center; padding:20px; color:#000;">
+                            <div style="font-size:24px;">QR CODE</div>
+                            <div style="font-size:10px; margin-top:10px;">${address}</div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Open QR modal for larger view
+        function openQRModal(qrImageUrl) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 10002;
+                cursor: pointer;
+            `;
+            
+            modal.innerHTML = `
+                <img src="${qrImageUrl}" alt="QR Code" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 10px; box-shadow: 0 0 20px rgba(0, 255, 183, 0.3);">
+            `;
+            
+            // Close modal when clicked
+            modal.onclick = function() {
+                document.body.removeChild(modal);
+            };
+            
+            document.body.appendChild(modal);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('depositModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (file) {
+                // Validate file type
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(file.type)) {
+                    showError('Invalid file type. Only JPEG, PNG, and WebP images are allowed.');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                if (file.size > maxSize) {
+                    showError('File size too large. Please upload an image smaller than 5MB.');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImage = document.getElementById('previewImage');
+                    const fileName = document.getElementById('fileName');
+                    previewImage.src = e.target.result;
+                    
+                    // Format file size
+                    const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                    fileName.textContent = `${file.name} (${fileSize} MB)`;
+                    
+                    document.getElementById('uploadText').style.display = 'none';
+                    document.getElementById('filePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Setup drag and drop functionality
+        function setupDragAndDrop() {
+            const uploadArea = document.querySelector('.upload-area');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Prevent default drag behaviors
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            // Highlight drop area when item is dragged over it
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            // Handle dropped files
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight(e) {
+                uploadArea.classList.add('dragover');
+            }
+            
+            function unhighlight(e) {
+                uploadArea.classList.remove('dragover');
+            }
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect(fileInput);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

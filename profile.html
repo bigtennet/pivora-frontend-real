@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - Pivora</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #f4f4f4;
+            --text-dark: #121212;
+            --text-light: #ffffff;
+            --bg-footer: #1a1a1a;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .profile-section {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .profile-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--main-color);
+            margin-right: 15px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-id {
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .credit {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .link-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+        
+        .link-item img {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+        }
+        
+        .link-text {
+            font-size: 16px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        
+        .toggle {
+            position: fixed;
+            bottom: 70px;
+            right: 15px;
+            background-color: var(--main-color);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 0 10px var(--main-color);
+        }
+        
+        .light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        a:visited {
+            color: inherit;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #1e1e1e;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--main-color);
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: var(--main-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .verification-info {
+            color: #ccc;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .upload-section {
+            margin-bottom: 20px;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #555;
+            border-radius: 10px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: var(--main-color);
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+
+        .upload-area.has-file {
+            border-color: var(--main-color);
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+
+        .upload-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+            opacity: 0.7;
+        }
+
+        .upload-area span {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .upload-area small {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .upload-area img.preview {
+            max-width: 100%;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .btn-primary {
+            background-color: var(--main-color);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 183, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: #ccc;
+            border: 1px solid #555;
+        }
+
+        .btn-secondary:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Light mode adjustments */
+        .light-mode .modal-content {
+            background-color: #fff;
+            color: #333;
+        }
+
+        .light-mode .upload-area {
+            background-color: rgba(0, 0, 0, 0.05);
+            border-color: #ddd;
+        }
+
+        .light-mode .upload-area:hover {
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+
+        .light-mode .btn-secondary {
+            color: #666;
+            border-color: #ddd;
+        }
+
+        .light-mode .btn-secondary:hover {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Verification Status Styles */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px 20px;
+            color: #ccc;
+        }
+
+        .loading-spinner i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--main-color);
+        }
+
+        .verification-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .verification-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #555;
+        }
+
+        .verification-item.pending {
+            border-left-color: #ffa500;
+        }
+
+        .verification-item.approved {
+            border-left-color: #00ff88;
+        }
+
+        .verification-item.rejected {
+            border-left-color: #ff4757;
+        }
+
+        .verification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .verification-date {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-badge.pending {
+            background-color: rgba(255, 165, 0, 0.2);
+            color: #ffa500;
+        }
+
+        .status-badge.approved {
+            background-color: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status-badge.rejected {
+            background-color: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        .verification-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .verification-image {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .verification-image:hover {
+            transform: scale(1.05);
+        }
+
+        .verification-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 10px;
+            padding: 4px 8px;
+            text-align: center;
+        }
+
+        .no-verifications {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .no-verifications i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        /* Image Preview Modal */
+        .image-preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+        }
+
+        .image-preview-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 90%;
+            max-height: 90%;
+            text-align: center;
+        }
+
+        .image-preview-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-preview-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* Light mode adjustments for verification status */
+        .light-mode .verification-item {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .light-mode .image-label {
+            background: rgba(0, 0, 0, 0.8);
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="profile-section">
+        <div class="profile-logo"></div>
+        <div class="user-info">
+            <p class="user-id" id="userName">Loading...</p>
+            <p class="credit" id="userEmail">Loading...</p>
+        </div>
+    </div>
+
+    <ul class="link-list">
+        <li class="link-item"><img src="/assets/icons/primary.png"><span class="link-text">Primary Certification</span></li>
+        <li class="link-item" onclick="openVerificationModal()"><img src="/assets/icons/two-factor-authentication.png"><span class="link-text">Advanced Authentication</span></li>
+        <li class="link-item" onclick="openVerificationStatusModal()"><img src="/assets/icons/document.png"><span class="link-text">Verification Status</span></li>
+        <a href="https://t.me/YourTelegramUsername">
+            <li class="link-item"><img src="/assets/icons/customer-support.png"><span class="link-text">Customer Support</span></li>
+        </a>
+        <a href="profile_order_record.html">
+            <li class="link-item"><img src="/assets/icons/document.png"><span class="link-text">Order Record</span></li>
+        </a>
+        <a href="profile_share.html">
+            <li class="link-item"><img src="/assets/icons/link.png"><span class="link-text">I Want to Share</span></li>
+        </a>
+        <!-- <a href="profile_agent_distribution.html">
+            <li class="link-item"><img src="/assets/icons/artificial-intelligence.png"><span class="link-text">Agent Distribution</span></li>
+        </a> -->
+        <a href="profile_help_center.html">
+            <li class="link-item"><img src="/assets/icons/customer-support (1).png"><span class="link-text">Help Center</span></li>
+        </a>
+        <a href="suggestion.html">
+            <li class="link-item"><img src="/assets/icons/suggestion.png"><span class="link-text">Suggestions</span></li>
+        </a>
+        <a href="home_download.html">
+            <li class="link-item"><img src="/assets/icons/download.png"><span class="link-text">Download App</span></li>
+        </a>
+        <a href="settings.html">
+            <li class="link-item"><img src="/assets/icons/gear.png"><span class="link-text">General Setting</span></li>
+        </a>
+        <li class="link-item" onclick="logout()" style="color: #ff6b6b;">
+            <img src="/assets/icons/user.png"><span class="link-text">Logout</span>
+        </li>
+    </ul>
+    <br><br><br><br><br>
+    <button class="toggle" onclick="toggleMode()">☀️</button>
+
+    <!-- Verification Modal -->
+    <div id="verificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Advanced Authentication</h2>
+                <span class="close" onclick="closeVerificationModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p class="verification-info">Please upload your verification documents for KYC (Know Your Customer) verification.</p>
+                
+                <form id="verificationForm" enctype="multipart/form-data">
+                    <div class="upload-section">
+                        <label for="frontIdImage" class="upload-label">
+                            <div class="upload-area" id="frontIdArea">
+                                <img src="/assets/icons/document.png" alt="Upload" class="upload-icon">
+                                <span>Front Side of ID Document</span>
+                                <small>JPEG, PNG, WebP (Max 5MB)</small>
+                            </div>
+                        </label>
+                        <input type="file" id="frontIdImage" name="frontIdImage" accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="previewImage(this, 'frontIdArea')">
+                    </div>
+
+                    <div class="upload-section">
+                        <label for="backIdImage" class="upload-label">
+                            <div class="upload-area" id="backIdArea">
+                                <img src="/assets/icons/document.png" alt="Upload" class="upload-icon">
+                                <span>Back Side of ID Document</span>
+                                <small>JPEG, PNG, WebP (Max 5MB)</small>
+                            </div>
+                        </label>
+                        <input type="file" id="backIdImage" name="backIdImage" accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="previewImage(this, 'backIdArea')">
+                    </div>
+
+                    <div class="upload-section">
+                        <label for="selfieImage" class="upload-label">
+                            <div class="upload-area" id="selfieArea">
+                                <img src="/assets/icons/user.png" alt="Upload" class="upload-icon">
+                                <span>Selfie with ID Document</span>
+                                <small>JPEG, PNG, WebP (Max 5MB)</small>
+                            </div>
+                        </label>
+                        <input type="file" id="selfieImage" name="selfieImage" accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="previewImage(this, 'selfieArea')">
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeVerificationModal()">Cancel</button>
+                        <button type="submit" class="btn-primary" id="submitBtn">
+                            <span id="submitText">Submit Verification</span>
+                            <span id="submitLoading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Submitting...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Verification Status Modal -->
+    <div id="verificationStatusModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Verification Status</h2>
+                <span class="close" onclick="closeVerificationStatusModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="verificationStatusContent">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading verification status...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div id="imagePreviewModal" class="image-preview-modal">
+        <div class="image-preview-content">
+            <button class="image-preview-close" onclick="closeImagePreview()">&times;</button>
+            <img id="previewImage" src="" alt="Preview">
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+      <img src="/assets/icons/home.png" alt="Home">
+      Home
+    </button>
+        <button onclick="window.location.href='market.html'">
+      <img src="/assets/icons/bull-market.png" alt="Market">
+      Market
+    </button>
+        <button onclick="window.location.href='transactions.html'">
+      <img src="/assets/icons/invoice.png" alt="Transactions">
+      Transact
+    </button>
+        <button onclick="window.location.href='balance.html'">
+      <img src="/assets/icons/money.png" alt="Balance">
+      Balance
+    </button>
+        <button onclick="window.location.href='profile.html'">
+      <img src="/assets/icons/user.png" alt="Profile">
+      Profile
+    </button>
+    </div>
+
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndLoadProfile();
+        });
+
+        // Check if user is authenticated
+        function checkAuthAndLoadProfile() {
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                // No token found, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load user profile
+            loadUserProfile(token);
+        }
+
+        // Load user profile from API
+        async function loadUserProfile(token) {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Update profile display
+                    document.getElementById('userName').textContent = data.data.fullName;
+                    document.getElementById('userEmail').textContent = data.data.email;
+                    
+                    // Store updated user data
+                    localStorage.setItem('userData', JSON.stringify(data.data));
+                } else {
+                    // Token might be invalid, redirect to login
+                    console.error('Profile load failed:', data.message);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                // Network error, try to use cached data
+                const cachedUserData = localStorage.getItem('userData');
+                if (cachedUserData) {
+                    const userData = JSON.parse(cachedUserData);
+                    document.getElementById('userName').textContent = userData.fullName || 'User';
+                    document.getElementById('userEmail').textContent = userData.email || 'user@example.com';
+                } else {
+                    // No cached data, redirect to login
+                    window.location.href = 'login.html';
+                }
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear stored data
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('userData');
+                
+                // Redirect to login page
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Verification Modal Functions
+        function openVerificationModal() {
+            document.getElementById('verificationModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVerificationModal() {
+            document.getElementById('verificationModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            // Reset form
+            document.getElementById('verificationForm').reset();
+            // Clear previews
+            clearImagePreviews();
+        }
+
+        // Preview uploaded images
+        function previewImage(input, areaId) {
+            const area = document.getElementById(areaId);
+            const file = input.files[0];
+            
+            if (file) {
+                // Validate file size (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    input.value = '';
+                    return;
+                }
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please upload a valid image file (JPEG, PNG, or WebP)');
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Clear existing content
+                    area.innerHTML = '';
+                    
+                    // Create preview image
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'preview';
+                    img.alt = 'Preview';
+                    
+                    // Add file info
+                    const fileInfo = document.createElement('div');
+                    fileInfo.innerHTML = `
+                        <span style="color: var(--main-color); font-weight: 500;">✓ ${file.name}</span>
+                        <small style="color: #999;">${(file.size / 1024 / 1024).toFixed(2)} MB</small>
+                    `;
+                    
+                    area.appendChild(img);
+                    area.appendChild(fileInfo);
+                    area.classList.add('has-file');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Clear image previews
+        function clearImagePreviews() {
+            const areas = ['frontIdArea', 'backIdArea', 'selfieArea'];
+            areas.forEach(areaId => {
+                const area = document.getElementById(areaId);
+                area.innerHTML = `
+                    <img src="/assets/icons/${areaId.includes('selfie') ? 'user.png' : 'document.png'}" alt="Upload" class="upload-icon">
+                    <span>${areaId.includes('front') ? 'Front Side of ID Document' : areaId.includes('back') ? 'Back Side of ID Document' : 'Selfie with ID Document'}</span>
+                    <small>JPEG, PNG, WebP (Max 5MB)</small>
+                `;
+                area.classList.remove('has-file');
+            });
+        }
+
+        // Handle form submission
+        document.getElementById('verificationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const frontIdFile = document.getElementById('frontIdImage').files[0];
+            const backIdFile = document.getElementById('backIdImage').files[0];
+            const selfieFile = document.getElementById('selfieImage').files[0];
+            
+            // Validate all files are uploaded
+            if (!frontIdFile || !backIdFile || !selfieFile) {
+                alert('Please upload all three required documents');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoading = document.getElementById('submitLoading');
+            
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitLoading.style.display = 'inline';
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    throw new Error('Authentication token not found');
+                }
+                
+                // Create FormData
+                const formData = new FormData();
+                formData.append('frontIdImage', frontIdFile);
+                formData.append('backIdImage', backIdFile);
+                formData.append('selfieImage', selfieFile);
+                
+                // Submit to API
+                const response = await fetch(`${SERVER_URL}/api/user/advance-verification`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        // Don't set Content-Type for FormData, let browser set it with boundary
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    alert('Verification documents submitted successfully! Your documents are being reviewed.');
+                    closeVerificationModal();
+                } else {
+                    throw new Error(data.message || 'Failed to submit verification documents');
+                }
+                
+            } catch (error) {
+                console.error('Error submitting verification:', error);
+                alert('Error submitting verification documents: ' + error.message);
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                submitLoading.style.display = 'none';
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('verificationModal');
+            const statusModal = document.getElementById('verificationStatusModal');
+            const imageModal = document.getElementById('imagePreviewModal');
+            
+            if (event.target === modal) {
+                closeVerificationModal();
+            }
+            if (event.target === statusModal) {
+                closeVerificationStatusModal();
+            }
+            if (event.target === imageModal) {
+                closeImagePreview();
+            }
+        }
+
+        // Verification Status Functions
+        function openVerificationStatusModal() {
+            document.getElementById('verificationStatusModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            loadVerificationStatus();
+        }
+
+        function closeVerificationStatusModal() {
+            document.getElementById('verificationStatusModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Load verification status from API
+        async function loadVerificationStatus() {
+            const contentDiv = document.getElementById('verificationStatusContent');
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    throw new Error('Authentication token not found');
+                }
+
+                const response = await fetch(`${SERVER_URL}/api/user/verification-status`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    displayVerificationStatus(data.data);
+                } else {
+                    throw new Error(data.message || 'Failed to load verification status');
+                }
+
+            } catch (error) {
+                console.error('Error loading verification status:', error);
+                contentDiv.innerHTML = `
+                    <div class="no-verifications">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Error loading verification status</p>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+            }
+        }
+
+        // Display verification status
+        function displayVerificationStatus(verifications) {
+            const contentDiv = document.getElementById('verificationStatusContent');
+            
+            if (!verifications || verifications.length === 0) {
+                contentDiv.innerHTML = `
+                    <div class="no-verifications">
+                        <i class="fas fa-file-alt"></i>
+                        <p>No verification submissions found</p>
+                        <small>Submit your first verification to see status here</small>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by creation date (newest first)
+            verifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            const verificationList = verifications.map(verification => {
+                const date = new Date(verification.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const statusClass = verification.status;
+                const statusText = verification.status.charAt(0).toUpperCase() + verification.status.slice(1);
+
+                return `
+                    <div class="verification-item ${statusClass}">
+                        <div class="verification-header">
+                            <div class="verification-date">
+                                <i class="fas fa-calendar"></i> ${date}
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="verification-images">
+                            <div class="verification-image" onclick="previewImage('${verification.frontIdImage}', 'Front ID')">
+                                <img src="${verification.frontIdImage}" alt="Front ID" loading="lazy">
+                                <div class="image-label">Front ID</div>
+                            </div>
+                            <div class="verification-image" onclick="previewImage('${verification.backIdImage}', 'Back ID')">
+                                <img src="${verification.backIdImage}" alt="Back ID" loading="lazy">
+                                <div class="image-label">Back ID</div>
+                            </div>
+                            <div class="verification-image" onclick="previewImage('${verification.selfieImage}', 'Selfie')">
+                                <img src="${verification.selfieImage}" alt="Selfie" loading="lazy">
+                                <div class="image-label">Selfie</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            contentDiv.innerHTML = `
+                <div class="verification-list">
+                    ${verificationList}
+                </div>
+            `;
+        }
+
+        // Image preview functions
+        function previewImage(imageUrl, label) {
+            const modal = document.getElementById('imagePreviewModal');
+            const img = document.getElementById('previewImage');
+            
+            img.src = imageUrl;
+            img.alt = label;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImagePreview() {
+            const modal = document.getElementById('imagePreviewModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+</body>
+
+</html>

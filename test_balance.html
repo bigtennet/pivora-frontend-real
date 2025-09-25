@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance Test - Pivora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #00ffb7;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #00e6a8;
+        }
+        .code-block {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .info { color: #2196F3; }
+        .warning { color: #ff9800; }
+        .balance-preview {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+<body>
+    <h1>Balance Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Instructions</h2>
+        <p>This page helps you test the balance functionality. Follow these steps:</p>
+        
+        <ol>
+            <li><strong>Login First:</strong> Make sure you're logged in to get an authentication token</li>
+            <li><strong>Navigate to Balance:</strong> Go to the balance page</li>
+            <li><strong>Check Total Value:</strong> Verify the total USD value is calculated correctly</li>
+            <li><strong>View Individual Balances:</strong> Click on any currency to see details</li>
+            <li><strong>Test Refresh:</strong> Use the refresh button or pull-to-refresh</li>
+            <li><strong>Test Balance Toggle:</strong> Click the eye icon to hide/show balance</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Quick Navigation</h2>
+        <button class="test-button" onclick="window.open('login.html', '_blank')">Open Login Page</button>
+        <button class="test-button" onclick="window.open('balance.html', '_blank')">Open Balance Page</button>
+        <button class="test-button" onclick="window.open('home_deposit.html', '_blank')">Open Deposit Page</button>
+        <button class="test-button" onclick="window.open('index.html', '_blank')">Open Home Page</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 API Endpoint Test</h2>
+        <p>Test the balance API endpoint directly:</p>
+        
+        <div class="code-block">
+curl -X GET https://pivora-back-end.pxxl.xyz/api/user/balances \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json"
+        </div>
+        
+        <p class="info">Replace YOUR_TOKEN_HERE with your actual authentication token.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Expected Response Format</h2>
+        <p>The API should return data in this format:</p>
+        
+        <div class="balance-preview">
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "6860bbd84272bf5d6e6fdaa5",
+      "user": "685b6b1fce756c7b34982de2",
+      "currency": "USDT",
+      "network": "ERC20",
+      "amount": 100,
+      "createdAt": "2025-06-29T04:06:48.227Z",
+      "__v": 0
+    }
+  ]
+}
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Expected Behavior</h2>
+        <ul>
+            <li class="success">✅ Authentication token validation</li>
+            <li class="success">✅ User balance loading from API</li>
+            <li class="success">✅ Total USD value calculation</li>
+            <li class="success">✅ All default coins displayed (BTC, ETH, USDT, USDC, BNB, SOL, XRP, DOGE, ADA, DOT)</li>
+            <li class="success">✅ Zero balances shown for currencies not in user data</li>
+            <li class="success">✅ 2 decimal places for better readability</li>
+            <li class="success">✅ Balance visibility toggle</li>
+            <li class="success">✅ Pull-to-refresh functionality</li>
+            <li class="success">✅ Auto-refresh every 30 seconds</li>
+            <li class="success">✅ Loading states and error handling</li>
+            <li class="success">✅ Modal shows transaction details or "No transactions found"</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>💰 Price Estimation</h2>
+        <p>Current estimated prices used for USD calculation:</p>
+        
+        <div class="balance-preview">
+BTC: $45,000
+ETH: $3,000
+USDT: $1.00
+USDC: $1.00
+BNB: $300
+SOL: $100
+XRP: $0.50
+DOGE: $0.10
+ADA: $0.50
+DOT: $7.00
+        </div>
+        
+        <p class="info">ℹ️ In a production app, these would be fetched from a real-time price API.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Common Issues & Solutions</h2>
+        <ul>
+            <li><strong>Authentication Error:</strong> Make sure you're logged in and have a valid token</li>
+            <li><strong>No Balances Displayed:</strong> Check if user has any balances in the database</li>
+            <li><strong>Network Error:</strong> Ensure the backend server is running on https://pivora-back-end.pxxl.xyz</li>
+            <li><strong>CORS Error:</strong> Make sure the backend allows requests from your frontend domain</li>
+            <li><strong>Incorrect USD Values:</strong> Verify the price estimation logic</li>
+            <li><strong>Refresh Not Working:</strong> Check if the API endpoint is responding correctly</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📱 Features Implemented</h2>
+        <ul>
+            <li>✅ <strong>Authentication:</strong> Token-based authentication with automatic redirect</li>
+            <li>✅ <strong>Balance Loading:</strong> Real-time balance fetching from API</li>
+            <li>✅ <strong>USD Calculation:</strong> Total portfolio value calculation</li>
+            <li>✅ <strong>Default Coins:</strong> Always shows all supported cryptocurrencies</li>
+            <li>✅ <strong>Zero Balances:</strong> Displays 0.00 for currencies not in user data</li>
+            <li>✅ <strong>Decimal Precision:</strong> 2 decimal places for better readability</li>
+            <li>✅ <strong>Balance Toggle:</strong> Hide/show balance functionality</li>
+            <li>✅ <strong>Refresh:</strong> Manual and automatic refresh capabilities</li>
+            <li>✅ <strong>Pull-to-Refresh:</strong> Mobile-friendly refresh gesture</li>
+            <li>✅ <strong>Loading States:</strong> Visual feedback during API calls</li>
+            <li>✅ <strong>Error Handling:</strong> Comprehensive error messages</li>
+            <li>✅ <strong>Modal Details:</strong> Shows transaction history or empty state</li>
+            <li>✅ <strong>Responsive Design:</strong> Works on mobile and desktop</li>
+            <li>✅ <strong>Theme Support:</strong> Dark/light mode toggle</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>⚠️ Important Notes</h2>
+        <ul>
+            <li class="warning">⚠️ <strong>Price Estimates:</strong> Current prices are estimates, not real-time</li>
+            <li class="warning">⚠️ <strong>Auto-refresh:</strong> Balances refresh every 30 seconds automatically</li>
+            <li class="info">ℹ️ <strong>Network Support:</strong> Supports multiple networks (ERC20, Bitcoin, etc.)</li>
+            <li class="info">ℹ️ <strong>Balance Precision:</strong> Displays up to 6 decimal places</li>
+            <li class="info">ℹ️ <strong>USD Formatting:</strong> Uses proper number formatting with commas</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Balance Page Testing Guide</h2>
+        
+        <div class="test-section">
+            <h3>✅ What's Working</h3>
+            <ul>
+                <li><strong>Real-time Price Fetching:</strong> Uses Binance API to get live cryptocurrency prices</li>
+                <li><strong>Authentication:</strong> Checks for auth token and redirects to login if not authenticated</li>
+                <li><strong>Balance Loading:</strong> Fetches user balances from backend API</li>
+                <li><strong>Total USD Calculation:</strong> Calculates total portfolio value using real-time prices</li>
+                <li><strong>Default Coins Display:</strong> Shows all 10 default coins (BTC, ETH, USDT, USDC, BNB, SOL, XRP, DOGE, ADA, DOT)</li>
+                <li><strong>Zero Balances:</strong> Displays 0.00 for coins not in user data</li>
+                <li><strong>Decimal Formatting:</strong> Shows 2 decimal places for better readability</li>
+                <li><strong>Auto-refresh:</strong> Updates prices every 30 seconds</li>
+                <li><strong>Pull-to-refresh:</strong> Swipe down to manually refresh</li>
+                <li><strong>Loading States:</strong> Shows loading indicators during API calls</li>
+                <li><strong>Error Handling:</strong> Graceful fallback to estimated prices if API fails</li>
+                <li><strong>Wallet Details:</strong> Click any coin to see detailed modal with real-time prices</li>
+                <li><strong>Theme Support:</strong> Dark/light mode toggle</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 API Endpoints Used</h3>
+            <ul>
+                <li><strong>User Balance API:</strong> <code>GET /api/user/balance</code> (with auth token)</li>
+                <li><strong>Real-time Prices:</strong> <code>GET https://api.binance.com/api/v3/ticker/24hr</code></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>📱 How to Test</h3>
+            <ol>
+                <li><strong>Authentication Test:</strong>
+                    <ul>
+                        <li>Clear localStorage: <code>localStorage.clear()</code></li>
+                        <li>Visit balance.html - should redirect to login.html</li>
+                        <li>Login and return - should show balances</li>
+                    </ul>
+                </li>
+                <li><strong>Real-time Prices Test:</strong>
+                    <ul>
+                        <li>Open browser dev tools → Network tab</li>
+                        <li>Watch for calls to Binance API</li>
+                        <li>Prices should update every 30 seconds</li>
+                        <li>Check console for any API errors</li>
+                    </ul>
+                </li>
+                <li><strong>Balance Display Test:</strong>
+                    <ul>
+                        <li>All 10 default coins should be visible</li>
+                        <li>Coins with no balance should show "0.00"</li>
+                        <li>USD values should use real-time prices</li>
+                        <li>Total USD should be accurate sum</li>
+                    </ul>
+                </li>
+                <li><strong>Refresh Test:</strong>
+                    <ul>
+                        <li>Pull down on mobile to refresh</li>
+                        <li>Click refresh button in header</li>
+                        <li>Should show loading state and update data</li>
+                    </ul>
+                </li>
+                <li><strong>Wallet Details Test:</strong>
+                    <ul>
+                        <li>Click any coin card</li>
+                        <li>Modal should show real-time price and USD value</li>
+                        <li>Action buttons should work (deposit, withdraw, transfer)</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h3>🐛 Common Issues & Solutions</h3>
+            <ul>
+                <li><strong>No prices showing:</strong> Check if Binance API is accessible, fallback to estimated prices</li>
+                <li><strong>Authentication errors:</strong> Ensure valid auth token in localStorage</li>
+                <li><strong>Balance not loading:</strong> Check backend API endpoint and network connectivity</li>
+                <li><strong>Prices not updating:</strong> Check console for API errors, verify 30-second interval</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Expected Data Format</h3>
+            <pre><code>// User Balance API Response
+{
+  "success": true,
+  "data": [
+    {
+      "currency": "BTC",
+      "balance": "0.0428"
+    },
+    {
+      "currency": "ETH", 
+      "balance": "2.5000"
+    }
+    // ... more currencies
+  ]
+}
+
+// Binance API Response (ticker data)
+[
+  {
+    "symbol": "BTCUSDT",
+    "lastPrice": "45000.00",
+    "priceChangePercent": "2.5"
+  }
+  // ... more tickers
+]</code></pre>
+        </div>
+
+        <div class="test-section">
+            <h3>🔄 Transfer Integration</h3>
+            <p>The balance page now integrates with the updated <strong>Transfer</strong> page (formerly Exchange):</p>
+            <ul>
+                <li>Click "Transfer" button in wallet details modal</li>
+                <li>Redirects to exchange.html (now transfer functionality)</li>
+                <li>Uses same real-time price API for accurate rates</li>
+                <li>Supports all default coins for transfers</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Add some interactive testing features
+        function testAuthentication() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                alert('✅ Authentication token found!');
+            } else {
+                alert('❌ No authentication token found. Please login first.');
+            }
+        }
+
+        function testBalanceAPI() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('❌ No authentication token found. Please login first.');
+                return;
+            }
+
+            fetch(`${SERVER_URL}/api/user/balances`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Balances:', data.data);
+                    alert(`✅ Balances loaded successfully!\nFound ${data.data.length} balance(s).\nCheck console for details.`);
+                } else {
+                    alert(`❌ Failed to load balances: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert(`❌ Error loading balances: ${error.message}`);
+            });
+        }
+
+        function testPriceCalculation() {
+            const testBalances = [
+                { currency: 'BTC', amount: 0.1 },
+                { currency: 'ETH', amount: 2.5 },
+                { currency: 'USDT', amount: 1000 }
+            ];
+
+            const prices = {
+                'BTC': 45000,
+                'ETH': 3000,
+                'USDT': 1
+            };
+
+            const total = testBalances.reduce((sum, balance) => {
+                return sum + (balance.amount * prices[balance.currency]);
+            }, 0);
+
+            alert(`Test calculation:\nBTC: 0.1 × $45,000 = $4,500\nETH: 2.5 × $3,000 = $7,500\nUSDT: 1000 × $1 = $1,000\nTotal: $${total.toLocaleString()}`);
+        }
+
+        function clearTestData() {
+            if (confirm('Clear all test data (tokens, user data)?')) {
+                localStorage.clear();
+                alert('Test data cleared!');
+            }
+        }
+
+        function simulateBalances() {
+            const mockBalances = [
+                {
+                    "_id": "test1",
+                    "user": "testuser",
+                    "currency": "USDT",
+                    "network": "ERC20",
+                    "amount": 1000,
+                    "createdAt": new Date().toISOString()
+                },
+                {
+                    "_id": "test2",
+                    "user": "testuser",
+                    "currency": "BTC",
+                    "network": "Bitcoin",
+                    "amount": 0.05,
+                    "createdAt": new Date().toISOString()
+                }
+            ];
+
+            console.log('Mock balances for testing:', mockBalances);
+            alert('Mock balances logged to console for testing purposes.');
+        }
+    </script>
+
+    <div class="test-section">
+        <h2>🔧 Test Tools</h2>
+        <button class="test-button" onclick="testAuthentication()">Check Authentication</button>
+        <button class="test-button" onclick="testBalanceAPI()">Test Balance API</button>
+        <button class="test-button" onclick="testPriceCalculation()">Test Price Calculation</button>
+        <button class="test-button" onclick="simulateBalances()">Simulate Balances</button>
+        <button class="test-button" onclick="clearTestData()">Clear Test Data</button>
+        <button class="test-button" onclick="console.log('Token:', localStorage.getItem('authToken'))">Log Token to Console</button>
+    </div>
+</body>
+</html> 

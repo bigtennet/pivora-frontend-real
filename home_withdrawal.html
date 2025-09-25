@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Pivora - Withdraw</title>
+    <style>
+        :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --primary-blue: #0066ff;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            padding-bottom: 70px;
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .form-section {
+            padding: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+        
+        .currency-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .currency-icon {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .dropdown-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+        
+        .address-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .amount-input-container {
+            position: relative;
+        }
+        
+        .amount-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            padding-right: 80px;
+        }
+        
+        .amount-actions {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--main-color);
+            font-size: 14px;
+        }
+        
+        .all-button {
+            background: none;
+            border: none;
+            color: var(--main-color);
+            cursor: pointer;
+        }
+        
+        .balance-info {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .fee-display,
+        .arrival-display {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .fee-value,
+        .arrival-value {
+            color: #aaa;
+        }
+        
+        .withdraw-button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .withdraw-button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .withdraw-button:not(:disabled):hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
+        }
+        
+        .withdraw-button:not(:disabled):active {
+            transform: translateY(0);
+            box-shadow: 0 2px 6px rgba(0, 102, 255, 0.3);
+        }
+        
+        .currency-dropdown {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-dark);
+            z-index: 1001;
+            border-radius: 15px 15px 0 0;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            max-height: 60vh;
+            overflow-y: auto;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .currency-dropdown.open {
+            transform: translateY(0);
+        }
+        
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .dropdown-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .close-dropdown {
+            background: none;
+            border: none;
+            color: var(--main-color);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .currency-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .currency-option:hover {
+            background: #1e1e1e;
+        }
+        
+        .currency-option-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+        }
+        
+        .currency-option-name {
+            font-size: 16px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            pointer-events: none; /* Prevent overlay from blocking clicks when not active */
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto; /* Only allow clicks when active */
+        }
+        
+        /* PIN Popup Styles */
+        .pin-popup {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-dark);
+            border-radius: 15px 15px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            z-index: 1002;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pin-popup.open {
+            transform: translateY(0);
+        }
+        
+        .pin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .pin-title {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .close-pin {
+            background: none;
+            border: none;
+            color: var(--main-color);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .pin-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #333;
+            margin: 0 8px;
+            transition: background 0.2s;
+        }
+        
+        .pin-dot.filled {
+            background: var(--main-color);
+        }
+        
+        .pin-keyboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .pin-key {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .pin-key:active {
+            background: #2e2e2e;
+        }
+        
+        .pin-key.delete {
+            font-size: 20px;
+        }
+        
+        /* Light mode styles for PIN popup */
+        body.light-mode .pin-popup,
+        body.light-mode .pin-key {
+            background: #ffffff !important;
+            color: #111111 !important;
+            border: 1px solid #ddd;
+        }
+        
+        body.light-mode .pin-dot {
+            background: #ddd;
+        }
+        
+        body.light-mode .pin-dot.filled {
+            background: var(--main-color);
+        }
+        
+        body.light-mode .pin-key:active {
+            background: #f0f0f0;
+        }
+        
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            body {
+                padding-bottom: 80px;
+            }
+            
+            header {
+                padding: 12px 15px;
+            }
+            
+            .logo img {
+                width: 25px;
+            }
+            
+            .language-icon {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .page-header {
+                padding: 12px 15px;
+            }
+            
+            .page-title {
+                font-size: 16px;
+            }
+            
+            .form-section {
+                padding: 15px;
+            }
+            
+            .form-group {
+                margin-bottom: 18px;
+            }
+            
+            .form-label {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+            
+            .currency-selector {
+                padding: 10px 12px;
+            }
+            
+            .currency-icon {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .address-input,
+            .amount-input {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            
+            .amount-input {
+                padding-right: 70px;
+            }
+            
+            .amount-actions {
+                right: 8px;
+                font-size: 12px;
+                gap: 3px;
+            }
+            
+            .balance-info {
+                font-size: 11px;
+                margin-top: 4px;
+            }
+            
+            .fee-display,
+            .arrival-display {
+                padding: 8px 0;
+                font-size: 13px;
+            }
+            
+            .withdraw-button {
+                padding: 14px;
+                font-size: 15px;
+                margin-top: 25px;
+            }
+            
+            .currency-dropdown {
+                padding: 15px;
+                max-height: 70vh;
+            }
+            
+            .dropdown-title {
+                font-size: 16px;
+            }
+            
+            .currency-option {
+                padding: 10px;
+            }
+            
+            .currency-option-icon {
+                width: 20px;
+                height: 20px;
+                margin-right: 10px;
+            }
+            
+            .currency-option-name {
+                font-size: 14px;
+            }
+            
+            .pin-popup {
+                padding: 15px;
+            }
+            
+            .pin-header {
+                margin-bottom: 15px;
+            }
+            
+            .pin-title {
+                font-size: 16px;
+            }
+            
+            .pin-display {
+                margin-bottom: 25px;
+            }
+            
+            .pin-dot {
+                width: 14px;
+                height: 14px;
+                margin: 0 6px;
+            }
+            
+            .pin-keyboard {
+                gap: 12px;
+            }
+            
+            .pin-key {
+                padding: 12px;
+                font-size: 20px;
+                border-radius: 6px;
+            }
+            
+            .pin-key.delete {
+                font-size: 18px;
+            }
+            
+            .bottom-nav {
+                height: 65px;
+            }
+            
+            .bottom-nav button {
+                font-size: 9px;
+            }
+            
+            .bottom-nav img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .theme-toggle {
+                bottom: 80px;
+                right: 12px;
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+        
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            .form-section {
+                padding: 12px;
+            }
+            
+            .currency-selector {
+                padding: 8px 10px;
+            }
+            
+            .address-input,
+            .amount-input {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            
+            .withdraw-button {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .pin-keyboard {
+                gap: 10px;
+            }
+            
+            .pin-key {
+                padding: 10px;
+                font-size: 18px;
+            }
+            
+            .bottom-nav {
+                height: 60px;
+            }
+            
+            .bottom-nav button {
+                font-size: 8px;
+            }
+            
+            .bottom-nav img {
+                width: 18px;
+                height: 18px;
+            }
+        }
+        
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .pin-popup {
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+            
+            .currency-dropdown {
+                max-height: 60vh;
+            }
+        }
+        
+        /* Mobile touch optimizations */
+        @media (max-width: 768px) {
+            /* Ensure minimum touch target size */
+            .currency-selector,
+            .address-input,
+            .amount-input,
+            .withdraw-button,
+            .pin-key,
+            .close-dropdown,
+            .close-pin {
+                min-height: 44px;
+            }
+            
+            /* Prevent zoom on input focus */
+            .address-input,
+            .amount-input {
+                font-size: 16px;
+            }
+            
+            /* Better touch feedback */
+            .currency-selector:active,
+            .withdraw-button:active,
+            .pin-key:active {
+                transform: scale(0.98);
+            }
+            
+            /* Smooth scrolling for dropdowns */
+            .currency-dropdown,
+            .pin-popup {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Prevent text selection on buttons */
+            .withdraw-button,
+            .pin-key,
+            .all-button {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+        }
+        
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .pin-key {
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .currency-selector,
+            .withdraw-button {
+                -webkit-tap-highlight-color: rgba(0, 255, 183, 0.3);
+            }
+        }
+        
+        /* Light mode styles */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #111111;
+        }
+        
+        body.light-mode header {
+            background-color: #f5f5f5;
+        }
+        
+        body.light-mode .bottom-nav {
+            background-color: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .currency-selector,
+        body.light-mode .address-input,
+        body.light-mode .amount-input {
+            background: #ffffff !important;
+            color: #111111 !important;
+            border: 1px solid #ddd;
+        }
+        
+        body.light-mode .currency-dropdown,
+        body.light-mode .currency-option {
+            background: #ffffff !important;
+            color: #111111 !important;
+        }
+        
+        body.light-mode .currency-option:hover {
+            background: #f0f0f0 !important;
+        }
+        
+        /* Animation keyframes */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100%); opacity: 0; }
+        }
+    </style>
+    <script>
+        window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Withdraw</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <div class="form-section">
+        <div class="form-group">
+            <label class="form-label">Withdrawal currency</label>
+            <div class="currency-selector" id="currencySelector">
+                <div class="currency-display">
+                    <img src="/assets/icons/usdt.png" class="currency-icon" alt="USDT">
+                    <span>USDT</span>
+                </div>
+                <img src="/assets/icons/arrow.png" class="dropdown-icon" alt="▼">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Withdrawal address</label>
+            <input type="text" class="address-input" id="addressInput" placeholder="Enter or long press paste address">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Withdraw amount</label>
+            <div class="amount-input-container">
+                <input type="number" class="amount-input" id="amountInput" placeholder="0.00">
+                <div class="amount-actions">
+                    <span id="amountCurrency">USDT</span>
+                    <span>|</span>
+                    <button class="all-button" id="allButton">All</button>
+                </div>
+            </div>
+            <div class="balance-info" id="balanceInfo">Available 0.000000 USDT</div>
+        </div>
+
+        <div class="fee-display">
+            <span>Service Charge</span>
+            <span class="fee-value" id="feeValue">0.000000 USDT</span>
+        </div>
+
+        <div class="arrival-display">
+            <span>Amount of arrived</span>
+            <span class="arrival-value" id="arrivalValue">0.000000 USDT</span>
+        </div>
+
+        <button class="withdraw-button" id="withdrawButton" disabled>Withdraw</button>
+    </div>
+
+    <!-- Currency Dropdown -->
+    <div class="overlay" id="overlay"></div>
+    <div class="currency-dropdown" id="currencyDropdown">
+        <div class="dropdown-header">
+            <div class="dropdown-title">Select Currency</div>
+            <button class="close-dropdown" id="closeDropdown">Close</button>
+        </div>
+        <div class="currency-option" data-currency="USDT">
+            <img src="/assets/icons/usdt.png" class="currency-option-icon" alt="USDT">
+            <div class="currency-option-name">USDT</div>
+        </div>
+        <div class="currency-option" data-currency="BTC">
+            <img src="/assets/icons/btc.png" class="currency-option-icon" alt="BTC">
+            <div class="currency-option-name">BTC</div>
+        </div>
+        <div class="currency-option" data-currency="ETH">
+            <img src="/assets/icons/eth.png" class="currency-option-icon" alt="ETH">
+            <div class="currency-option-name">ETH</div>
+        </div>
+        <div class="currency-option" data-currency="USDC">
+            <img src="/assets/icons/usdc.png" class="currency-option-icon" alt="USDC">
+            <div class="currency-option-name">USDC</div>
+        </div>
+    </div>
+
+    <!-- PIN Popup -->
+    <div class="pin-popup" id="pinPopup">
+        <div class="pin-header">
+                            <div class="pin-title">Enter PIN Code</div>
+            <button class="close-pin" id="closePinPopup">✕</button>
+        </div>
+        <div class="pin-display">
+            <div class="pin-dot" id="pinDot1"></div>
+            <div class="pin-dot" id="pinDot2"></div>
+            <div class="pin-dot" id="pinDot3"></div>
+            <div class="pin-dot" id="pinDot4"></div>
+        </div>
+        <div class="pin-keyboard">
+            <div class="pin-key" data-key="1">1</div>
+            <div class="pin-key" data-key="2">2</div>
+            <div class="pin-key" data-key="3">3</div>
+            <div class="pin-key" data-key="4">4</div>
+            <div class="pin-key" data-key="5">5</div>
+            <div class="pin-key" data-key="6">6</div>
+            <div class="pin-key" data-key="7">7</div>
+            <div class="pin-key" data-key="8">8</div>
+            <div class="pin-key" data-key="9">9</div>
+            <div class="pin-key"></div>
+            <div class="pin-key" data-key="0">0</div>
+            <div class="pin-key delete" id="pinDelete">⌫</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Simple global variables
+        let selectedCurrency = 'USDT';
+        let selectedNetwork = 'ERC20';
+        let userBalances = {
+            'USDT_ERC20': { amount: 1000.50 },
+            'BTC_Bitcoin': { amount: 0.5 },
+            'ETH_ERC20': { amount: 2.5 },
+            'USDC_ERC20': { amount: 500.25 }
+        };
+        let currentPin = '';
+        let withdrawalData = null;
+
+        // DOM elements
+        const currencySelector = document.getElementById('currencySelector');
+        const currencyDropdown = document.getElementById('currencyDropdown');
+        const closeDropdown = document.getElementById('closeDropdown');
+        const overlay = document.getElementById('overlay');
+        const currencyOptions = document.querySelectorAll('.currency-option');
+        const addressInput = document.getElementById('addressInput');
+        const amountInput = document.getElementById('amountInput');
+        const withdrawButton = document.getElementById('withdrawButton');
+        const allButton = document.getElementById('allButton');
+        const balanceInfo = document.getElementById('balanceInfo');
+        const amountCurrency = document.getElementById('amountCurrency');
+        const feeValue = document.getElementById('feeValue');
+        const arrivalValue = document.getElementById('arrivalValue');
+        
+        // PIN popup elements
+        const pinPopup = document.getElementById('pinPopup');
+        const closePinPopup = document.getElementById('closePinPopup');
+        const pinDots = [
+            document.getElementById('pinDot1'),
+            document.getElementById('pinDot2'),
+            document.getElementById('pinDot3'),
+            document.getElementById('pinDot4')
+        ];
+        const pinKeys = document.querySelectorAll('.pin-key[data-key]');
+        const pinDelete = document.getElementById('pinDelete');
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Load theme on page load
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+
+        // Currency dropdown functionality
+        currencySelector.addEventListener('click', () => {
+            currencyDropdown.classList.add('open');
+            overlay.classList.add('active');
+        });
+
+        closeDropdown.addEventListener('click', () => {
+            currencyDropdown.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            currencyDropdown.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        currencyOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const currency = option.getAttribute('data-currency');
+                selectedCurrency = currency;
+                
+                // Set network based on currency
+                if (currency === 'BTC') {
+                    selectedNetwork = 'Bitcoin';
+                } else {
+                    selectedNetwork = 'ERC20';
+                }
+
+                // Update UI
+                document.querySelector('.currency-display span').textContent = currency;
+                amountCurrency.textContent = currency;
+                document.querySelector('.currency-icon').src = `/assets/icons/${currency.toLowerCase()}.png`;
+                
+                // Update balance display
+                updateBalanceDisplay();
+                
+                // Close dropdown
+                currencyDropdown.classList.remove('open');
+                overlay.classList.remove('active');
+                
+                // Re-validate form
+                validateForm();
+            });
+        });
+
+        // Update balance display
+        function updateBalanceDisplay() {
+            const balanceKey = `${selectedCurrency}_${selectedNetwork}`;
+            const balance = userBalances[balanceKey];
+            const amount = balance ? balance.amount : 0;
+            
+            balanceInfo.textContent = `Available ${amount} ${selectedCurrency}`;
+        }
+
+        // Calculate fees
+        function calculateFees() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const feePercentage = 0.5; // 0.5% fee
+            const fee = amount * (feePercentage / 100);
+            const arrivalAmount = amount - fee;
+
+            feeValue.textContent = `${fee.toFixed(6)} ${selectedCurrency}`;
+            arrivalValue.textContent = `${arrivalAmount.toFixed(6)} ${selectedCurrency}`;
+        }
+
+        // Form validation
+        function validateForm() {
+            const address = addressInput.value.trim();
+            const amount = parseFloat(amountInput.value) || 0;
+            const balanceKey = `${selectedCurrency}_${selectedNetwork}`;
+            const balance = userBalances[balanceKey];
+            const availableAmount = balance ? balance.amount : 0;
+
+            console.log('Validation:', { address, amount, availableAmount });
+
+            if (address && amount > 0 && amount <= availableAmount) {
+                withdrawButton.disabled = false;
+                console.log('Form is valid');
+                return true;
+            } else {
+                withdrawButton.disabled = true;
+                console.log('Form is invalid');
+                return false;
+            }
+        }
+
+        // All button functionality
+        allButton.addEventListener('click', () => {
+            const balanceKey = `${selectedCurrency}_${selectedNetwork}`;
+            const balance = userBalances[balanceKey];
+            if (balance) {
+                amountInput.value = balance.amount;
+                calculateFees();
+                validateForm();
+            }
+        });
+
+        // Input event listeners
+        addressInput.addEventListener('input', validateForm);
+        amountInput.addEventListener('input', () => {
+            calculateFees();
+            validateForm();
+        });
+
+        // Withdraw button click
+        withdrawButton.addEventListener('click', () => {
+            console.log('Withdraw button clicked!');
+            
+            if (!validateForm()) {
+                alert('Please fill in all fields correctly.');
+                return;
+            }
+
+            // Store withdrawal data
+            withdrawalData = {
+                address: addressInput.value.trim(),
+                amount: parseFloat(amountInput.value),
+                currency: selectedCurrency,
+                network: selectedNetwork
+            };
+
+            console.log('Withdrawal data:', withdrawalData);
+            
+            // Open PIN popup
+            pinPopup.classList.add('open');
+            overlay.classList.add('active');
+            currentPin = '';
+            updatePinDots();
+        });
+
+        // PIN popup functionality
+        closePinPopup.addEventListener('click', () => {
+            pinPopup.classList.remove('open');
+            overlay.classList.remove('active');
+            currentPin = '';
+            withdrawalData = null;
+        });
+
+        overlay.addEventListener('click', () => {
+            pinPopup.classList.remove('open');
+            overlay.classList.remove('active');
+            currentPin = '';
+            withdrawalData = null;
+        });
+
+        // Handle PIN key presses
+        pinKeys.forEach(key => {
+            key.addEventListener('click', () => {
+                if (currentPin.length < 4) {
+                    currentPin += key.getAttribute('data-key');
+                    updatePinDots();
+
+                    // If PIN is complete, submit withdrawal
+                    if (currentPin.length === 4) {
+                        setTimeout(() => {
+                            submitWithdrawal();
+                        }, 300);
+                    }
+                }
+            });
+        });
+
+        // Handle PIN delete
+        pinDelete.addEventListener('click', () => {
+            if (currentPin.length > 0) {
+                currentPin = currentPin.slice(0, -1);
+                updatePinDots();
+            }
+        });
+
+        // Update PIN dots display
+        function updatePinDots() {
+            pinDots.forEach((dot, index) => {
+                if (index < currentPin.length) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
+        // Submit withdrawal with API
+        async function submitWithdrawal() {
+            if (!withdrawalData) return;
+
+            console.log('Submitting withdrawal with PIN:', currentPin);
+
+            // Get authentication token
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login first');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Get user data
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const userId = userData._id || userData.id;
+
+            if (!userId) {
+                alert('User data not found. Please login again.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Show loading state
+            withdrawButton.disabled = true;
+            withdrawButton.textContent = 'Processing...';
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/withdraw`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: userId,
+                        currency: withdrawalData.currency,
+                        network: withdrawalData.network,
+                        withdrawalAddress: withdrawalData.address,
+                        amount: withdrawalData.amount,
+                        fundPassword: currentPin
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Withdrawal API response:', data);
+
+                if (response.ok && data.success) {
+                    alert(`✅ ${data.message || 'Withdrawal submitted successfully!'}`);
+                    
+                    // Clear form
+                    addressInput.value = '';
+                    amountInput.value = '';
+                    calculateFees();
+                    validateForm();
+                } else {
+                    alert(`❌ ${data.message || 'Withdrawal failed. Please try again.'}`);
+                }
+            } catch (error) {
+                console.error('Withdrawal error:', error);
+                alert('Network error. Please check your connection and try again.');
+            } finally {
+                // Reset button state
+                withdrawButton.disabled = false;
+                withdrawButton.textContent = 'Withdraw';
+                
+                // Close PIN popup
+                pinPopup.classList.remove('open');
+                overlay.classList.remove('active');
+                currentPin = '';
+                withdrawalData = null;
+            }
+        }
+
+        // Mobile-specific optimizations
+        function setupMobileOptimizations() {
+            // Prevent zoom on input focus (iOS)
+            const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // Small delay to prevent zoom
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+            
+            // Better touch handling for PIN keys
+            const pinKeys = document.querySelectorAll('.pin-key');
+            pinKeys.forEach(key => {
+                key.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                key.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Prevent double-tap zoom on buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    this.click();
+                });
+            });
+        }
+        
+        // Initialize
+        updateBalanceDisplay();
+        calculateFees();
+        validateForm();
+        setupMobileOptimizations();
+
+        console.log('Withdrawal page loaded successfully!');
+    </script>
+</body>
+
+</html>

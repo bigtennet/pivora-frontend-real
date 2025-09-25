@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Testing Guide - Pivora</title>
+    <style>
+        :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #f4f4f4;
+            --text-dark: #121212;
+            --text-light: #ffffff;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--main-color);
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .test-section {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .test-section h2 {
+            color: var(--main-color);
+            margin-top: 0;
+            border-bottom: 2px solid var(--main-color);
+            padding-bottom: 10px;
+        }
+
+        .test-section h3 {
+            color: var(--main-color);
+            margin-top: 20px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background-color: rgba(0, 255, 183, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--main-color);
+        }
+
+        pre {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-item {
+            background-color: rgba(0, 255, 183, 0.05);
+            border: 1px solid rgba(0, 255, 183, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .feature-item h4 {
+            color: var(--main-color);
+            margin-top: 0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--main-color);
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(0, 255, 183, 0.3);
+        }
+
+        .api-endpoint {
+            background-color: rgba(0, 255, 183, 0.1);
+            border-left: 4px solid var(--main-color);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .warning {
+            background-color: rgba(255, 77, 77, 0.1);
+            border-left: 4px solid #ff4d4d;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .success {
+            background-color: rgba(0, 255, 183, 0.1);
+            border-left: 4px solid var(--main-color);
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Transfer Testing Guide</h1>
+            <p>Complete guide for testing the updated Transfer functionality (formerly Exchange)</p>
+        </div>
+
+        <div class="test-section">
+            <h2>✅ What's New & Working</h2>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h4>🔄 Terminology Update</h4>
+                    <ul>
+                        <li>"Exchange" → "Transfer" throughout the interface</li>
+                        <li>More intuitive for crypto transfers</li>
+                        <li>Consistent with modern crypto platforms</li>
+                    </ul>
+                </div>
+
+                <div class="feature-item">
+                    <h4>💰 Real-time Pricing</h4>
+                    <ul>
+                        <li>Live prices from Binance API</li>
+                        <li>Accurate BTC/USDT rates</li>
+                        <li>Auto-updates every 30 seconds</li>
+                        <li>Fallback to estimated prices if API fails</li>
+                    </ul>
+                </div>
+
+                <div class="feature-item">
+                    <h4>🎯 Enhanced UX</h4>
+                    <ul>
+                        <li>Dynamic rate calculation</li>
+                        <li>Precise decimal formatting</li>
+                        <li>Loading states and animations</li>
+                        <li>Error handling and notifications</li>
+                    </ul>
+                </div>
+
+                <div class="feature-item">
+                    <h4>🔗 Integration</h4>
+                    <ul>
+                        <li>Seamless connection with Balance page</li>
+                        <li>Real-time balance updates</li>
+                        <li>Consistent price data across pages</li>
+                        <li>Unified authentication system</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>🔧 API Integration</h2>
+            
+            <div class="api-endpoint">
+                <strong>Real-time Price API:</strong><br>
+                <code>GET https://api.binance.com/api/v3/ticker/24hr</code>
+                <p>Fetches live cryptocurrency prices for accurate transfer rates</p>
+            </div>
+
+            <div class="api-endpoint">
+                <strong>Transfer Rate Calculation:</strong><br>
+                <code>Rate = FromCurrencyPrice / ToCurrencyPrice</code>
+                <p>Dynamic calculation based on current market prices</p>
+            </div>
+
+            <h3>Supported Currency Pairs</h3>
+            <ul>
+                <li><strong>BTC/USDT:</strong> Bitcoin to Tether transfers</li>
+                <li><strong>ETH/USDT:</strong> Ethereum to Tether transfers</li>
+                <li><strong>USDT/BTC:</strong> Tether to Bitcoin transfers</li>
+                <li><strong>USDT/ETH:</strong> Tether to Ethereum transfers</li>
+                <li><strong>All Default Coins:</strong> BTC, ETH, USDT, USDC, BNB, SOL, XRP, DOGE, ADA, DOT</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📱 How to Test Transfer Functionality</h2>
+            
+            <h3>1. Basic Transfer Flow</h3>
+            <ol>
+                <li><strong>Navigate to Transfer:</strong>
+                    <ul>
+                        <li>Go to <code>exchange.html</code> (now transfer page)</li>
+                        <li>Verify page title shows "Transfer"</li>
+                        <li>Check all UI elements use "Transfer" terminology</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Select Currencies:</strong>
+                    <ul>
+                        <li>Click "From" currency dropdown</li>
+                        <li>Select USDT (or any currency)</li>
+                        <li>Click "To" currency dropdown</li>
+                        <li>Select BTC (or any currency)</li>
+                        <li>Verify rate updates automatically</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Enter Amount:</strong>
+                    <ul>
+                        <li>Type amount in "From" field</li>
+                        <li>Verify "To" amount calculates automatically</li>
+                        <li>Test "Transfer all" button</li>
+                        <li>Check rate precision (8 decimals for small rates)</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Execute Transfer:</strong>
+                    <ul>
+                        <li>Click "Transfer now" button</li>
+                        <li>Verify loading animation</li>
+                        <li>Check success notification</li>
+                        <li>Confirm form resets after completion</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>2. Real-time Price Testing</h3>
+            <ol>
+                <li><strong>Monitor API Calls:</strong>
+                    <ul>
+                        <li>Open browser dev tools → Network tab</li>
+                        <li>Watch for Binance API calls</li>
+                        <li>Verify calls happen every 30 seconds</li>
+                        <li>Check response data format</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Rate Accuracy:</strong>
+                    <ul>
+                        <li>Compare displayed rates with live market</li>
+                        <li>Test different currency pairs</li>
+                        <li>Verify inverse rate calculations</li>
+                        <li>Check decimal precision for different rates</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Fallback Testing:</strong>
+                    <ul>
+                        <li>Simulate API failure (block network)</li>
+                        <li>Verify fallback to estimated prices</li>
+                        <li>Check error handling in console</li>
+                        <li>Ensure UI remains functional</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>3. Integration Testing</h3>
+            <ol>
+                <li><strong>Balance Page Integration:</strong>
+                    <ul>
+                        <li>Go to balance.html</li>
+                        <li>Click any coin → "Transfer" button</li>
+                        <li>Verify redirects to transfer page</li>
+                        <li>Check pre-selected currencies</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Currency Consistency:</strong>
+                    <ul>
+                        <li>Verify same price data across pages</li>
+                        <li>Test real-time updates sync</li>
+                        <li>Check authentication consistency</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+
+        <div class="test-section">
+            <h2>🐛 Common Issues & Solutions</h2>
+            
+            <div class="warning">
+                <strong>API Rate Limits:</strong> Binance API has rate limits. If you see errors, wait a moment and retry.
+            </div>
+            
+            <div class="warning">
+                <strong>Network Issues:</strong> If real-time prices fail, the system falls back to estimated prices automatically.
+            </div>
+            
+            <div class="success">
+                <strong>Price Accuracy:</strong> Real-time prices ensure accurate transfer rates and prevent slippage.
+            </div>
+
+            <h3>Troubleshooting Steps</h3>
+            <ul>
+                <li><strong>Prices not updating:</strong> Check console for API errors, verify network connectivity</li>
+                <li><strong>Rates seem wrong:</strong> Verify currency pair selection, check for inverse rate calculation</li>
+                <li><strong>Transfer button not working:</strong> Ensure valid amount entered, check for validation errors</li>
+                <li><strong>Page not loading:</strong> Verify file path, check for JavaScript errors in console</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>📊 Expected Behavior</h2>
+            
+            <h3>Transfer Rate Display</h3>
+            <ul>
+                <li><strong>Small rates (&lt; 0.01):</strong> 8 decimal places (e.g., 0.00000930)</li>
+                <li><strong>Medium rates (&lt; 1):</strong> 6 decimal places (e.g., 0.000290)</li>
+                <li><strong>Large rates (&lt; 100):</strong> 4 decimal places (e.g., 1.6900)</li>
+                <li><strong>Very large rates:</strong> 2 decimal places (e.g., 45000.00)</li>
+            </ul>
+
+            <h3>Real-time Updates</h3>
+            <ul>
+                <li><strong>Price updates:</strong> Every 30 seconds</li>
+                <li><strong>Rate recalculation:</strong> On currency change</li>
+                <li><strong>Amount calculation:</strong> On input change</li>
+                <li><strong>Balance updates:</strong> On page refresh</li>
+            </ul>
+
+            <h3>Error Handling</h3>
+            <ul>
+                <li><strong>API failures:</strong> Fallback to estimated prices</li>
+                <li><strong>Network errors:</strong> User-friendly error messages</li>
+                <li><strong>Validation errors:</strong> Clear feedback on form inputs</li>
+                <li><strong>Authentication errors:</strong> Redirect to login page</li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h2>🔗 Related Pages</h2>
+            <ul>
+                <li><strong><a href="balance.html" style="color: var(--main-color);">Balance Page</a>:</strong> View balances with real-time prices</li>
+                <li><strong><a href="home_deposit.html" style="color: var(--main-color);">Deposit Page</a>:</strong> Add funds to your account</li>
+                <li><strong><a href="home_withdrawal.html" style="color: var(--main-color);">Withdrawal Page</a>:</strong> Withdraw funds from your account</li>
+                <li><strong><a href="market.html" style="color: var(--main-color);">Market Page</a>:</strong> View live market data</li>
+            </ul>
+        </div>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (document.body.classList.contains('light-mode')) {
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            updateThemeIcon();
+        })();
+    </script>
+</body>
+</html> 

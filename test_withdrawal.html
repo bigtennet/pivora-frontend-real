@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Withdrawal Test - Pivora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #00ffb7;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #00e6a8;
+        }
+        .code-block {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .info { color: #2196F3; }
+        .warning { color: #ff9800; }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+<body>
+    <h1>Withdrawal Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Instructions</h2>
+        <p>This page helps you test the withdrawal functionality. Follow these steps:</p>
+        
+        <ol>
+            <li><strong>Login First:</strong> Make sure you're logged in to get an authentication token</li>
+            <li><strong>Navigate to Withdrawal:</strong> Go to the withdrawal page</li>
+            <li><strong>Select Currency:</strong> Choose a cryptocurrency (USDT, USDC, ETH, or BTC)</li>
+            <li><strong>Enter Address:</strong> Input a valid withdrawal address for the selected currency</li>
+            <li><strong>Enter Amount:</strong> Input a valid withdrawal amount (must not exceed balance)</li>
+            <li><strong>Review Fees:</strong> Check the service charge and arrival amount</li>
+            <li><strong>Submit:</strong> Click withdraw to send the withdrawal request</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Quick Navigation</h2>
+        <button class="test-button" onclick="window.open('login.html', '_blank')">Open Login Page</button>
+        <button class="test-button" onclick="window.open('home_withdrawal.html', '_blank')">Open Withdrawal Page</button>
+        <button class="test-button" onclick="window.open('balance.html', '_blank')">Open Balance Page</button>
+        <button class="test-button" onclick="window.open('index.html', '_blank')">Open Home Page</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 API Endpoint Test</h2>
+        <p>Test the withdrawal API endpoint directly:</p>
+        
+        <div class="code-block">
+curl -X POST https://pivora-back-end.pxxl.xyz/api/user/withdraw \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user": "USER_ID",
+    "currency": "BTC",
+    "network": "Bitcoin",
+    "withdrawalAddress": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh",
+    "amount": 0.001
+  }'
+        </div>
+        
+        <p class="info">Replace YOUR_TOKEN_HERE with your actual authentication token and USER_ID with your user ID.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Expected Behavior</h2>
+        <ul>
+            <li class="success">✅ Authentication token validation</li>
+            <li class="success">✅ User balance loading from API</li>
+            <li class="success">✅ Currency selection with network mapping</li>
+            <li class="success">✅ Address format validation (BTC/Ethereum)</li>
+            <li class="success">✅ Amount validation (positive number, not exceeding balance)</li>
+            <li class="success">✅ Fee calculation and display</li>
+            <li class="success">✅ Form validation and submission</li>
+            <li class="success">✅ Success/error notifications</li>
+            <li class="success">✅ Balance refresh after successful withdrawal</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Address Validation</h2>
+        <p>Test address validation for different cryptocurrencies:</p>
+        
+        <div class="code-block">
+// Bitcoin addresses (valid examples)
+bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa
+3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy
+
+// Ethereum addresses (valid examples)
+0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6
+0x742d35cc6634c0532925a3b8d4c9db96c4b4d8b6
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Common Issues & Solutions</h2>
+        <ul>
+            <li><strong>Authentication Error:</strong> Make sure you're logged in and have a valid token</li>
+            <li><strong>Insufficient Balance:</strong> Check that withdrawal amount doesn't exceed available balance</li>
+            <li><strong>Invalid Address:</strong> Ensure the address format matches the selected currency</li>
+            <li><strong>Network Error:</strong> Ensure the backend server is running on https://pivora-back-end.pxxl.xyz</li>
+            <li><strong>CORS Error:</strong> Make sure the backend allows requests from your frontend domain</li>
+            <li><strong>User Not Found:</strong> Verify that user data is properly stored in localStorage</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📱 Features Implemented</h2>
+        <ul>
+            <li>✅ <strong>Authentication:</strong> Token-based authentication with automatic redirect</li>
+            <li>✅ <strong>Balance Loading:</strong> Real-time balance fetching from API</li>
+            <li>✅ <strong>Currency Selection:</strong> Dropdown with network mapping</li>
+            <li>✅ <strong>Address Validation:</strong> Format validation for BTC and Ethereum addresses</li>
+            <li>✅ <strong>Amount Validation:</strong> Balance checking and positive number validation</li>
+            <li>✅ <strong>Fee Calculation:</strong> Service charge calculation and display</li>
+            <li>✅ <strong>Form Validation:</strong> Comprehensive client-side validation</li>
+            <li>✅ <strong>Error Handling:</strong> Detailed error messages for different scenarios</li>
+            <li>✅ <strong>User Feedback:</strong> Loading states and success/error notifications</li>
+            <li>✅ <strong>Responsive Design:</strong> Works on mobile and desktop</li>
+            <li>✅ <strong>Theme Support:</strong> Dark/light mode toggle</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>⚠️ Important Notes</h2>
+        <ul>
+            <li class="warning">⚠️ <strong>Test Addresses:</strong> Use test addresses for testing, never real addresses with funds</li>
+            <li class="warning">⚠️ <strong>Small Amounts:</strong> Start with small withdrawal amounts for testing</li>
+            <li class="warning">⚠️ <strong>Network Fees:</strong> Be aware of network fees that may apply to withdrawals</li>
+            <li class="info">ℹ️ <strong>Balance Refresh:</strong> Balances are automatically refreshed after successful withdrawals</li>
+            <li class="info">ℹ️ <strong>Fee Calculation:</strong> Fees are calculated as 0.5% of the withdrawal amount</li>
+        </ul>
+    </div>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Add some interactive testing features
+        function testAuthentication() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                alert('✅ Authentication token found!');
+            } else {
+                alert('❌ No authentication token found. Please login first.');
+            }
+        }
+
+        function testUserData() {
+            const userData = localStorage.getItem('userData');
+            if (userData) {
+                const parsed = JSON.parse(userData);
+                alert(`✅ User data found!\nUser ID: ${parsed._id || parsed.id}\nEmail: ${parsed.email}`);
+            } else {
+                alert('❌ No user data found. Please login first.');
+            }
+        }
+
+        function testBalances() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('❌ No authentication token found. Please login first.');
+                return;
+            }
+
+            fetch(`${SERVER_URL}/api/user/balances`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Balances:', data.data);
+                    alert(`✅ Balances loaded successfully!\nCheck console for details.`);
+                } else {
+                    alert(`❌ Failed to load balances: ${data.message}`);
+                }
+            })
+            .catch(error => {
+                alert(`❌ Error loading balances: ${error.message}`);
+            });
+        }
+
+        function clearTestData() {
+            if (confirm('Clear all test data (tokens, user data)?')) {
+                localStorage.clear();
+                alert('Test data cleared!');
+            }
+        }
+
+        function validateTestAddress() {
+            const address = prompt('Enter an address to validate:');
+            if (!address) return;
+
+            const currency = prompt('Enter currency (BTC or ETH):');
+            if (!currency) return;
+
+            let isValid = false;
+            if (currency === 'BTC') {
+                isValid = /^(bc1|[13])[a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(address);
+            } else if (currency === 'ETH') {
+                isValid = /^0x[a-fA-F0-9]{40}$/.test(address);
+            }
+
+            alert(isValid ? `✅ Valid ${currency} address!` : `❌ Invalid ${currency} address!`);
+        }
+    </script>
+
+    <div class="test-section">
+        <h2>🔧 Test Tools</h2>
+        <button class="test-button" onclick="testAuthentication()">Check Authentication</button>
+        <button class="test-button" onclick="testUserData()">Check User Data</button>
+        <button class="test-button" onclick="testBalances()">Test Balance Loading</button>
+        <button class="test-button" onclick="validateTestAddress()">Validate Address</button>
+        <button class="test-button" onclick="clearTestData()">Clear Test Data</button>
+        <button class="test-button" onclick="console.log('Token:', localStorage.getItem('authToken'))">Log Token to Console</button>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coinwybi - Mining by Lock Up</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #f8f8f8;
+            --card-dark: #1e1e1e;
+            --card-light: #ffffff;
+            --text-dark: #ffffff;
+            --text-light: #333333;
+            --accent-green: #00d4a0;
+            --dark-green: #006442;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            padding-bottom: 100px;
+            overflow-x: hidden;
+        }
+        /* Header */
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background-color: var(--card-dark);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        /* Main Content */
+        
+        .content-section {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: var(--card-dark);
+            border-radius: 12px;
+            margin: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .content-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .content-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--main-color), var(--accent-green));
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--main-color);
+        }
+        
+        .section-text {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        /* Highlights Grid */
+        
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .highlight-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .highlight-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--main-color);
+        }
+        
+        .highlight-desc {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        
+        .icon-row {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            gap: 8px;
+        }
+        
+        .icon-row img {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .icon-text {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        /* Calculation Examples */
+        
+        .calculation-box {
+            background: rgba(0, 255, 183, 0.1);
+            border-left: 3px solid var(--main-color);
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .calculation-line {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .calculation-line strong {
+            color: var(--main-color);
+        }
+        /* CTA Button */
+        
+        .cta-button {
+            position: fixed;
+            bottom: 70px;
+            left: 15px;
+            right: 15px;
+            padding: 15px;
+            background: linear-gradient(90deg, var(--main-color), var(--accent-green));
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 255, 183, 0.3);
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 183, 0.4);
+        }
+        /* Bottom Navigation */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-dark);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 140px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: all 0.3s ease;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        
+        body.light-mode .page-header,
+        body.light-mode .content-section,
+        body.light-mode .bottom-nav {
+            background-color: var(--card-light);
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.light-mode .page-title {
+            color: var(--dark-green);
+        }
+        
+        body.light-mode .section-title {
+            color: var(--dark-green);
+        }
+        
+        body.light-mode .highlight-title {
+            color: var(--dark-green);
+        }
+        
+        body.light-mode .content-section {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.light-mode .calculation-box {
+            background: rgba(0, 212, 160, 0.1);
+            border-left: 3px solid var(--dark-green);
+        }
+        
+        body.light-mode .bottom-nav {
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: var(--text-light);
+        }
+        /* Animations */
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .floating-coins {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-coin {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        /* Responsive */
+        
+        @media (max-width: 768px) {
+            .highlights-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-section {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Coin Animation -->
+    <div class="floating-coins">
+        <img src="/assets/icons/btc-icon.png" class="floating-coin" style="top:10%; left:10%; width:50px; animation-delay:0s;">
+        <img src="/assets/icons/eth-icon.png" class="floating-coin" style="top:30%; left:80%; width:60px; animation-delay:1s;">
+        <img src="/assets/icons/usdt-icon.png" class="floating-coin" style="top:60%; left:20%; width:40px; animation-delay:2s;">
+        <img src="/assets/icons/sol-icon.png" class="floating-coin" style="top:80%; left:70%; width:55px; animation-delay:3s;">
+    </div>
+
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Mining by Lock Up</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer -->
+    </div>
+
+    <!-- Mining Earns Non-Stop Section -->
+    <div class="content-section" style="animation-delay: 0.1s;">
+        <div class="section-title">Mining Earns Non-Stop</div>
+        <div class="section-text">
+            Lock your assets to participate in our mining program and earn continuous rewards without any active management required. Your assets work for you 24/7.
+        </div>
+    </div>
+
+    <!-- Product Highlights Section -->
+    <div class="content-section" style="animation-delay: 0.2s;">
+        <div class="section-title">Product Highlights</div>
+        <div class="highlights-grid">
+            <!-- Left Column -->
+            <div class="highlight-item">
+                <div class="highlight-title">Fetch on demand</div>
+                <div class="highlight-desc">Withdraw your rewards anytime</div>
+                <div class="icon-row">
+                    <img src="/assets/icons/two-factor-authentication.png" alt="Security">
+                    <div class="icon-text">100% capital security</div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="highlight-item">
+                <div class="highlight-title">Issued daily</div>
+                <div class="highlight-desc">Consistent daily rewards</div>
+                <div class="icon-row">
+                    <img src="/assets/icons/money.png" alt="Revenue">
+                    <div class="icon-text">Continuous revenue on holidays</div>
+                </div>
+                <div class="icon-row">
+                    <img src="/assets/icons/withdraw.png" alt="Value">
+                    <div class="icon-text">Value of the day after successful deposit</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Calculation Section -->
+    <div class="content-section" style="animation-delay: 0.3s;">
+        <div class="section-title">Income Calculation Example</div>
+        <div class="section-text">
+            The member locks 10000U on the platform and chooses a five-day period, and the daily output is 0.3% to 0.5% of the locked position amount.
+        </div>
+
+        <div class="calculation-box">
+            <div class="calculation-line">
+                <span>Minimum:</span>
+                <strong>10000U × 0.3% = 30U</strong>
+            </div>
+            <div class="calculation-line">
+                <span>Maximum:</span>
+                <strong>10000U × 0.5% = 50U</strong>
+            </div>
+        </div>
+
+        <div class="section-text">
+            That is, you can get 150U~250U of income after 5 days. The income is issued daily, and the issued income can be deposited and withdrawn at any time. After the lock-up principal expires, it will be automatically transferred to your asset account.
+        </div>
+    </div>
+
+    <!-- Liquidated Damages Section -->
+    <div class="content-section" style="animation-delay: 0.4s;">
+        <div class="section-title">About Liquidated Damages</div>
+        <div class="section-text">
+            If you wish to transfer out the unexpired principal, liquidated damages will apply:
+        </div>
+        <div class="calculation-box">
+            <div class="calculation-line">
+                <span>Formula:</span>
+                <strong>Liquidated damages = default settlement ratio × remaining days × locked position quantity</strong>
+            </div>
+        </div>
+        <div class="section-text">
+            Example: The default settlement ratio for locked warehouse mining is 1%, the remaining 3 days expire, and the locked warehouse quantity is 1000, then:
+        </div>
+        <div class="calculation-box">
+            <div class="calculation-line">
+                <span>Liquidated damage:</span>
+                <strong>1% × 3 × 1000 = 30U</strong>
+            </div>
+            <div class="calculation-line">
+                <span>Actual principal refund:</span>
+                <strong>1000U - 30U = 970U</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Agency Distribution Section -->
+    <div class="content-section" style="animation-delay: 0.5s;">
+        <div class="section-title">Agency Distribution Revenue Calculation</div>
+        <div class="section-text">
+            Any agent has the opportunity to invite new users to recharge on the platform. When the transaction or pledge lock-up amount reaches 100 USDT, the upper-level agent rebates and draws commissions up to 5%.
+        </div>
+        <div class="section-text">
+            The agent's commission amount only needs to meet any one of the above two conditions to issue the commission income, which will be automatically transferred to your asset account.
+        </div>
+        <div class="calculation-box">
+            <div class="calculation-line">
+                <span>Minimum enjoyment:</span>
+                <strong>100U × 5% = 5USDT</strong>
+            </div>
+        </div>
+        <div class="section-text">
+            The highest agent enjoys three-level distribution agency authority and benefits:
+        </div>
+        <div class="calculation-box">
+            <div class="calculation-line">
+                <span>First-level agent:</span>
+                <strong>100USDT × 5% = 5 USDT</strong>
+            </div>
+            <div class="calculation-line">
+                <span>Secondary agent:</span>
+                <strong>100USDT × 3% = 3 USDT</strong>
+            </div>
+            <div class="calculation-line">
+                <span>Level 3 agent:</span>
+                <strong>100USDT × 1% = 1 USDT</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Button -->
+    <button class="cta-button">I Want to Participate</button>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Floating coins animation
+        const coins = document.querySelectorAll('.floating-coin');
+        coins.forEach((coin, index) => {
+            // Randomize animation
+            const randomDuration = 6 + Math.random() * 4;
+            const randomDelay = Math.random() * 5;
+            const randomY = Math.random() * 20 - 10;
+
+            coin.style.animationDuration = `${randomDuration}s`;
+            coin.style.animationDelay = `${randomDelay}s`;
+            coin.style.transform = `translateY(${randomY}px)`;
+        });
+
+        // CTA button click handler
+        document.querySelector('.cta-button').addEventListener('click', function() {
+            // In a real app, this would navigate to the lock-up form
+            alert('Redirecting to lock-up participation form...');
+        });
+
+        // Animate content sections on scroll
+        const contentSections = document.querySelectorAll('.content-section');
+
+        function checkScroll() {
+            contentSections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (sectionTop < windowHeight * 0.8) {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize section styles
+        contentSections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+        });
+
+        window.addEventListener('scroll', checkScroll);
+        window.addEventListener('load', checkScroll);
+    </script>
+</body>
+
+</html>

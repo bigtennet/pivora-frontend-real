@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>System Access - Pivora</title>
+    <style>
+        html,
+        body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #f4f4f4;
+            --text-dark: #121212;
+            --text-light: #ffffff;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        .crypto-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .coin {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #00ffb7, #009e85);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+            opacity: 0.15;
+        }
+        
+        .coin:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .coin:nth-child(2) {
+            top: 60%;
+            left: 70%;
+            animation-delay: 1s;
+        }
+        
+        .coin:nth-child(3) {
+            top: 40%;
+            left: 30%;
+            animation-delay: 2s;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+            100% {
+                transform: translateY(0) rotate(360deg);
+            }
+        }
+        
+        .logo {
+            position: absolute;
+            top: 30px;
+            width: 100%;
+            text-align: center;
+            z-index: 3;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            color: var(--main-color);
+            text-shadow: 0 0 20px var(--main-color), 0 0 40px var(--main-color);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid var(--main-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 0 25px var(--main-color);
+            width: 90%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 2;
+            animation: crypto-glow 10s infinite alternate ease-in-out;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--main-color);
+            font-size: 28px;
+            text-shadow: 0 0 10px var(--main-color);
+        }
+        
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            font-size: 16px;
+            animation: field-pop 1s ease;
+        }
+        
+        .toggle {
+            position: fixed;
+            bottom: 70px;
+            right: 15px;
+            background-color: var(--main-color);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 0 10px var(--main-color);
+        }
+        
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--main-color);
+            color: black;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #00e6a8;
+        }
+        
+        @keyframes crypto-glow {
+            0% {
+                box-shadow: 0 0 25px var(--main-color);
+            }
+            100% {
+                box-shadow: 0 0 60px var(--main-color);
+            }
+        }
+        
+        @keyframes field-pop {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .light-mode .container {
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--text-dark);
+            box-shadow: 0 0 20px #ccc;
+        }
+        
+        .light-mode input,
+        .light-mode button[type="submit"] {
+            color: var(--text-dark);
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <div class="crypto-background">
+        <div class="coin"></div>
+        <div class="coin"></div>
+        <div class="coin"></div>
+    </div>
+
+    <div class="logo">
+        <h1>Pivora</h1>
+    </div>
+
+    <button class="toggle" onclick="toggleMode()">☀️</button>
+
+    <div class="container">
+        <h2>System Access</h2>
+        <form id="adminLoginForm">
+            <input type="email" id="email" placeholder="Email Address" required />
+            <input type="password" id="password" placeholder="Password" required />
+            <button type="submit" id="loginBtn">Access System</button>
+        </form>
+        <div id="message" style="margin-top: 15px; text-align: center; display: none;"></div>
+    </div>
+
+    <script>
+        function toggleMode() {
+            document.body.classList.toggle("light-mode");
+        }
+
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Form validation and submission
+        document.getElementById("adminLoginForm").onsubmit = async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const loginBtn = document.getElementById("loginBtn");
+            const messageDiv = document.getElementById("message");
+            
+            // Clear previous messages
+            messageDiv.style.display = "none";
+            messageDiv.innerHTML = "";
+            
+            // Validation
+            if (!email || !password) {
+                showMessage("Please fill in all fields!", "error");
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showMessage("Please enter a valid email address!", "error");
+                return;
+            }
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Accessing...";
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Check if user is admin
+                    if (data.user && data.user.isAdmin === true) {
+                        showMessage(`✅ ${data.message}`, "success");
+                        // Store token and user data
+                        localStorage.setItem('adminToken', data.token);
+                        localStorage.setItem('userData', JSON.stringify(data.user));
+                        // Redirect to admin panel after a delay
+                        setTimeout(() => {
+                            window.location.href = "admin_panel/dashboard.html";
+                        }, 2000);
+                    } else {
+                        showMessage("Access denied. Admin privileges required.", "error");
+                    }
+                } else {
+                    showMessage(data.message || "Access denied. Please check your credentials.", "error");
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage("Network error. Please check your connection and try again.", "error");
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                loginBtn.textContent = "Access System";
+            }
+        };
+        
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById("message");
+            messageDiv.style.display = "block";
+            messageDiv.innerHTML = message;
+            messageDiv.style.color = type === "success" ? "#00ffb7" : "#ff6b6b";
+            messageDiv.style.fontWeight = "bold";
+        }
+    </script>
+</body>
+
+</html> 

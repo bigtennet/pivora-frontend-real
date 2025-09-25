@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Center - Pivora Admin</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #ffffff;
+            --text-dark: #ffffff;
+            --text-light: #000000;
+            --card-dark: #1e1e1e;
+            --card-light: #f1f1f1;
+            --nav-width: 220px;
+            --nav-collapsed-width: 70px;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Navigation */
+        
+        nav {
+            width: var(--nav-width);
+            background-color: var(--card-dark);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: width var(--transition-speed);
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--main-color) rgba(255, 255, 255, 0.1);
+        }
+
+        nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        nav::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb:hover {
+            background: #00e6a8;
+        }
+        
+        nav.collapsed {
+            width: var(--nav-collapsed-width);
+        }
+        
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+            white-space: nowrap;
+            transition: opacity var(--transition-speed);
+        }
+        
+        nav.collapsed .logo {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        nav .logo-icon {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+        }
+        
+        nav.collapsed .logo-icon {
+            display: block;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        nav ul li {
+            margin-bottom: 1rem;
+            white-space: nowrap;
+        }
+        
+        nav ul li a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            transition: all var(--transition-speed);
+        }
+        
+        nav ul li a:hover {
+            background-color: var(--main-color);
+            color: #000;
+        }
+        
+        nav ul li a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+        
+        nav.collapsed ul li a span {
+            opacity: 0;
+            width: 0;
+            transition: opacity var(--transition-speed), width var(--transition-speed);
+        }
+        /* Main Content */
+        
+        .main {
+            margin-left: var(--nav-width);
+            width: calc(100% - var(--nav-width));
+            transition: margin-left var(--transition-speed);
+            padding-bottom: 2rem;
+        }
+        
+        .main.expanded {
+            margin-left: var(--nav-collapsed-width);
+        }
+        /* Header */
+        
+        header {
+            background-color: var(--card-dark);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .toggle-mode {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background-color: var(--main-color);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            transition: all var(--transition-speed);
+        }
+        
+        .toggle-mode:hover {
+            transform: scale(1.05);
+        }
+        /* Content */
+        
+        .content {
+            padding: 1.5rem;
+        }
+        /* Ticket Styles */
+        
+        .ticket {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+        
+        .ticket:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 183, 0.1);
+        }
+        
+        .ticket-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .ticket-title {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .ticket-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .ticket-user {
+            font-weight: 500;
+        }
+        
+        .ticket-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .ticket-status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .ticket-status.open {
+            background-color: rgba(0, 123, 255, 0.2);
+            color: #007bff;
+        }
+        
+        .ticket-status.pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+        }
+        
+        .ticket-status.closed {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+        
+        .ticket-preview {
+            margin-top: 1rem;
+            opacity: 0.9;
+        }
+        /* Controls */
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border-radius: 5px;
+            border: none;
+            background-color: var(--card-dark);
+            color: var(--text-dark);
+            transition: background-color var(--transition-speed);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--main-color);
+        }
+        
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group select {
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: none;
+            background-color: var(--card-dark);
+            color: var(--text-dark);
+            min-width: 150px;
+            transition: background-color var(--transition-speed);
+        }
+        /* Mobile Menu Button */
+        
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            font-size: 1.5rem;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 992px) {
+            nav {
+                width: var(--nav-collapsed-width);
+            }
+            nav .logo {
+                opacity: 0;
+            }
+            nav .logo-icon {
+                display: block;
+            }
+            nav ul li a span {
+                opacity: 0;
+                width: 0;
+            }
+            .main {
+                margin-left: var(--nav-collapsed-width);
+            }
+            .toggle-nav {
+                display: block;
+            }
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            nav.mobile-open {
+                transform: translateX(0);
+            }
+            nav .logo {
+                opacity: 1;
+            }
+            nav ul li a span {
+                opacity: 1;
+                width: auto;
+            }
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .ticket-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .ticket-meta {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-left {
+                margin-bottom: 1rem;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .filter-group {
+                width: 100%;
+            }
+            .filter-group select {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <nav id="sidebar">
+        <div class="logo">Pivora</div>
+        <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+        <ul>
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.html">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="withdrawal.html">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Withdrawals</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit_requests.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Admin Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="trading-management.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trading Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="verifications.html">
+                    <i class="fas fa-id-card"></i>
+                    <span>Verifications</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="packages.html">
+                    <i class="fas fa-box-open"></i>
+                    <span>Packages</span>
+                </a>
+            </li> -->
+            <li>
+                <a href="logs.html">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="admins.html">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </li>
+            <li>
+                <a href="support.html" class="active">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main" id="main">
+        <header>
+            <div class="header-left">
+                <button class="toggle-nav" id="toggleNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2>Support Tickets</h2>
+            </div>
+            <button class="toggle-mode" onclick="toggleMode()">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </header>
+
+        <div class="content">
+            <div class="controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search tickets...">
+                </div>
+                <div class="filter-group">
+                    <select>
+                        <option>All Statuses</option>
+                        <option>Open</option>
+                        <option>Pending</option>
+                        <option>Closed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tickets-list">
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <h4 class="ticket-title">Withdrawal Issue</h4>
+                        <div class="ticket-meta">
+                            <span class="ticket-user">John Doe</span>
+                            <span class="ticket-date">2024-12-10</span>
+                            <span class="ticket-status open">Open</span>
+                        </div>
+                    </div>
+                    <p class="ticket-preview">I'm having trouble withdrawing my funds from the platform. The transaction keeps failing even though I have sufficient balance.</p>
+                </div>
+
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <h4 class="ticket-title">Account Verification</h4>
+                        <div class="ticket-meta">
+                            <span class="ticket-user">Sarah Johnson</span>
+                            <span class="ticket-date">2024-12-08</span>
+                            <span class="ticket-status pending">Pending</span>
+                        </div>
+                    </div>
+                    <p class="ticket-preview">I submitted my documents for verification 3 days ago but still haven't received any update on my account status.</p>
+                </div>
+
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <h4 class="ticket-title">Investment Plan Query</h4>
+                        <div class="ticket-meta">
+                            <span class="ticket-user">Michael Brown</span>
+                            <span class="ticket-date">2024-12-05</span>
+                            <span class="ticket-status closed">Closed</span>
+                        </div>
+                    </div>
+                    <p class="ticket-preview">I wanted to inquire about the differences between the Silver and Gold investment plans before making a decision.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Dark/Light Mode Toggle
+        let darkMode = true;
+
+        function toggleMode() {
+            darkMode = !darkMode;
+            document.body.style.backgroundColor = darkMode ? 'var(--bg-dark)' : 'var(--bg-light)';
+            document.body.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+
+            document.querySelectorAll('nav, .ticket, header, .search-box input, .filter-group select').forEach(el => {
+                el.style.backgroundColor = darkMode ? 'var(--card-dark)' : 'var(--card-light)';
+                el.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+            });
+
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+            });
+
+            const modeIcon = document.querySelector('.toggle-mode i');
+            const modeText = document.querySelector('.toggle-mode');
+
+            if (darkMode) {
+                modeIcon.className = 'fas fa-moon';
+                modeText.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            } else {
+                modeIcon.className = 'fas fa-sun';
+                modeText.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+        }
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleNav = document.getElementById('toggleNav');
+
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar');
+            const main = document.getElementById('main');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Check if we're on mobile
+            if (window.innerWidth <= 768) {
+                nav.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+            } else {
+                nav.classList.toggle('collapsed');
+                main.classList.toggle('expanded');
+            }
+        }
+        
+        // Close mobile menu
+        function closeMobileMenu() {
+            const nav = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            nav.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        }
+
+        toggleNav.addEventListener('click', toggleSidebar);
+
+        // Auto-collapse sidebar on mobile
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('collapsed');
+                main.classList.remove('expanded');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Run on initial load
+        
+        // Mobile overlay event listener
+        document.getElementById('mobileOverlay').addEventListener('click', closeMobileMenu);
+    </script>
+</body>
+
+</html>

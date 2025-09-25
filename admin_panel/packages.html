@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packages - Pivora Admin</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #ffffff;
+            --text-dark: #ffffff;
+            --text-light: #000000;
+            --card-dark: #1e1e1e;
+            --card-light: #f1f1f1;
+            --nav-width: 220px;
+            --nav-collapsed-width: 70px;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Navigation */
+        
+        nav {
+            width: var(--nav-width);
+            background-color: var(--card-dark);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: width var(--transition-speed);
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--main-color) rgba(255, 255, 255, 0.1);
+        }
+
+        nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        nav::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb:hover {
+            background: #00e6a8;
+        }
+        
+        nav.collapsed {
+            width: var(--nav-collapsed-width);
+        }
+        
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+            white-space: nowrap;
+            transition: opacity var(--transition-speed);
+        }
+        
+        nav.collapsed .logo {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        nav .logo-icon {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+        }
+        
+        nav.collapsed .logo-icon {
+            display: block;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        nav ul li {
+            margin-bottom: 1rem;
+            white-space: nowrap;
+        }
+        
+        nav ul li a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            transition: all var(--transition-speed);
+        }
+        
+        nav ul li a:hover {
+            background-color: var(--main-color);
+            color: #000;
+        }
+        
+        nav ul li a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+        
+        nav.collapsed ul li a span {
+            opacity: 0;
+            width: 0;
+            transition: opacity var(--transition-speed), width var(--transition-speed);
+        }
+        /* Main Content */
+        
+        .main {
+            margin-left: var(--nav-width);
+            width: calc(100% - var(--nav-width));
+            transition: margin-left var(--transition-speed);
+            padding-bottom: 2rem;
+        }
+        
+        .main.expanded {
+            margin-left: var(--nav-collapsed-width);
+        }
+        /* Header */
+        
+        header {
+            background-color: var(--card-dark);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .toggle-mode {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background-color: var(--main-color);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            transition: all var(--transition-speed);
+        }
+        
+        .toggle-mode:hover {
+            transform: scale(1.05);
+        }
+        /* Content */
+        
+        .content {
+            padding: 1.5rem;
+        }
+        /* Package Cards Grid */
+        
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .package-card {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 183, 0.1);
+            transition: all var(--transition-speed);
+            border: 1px solid rgba(0, 255, 183, 0.1);
+        }
+        
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 255, 183, 0.2);
+        }
+        
+        .package-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .package-title {
+            color: var(--main-color);
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        
+        .package-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .package-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .package-duration,
+        .package-roi {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .package-features {
+            margin: 1.5rem 0;
+        }
+        
+        .package-features li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .package-features i {
+            color: var(--main-color);
+        }
+        
+        .package-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--main-color);
+            color: #000;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #00ff88;
+            color: #000;
+        }
+
+        .status-inactive {
+            background-color: #ff4444;
+            color: #fff;
+        }
+        /* Modal styles */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-dark);
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .modal-title {
+            margin: 0;
+            color: var(--main-color);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-dark);
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--main-color);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--main-color);
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-dark);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--main-color);
+        }
+
+        .error {
+            background-color: #ff4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .success {
+            background-color: #00ff88;
+            color: black;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        /* User Assignment Section */
+        .user-assignment-section {
+            margin-top: 3rem;
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 183, 0.1);
+            border: 1px solid rgba(0, 255, 183, 0.1);
+        }
+
+        .section-title {
+            color: var(--main-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .user-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+
+        .user-card:hover {
+            border-color: var(--main-color);
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            margin-bottom: 1rem;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .user-email {
+            color: var(--text-dark);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .user-status {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .user-status.active {
+            background-color: #00ff88;
+            color: #000;
+        }
+
+        .user-status.inactive {
+            background-color: #ff4444;
+            color: #fff;
+        }
+
+        .current-package {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background-color: rgba(0, 255, 183, 0.1);
+            border-radius: 5px;
+            border-left: 3px solid var(--main-color);
+        }
+
+        .current-package-title {
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .current-package-details {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .no-package {
+            color: #ffaa00;
+            font-style: italic;
+        }
+
+        .assign-package-form {
+            margin-top: 1rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group-small {
+            flex: 1;
+        }
+
+        .form-group-small label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control-small {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.9rem;
+            background-color: var(--main-color);
+            color: #000;
+        }
+
+        .btn-small:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-small:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Responsive Design */
+        
+        @media (max-width: 992px) {
+            nav {
+                width: var(--nav-collapsed-width);
+            }
+            nav .logo {
+                opacity: 0;
+            }
+            nav .logo-icon {
+                display: block;
+            }
+            nav ul li a span {
+                opacity: 0;
+                width: 0;
+            }
+            .main {
+                margin-left: var(--nav-collapsed-width);
+            }
+            .toggle-nav {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            nav.mobile-open {
+                transform: translateX(0);
+            }
+            nav .logo {
+                opacity: 1;
+            }
+            nav ul li a span {
+                opacity: 1;
+                width: auto;
+            }
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-left {
+                margin-bottom: 1rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <nav id="sidebar">
+        <div class="logo">Pivora</div>
+        <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+        <ul>
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.html">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="withdrawal.html">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Withdrawals</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit_requests.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Admin Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="trading-management.html" class="active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trading Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="packages.html">
+                    <i class="fas fa-box-open"></i>
+                    <span>Packages</span>
+                </a>
+            </li> -->
+            <li>
+                <a href="logs.html">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="admins.html">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </li>
+            <li>
+                <a href="support.html">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main" id="main">
+        <header>
+            <div class="header-left">
+                <button class="toggle-nav" id="toggleNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2>Investment Packages</h2>
+            </div>
+            <button class="toggle-mode" onclick="toggleMode()">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </header>
+
+        <div class="content">
+            <div id="messageContainer"></div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" onclick="openModal()">
+                    <i class="fas fa-plus"></i> Add Package
+                </button>
+            </div>
+
+            <div class="packages-grid" id="packagesContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading packages...
+                </div>
+            </div>
+
+            <!-- User Assignment Section -->
+            <div class="user-assignment-section">
+                <h3 class="section-title">
+                    <i class="fas fa-users"></i>
+                    User Package Assignment
+                </h3>
+                
+                <div class="users-grid" id="usersContainer">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Loading users...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Package Modal -->
+    <div class="modal" id="packageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Add New Package</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="packageForm">
+                <input type="hidden" id="packageId" value="">
+                
+                <div class="form-group">
+                    <label for="packageName">Package Name</label>
+                    <input type="text" id="packageName" class="form-control" placeholder="Starter Plan" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="packagePrice">Price ($)</label>
+                    <input type="number" id="packagePrice" class="form-control" placeholder="50000" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageDuration">Duration (days)</label>
+                    <input type="number" id="packageDuration" class="form-control" placeholder="30" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageROI">ROI Percentage</label>
+                    <input type="number" id="packageROI" class="form-control" placeholder="15" step="0.1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Features (comma separated)</label>
+                    <textarea id="packageFeatures" class="form-control" rows="3" placeholder="24/7 Support, Daily Withdrawals, Premium Analytics"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="packageStatus">Status</label>
+                    <select id="packageStatus" class="form-control" required>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Save Package</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        // API Configuration
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+        
+        // Global variables
+        let packages = [];
+        let users = [];
+        let isEditing = false;
+        let currentPackageId = null;
+
+        // DOM Elements
+        const packagesContainer = document.getElementById('packagesContainer');
+        const usersContainer = document.getElementById('usersContainer');
+        const packageForm = document.getElementById('packageForm');
+        const packageModal = document.getElementById('packageModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // Utility functions
+        function showMessage(message, type = 'success') {
+            messageContainer.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        function formatPrice(price) {
+            return `$${parseInt(price).toLocaleString()}`;
+        }
+
+        function formatFeatures(features) {
+            if (typeof features === 'string') {
+                return features.split(',').map(item => item.trim());
+            }
+            return features;
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString();
+        }
+
+        // API Functions
+        async function fetchPackages() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/packages`, {
+                    method: 'GET',
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                packages = data;
+                renderPackages();
+            } catch (error) {
+                console.error('Error fetching packages:', error);
+                showMessage('Failed to load packages. Please try again.', 'error');
+                packagesContainer.innerHTML = '<div class="error">Failed to load packages. Please refresh the page.</div>';
+            }
+        }
+
+        async function createPackage(packageData) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/packages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify(packageData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                showMessage('Package created successfully!');
+                await fetchPackages();
+                return data;
+            } catch (error) {
+                console.error('Error creating package:', error);
+                showMessage('Failed to create package. Please try again.', 'error');
+                throw error;
+            }
+        }
+
+        async function updatePackage(id, packageData) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/packages/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify(packageData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                showMessage('Package updated successfully!');
+                await fetchPackages();
+                return data;
+            } catch (error) {
+                console.error('Error updating package:', error);
+                showMessage('Failed to update package. Please try again.', 'error');
+                throw error;
+            }
+        }
+
+        async function deletePackage(id) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/packages/${id}`, {
+                    method: 'DELETE',
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                showMessage('Package deleted successfully!');
+                await fetchPackages();
+            } catch (error) {
+                console.error('Error deleting package:', error);
+                showMessage('Failed to delete package. Please try again.', 'error');
+            }
+        }
+
+        // User Management Functions
+        async function fetchUsers() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/users`, {
+                    method: 'GET',
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.success && data.data) {
+                    users = data.data;
+                    renderUsers();
+                } else {
+                    users = [];
+                    renderUsers();
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                showMessage('Failed to load users. Please try again.', 'error');
+                usersContainer.innerHTML = '<div class="error">Failed to load users. Please refresh the page.</div>';
+            }
+        }
+
+        async function assignPackageToUser(userId, packageId) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${SERVER_URL}/api/admin/packages/assign-package`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify({
+                        userId: userId,
+                        packageId: packageId
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    showMessage(data.message || 'Package assigned to user successfully!');
+                    await fetchUsers(); // Refresh users to show updated package info
+                } else {
+                    throw new Error(data.message || 'Failed to assign package');
+                }
+            } catch (error) {
+                console.error('Error assigning package:', error);
+                showMessage('Failed to assign package. Please try again.', 'error');
+            }
+        }
+
+        // Render packages
+        function renderPackages() {
+            if (packages.length === 0) {
+                packagesContainer.innerHTML = '<div class="loading">No packages found. Create your first package!</div>';
+                return;
+            }
+
+            packagesContainer.innerHTML = '';
+
+            packages.forEach(pkg => {
+                const packageCard = document.createElement('div');
+                packageCard.className = 'package-card';
+
+                const features = formatFeatures(pkg.features);
+                const statusClass = pkg.status === 'active' ? 'status-active' : 'status-inactive';
+
+                packageCard.innerHTML = `
+                    <div class="package-header">
+                        <h3 class="package-title">${pkg.name}</h3>
+                        <div class="package-price">${formatPrice(pkg.price)}</div>
+                    </div>
+                    <div class="package-meta">
+                        <div class="package-duration">
+                            <i class="fas fa-clock"></i> ${pkg.duration} days
+                        </div>
+                        <div class="package-roi">
+                            <i class="fas fa-percentage"></i> ${pkg.percentage}% ROI
+                        </div>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <span class="status-badge ${statusClass}">${pkg.status}</span>
+                    </div>
+                    <ul class="package-features">
+                        ${features.map(feature => `<li><i class="fas fa-check"></i> ${feature}</li>`).join('')}
+                    </ul>
+                    <div class="package-actions">
+                        <button class="action-btn" title="Edit" onclick="editPackage('${pkg._id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn" title="Delete" onclick="deletePackageConfirm('${pkg._id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                packagesContainer.appendChild(packageCard);
+            });
+        }
+
+        // Render users
+        function renderUsers() {
+            if (users.length === 0) {
+                usersContainer.innerHTML = '<div class="loading">No users found.</div>';
+                return;
+            }
+
+            usersContainer.innerHTML = '';
+
+            users.forEach(user => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+
+                const statusClass = user.status === 'active' ? 'active' : 'inactive';
+                const currentPackage = user.currentPackage || user.package;
+                
+                // Create package options for dropdown
+                const packageOptions = packages.length > 0 
+                    ? packages.map(pkg => `<option value="${pkg._id}">${pkg.name} - ${formatPrice(pkg.price)}</option>`).join('')
+                    : '<option value="">No packages available</option>';
+
+                userCard.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-name">${user.fullName || user.name || 'Unknown User'}</div>
+                        <div class="user-email">${user.email || 'No email'}</div>
+                        <span class="user-status ${statusClass}">${user.status || 'unknown'}</span>
+                    </div>
+                    
+                    <div class="current-package">
+                        <div class="current-package-title">Current Package:</div>
+                        ${currentPackage 
+                            ? `<div class="current-package-details">
+                                ${currentPackage.name || 'Unknown Package'} - ${formatPrice(currentPackage.price || 0)}
+                                <br>ROI: ${currentPackage.percentage || 0}% | Duration: ${currentPackage.duration || 0} days
+                               </div>`
+                            : '<div class="current-package-details no-package">No package assigned</div>'
+                        }
+                    </div>
+                    
+                    <div class="assign-package-form">
+                        <div class="form-row">
+                            <div class="form-group-small">
+                                <label for="package-select-${user._id}">Assign Package:</label>
+                                <select id="package-select-${user._id}" class="form-control-small">
+                                    <option value="">Select a package...</option>
+                                    ${packageOptions}
+                                </select>
+                            </div>
+                            <button class="btn-small" onclick="assignPackage('${user._id}')" id="assign-btn-${user._id}">
+                                Assign
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                usersContainer.appendChild(userCard);
+            });
+        }
+
+        // Assign package function
+        async function assignPackage(userId) {
+            const packageSelect = document.getElementById(`package-select-${userId}`);
+            const assignBtn = document.getElementById(`assign-btn-${userId}`);
+            const selectedPackageId = packageSelect.value;
+
+            if (!selectedPackageId) {
+                showMessage('Please select a package to assign.', 'error');
+                return;
+            }
+
+            // Disable button during assignment
+            assignBtn.disabled = true;
+            assignBtn.textContent = 'Assigning...';
+
+            try {
+                await assignPackageToUser(userId, selectedPackageId);
+                packageSelect.value = ''; // Reset selection
+            } catch (error) {
+                console.error('Assignment failed:', error);
+            } finally {
+                // Re-enable button
+                assignBtn.disabled = false;
+                assignBtn.textContent = 'Assign';
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            isEditing = false;
+            currentPackageId = null;
+            modalTitle.textContent = 'Add New Package';
+            submitBtn.textContent = 'Save Package';
+            packageForm.reset();
+            document.getElementById('packageId').value = '';
+            packageModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            packageModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            packageForm.reset();
+            isEditing = false;
+            currentPackageId = null;
+        }
+
+        // Form submission
+        packageForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('packageName').value,
+                price: parseInt(document.getElementById('packagePrice').value),
+                duration: parseInt(document.getElementById('packageDuration').value),
+                percentage: parseFloat(document.getElementById('packageROI').value),
+                features: document.getElementById('packageFeatures').value,
+                status: document.getElementById('packageStatus').value
+            };
+
+            try {
+                if (isEditing) {
+                    await updatePackage(currentPackageId, formData);
+                } else {
+                    await createPackage(formData);
+                }
+                closeModal();
+            } catch (error) {
+                console.error('Form submission error:', error);
+            }
+        });
+
+        // Package actions
+        function editPackage(id) {
+            const pkg = packages.find(p => p._id === id);
+            if (pkg) {
+                isEditing = true;
+                currentPackageId = id;
+                modalTitle.textContent = 'Edit Package';
+                submitBtn.textContent = 'Update Package';
+                
+                document.getElementById('packageId').value = pkg._id;
+                document.getElementById('packageName').value = pkg.name;
+                document.getElementById('packagePrice').value = pkg.price;
+                document.getElementById('packageDuration').value = pkg.duration;
+                document.getElementById('packageROI').value = pkg.percentage;
+                document.getElementById('packageFeatures').value = pkg.features;
+                document.getElementById('packageStatus').value = pkg.status;
+                
+                openModal();
+            }
+        }
+
+        function deletePackageConfirm(id) {
+            if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
+                deletePackage(id);
+            }
+        }
+
+        // Dark/Light Mode Toggle
+        let darkMode = true;
+
+        function toggleMode() {
+            darkMode = !darkMode;
+            document.body.style.backgroundColor = darkMode ? 'var(--bg-dark)' : 'var(--bg-light)';
+            document.body.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+
+            document.querySelectorAll('nav, .package-card, header, .modal-content, .form-control').forEach(el => {
+                el.style.backgroundColor = darkMode ? 'var(--card-dark)' : 'var(--card-light)';
+                el.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+            });
+
+            document.querySelectorAll('nav ul li a').forEach(link => {
+                link.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+            });
+
+            const modeIcon = document.querySelector('.toggle-mode i');
+            const modeText = document.querySelector('.toggle-mode');
+            
+            if (darkMode) {
+                modeIcon.className = 'fas fa-moon';
+                modeText.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            } else {
+                modeIcon.className = 'fas fa-sun';
+                modeText.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+        }
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleNav = document.getElementById('toggleNav');
+
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar');
+            const main = document.getElementById('main');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Check if we're on mobile
+            if (window.innerWidth <= 768) {
+                nav.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+            } else {
+                nav.classList.toggle('collapsed');
+                main.classList.toggle('expanded');
+            }
+        }
+        
+        // Close mobile menu
+        function closeMobileMenu() {
+            const nav = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            nav.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        }
+
+        toggleNav.addEventListener('click', toggleSidebar);
+
+        // Auto-collapse sidebar on mobile
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('collapsed');
+                main.classList.remove('expanded');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Run on initial load
+        
+        // Mobile overlay event listener
+        document.getElementById('mobileOverlay').addEventListener('click', closeMobileMenu);
+
+        // Initialize
+        fetchPackages();
+        fetchUsers();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - Positions</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+            --profit-color: #00ffb7;
+            --loss-color: #ff4d4d;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            padding-bottom: 70px;
+            overscroll-behavior-x: none;
+        }
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Header - Consistent with other pages but modified */
+        
+        header {
+            background-color: var(--bg-footer);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-color);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+        
+        .back-button img {
+            width: 24px;
+            height: 24px;
+        }
+        /* Navigation Tabs */
+        
+        .tabs-container {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-footer);
+            position: sticky;
+            top: 60px;
+            z-index: 999;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--main-color);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 20%;
+            right: 20%;
+            height: 3px;
+            background-color: var(--main-color);
+            border-radius: 3px 3px 0 0;
+        }
+        /* Empty State */
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .empty-illustration {
+            width: 200px;
+            height: 150px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .empty-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0.3;
+        }
+        
+        .empty-text {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        /* Order Records */
+        
+        .order-list {
+            padding: 15px;
+        }
+        
+        .order-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-number {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .order-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .order-details {
+            margin-top: 10px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .direction-up {
+            color: var(--profit-color);
+        }
+        
+        .direction-down {
+            color: var(--loss-color);
+        }
+        
+        .profit {
+            color: var(--profit-color);
+            font-weight: bold;
+        }
+        
+        .loss {
+            color: var(--loss-color);
+            font-weight: bold;
+        }
+        
+        .direction-icon {
+            width: 12px;
+            height: 12px;
+            margin-left: 5px;
+        }
+        
+        .no-more {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 20px 0;
+        }
+        /* Bottom Nav - Consistent with other pages */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid var(--border-color);
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        .bottom-nav button:hover {
+            color: var(--main-color);
+            transform: translateY(-3px);
+        }
+        
+        .bottom-nav button.active {
+            color: var(--main-color);
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+        
+        .bottom-nav button:hover img {
+            filter: brightness(0) saturate(100%) invert(73%) sepia(63%) saturate(999%) hue-rotate(110deg) brightness(101%) contrast(101%);
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: #111;
+            --card-bg: #ffffff;
+            --text-color: #111111;
+            --text-secondary: #666666;
+            --border-color: #dddddd;
+            --profit-color: #00a382;
+            --loss-color: #e53935;
+        }
+        
+        body.light-mode .empty-illustration img {
+            opacity: 0.2;
+            filter: invert(90%);
+        }
+        
+        body.light-mode .bottom-nav {
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" alt="Back">
+        </button>
+        <div class="header-title">Order Record</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer for alignment -->
+    </header>
+
+    <div class="tabs-container">
+        <div class="tab active" id="tradingTab" onclick="switchTab('trading')">Trading</div>
+        <div class="tab" id="closedTab" onclick="switchTab('closed')">Closed</div>
+    </div>
+
+    <div id="tradingContent">
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyTrading">
+            <div class="empty-illustration">
+                <img src="/assets/icons/no-records-illustration.png" alt="No Records">
+            </div>
+            <div class="empty-text">No record</div>
+        </div>
+
+        <!-- Order Records (hidden by default) -->
+        <div class="order-list" id="tradingRecords" style="display: none;">
+            <!-- Example Order 1 -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-number">Order number64771</div>
+                        <div class="order-time">2023-08-15 13:33:16</div>
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Delegate contract</span>
+                        <span class="detail-value">BTC/USDT, 30s</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Entrusted direction</span>
+                        <span class="detail-value direction-up">
+                            105788.5300
+                            <img class="direction-icon" src="/assets/icons/up-arrow.png" alt="Up">
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Order price</span>
+                        <span class="detail-value">105788.5300</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Order quantity</span>
+                        <span class="detail-value">0.0031</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Settlement Price</span>
+                        <span class="detail-value">105788.5300</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Profit and loss</span>
+                        <span class="detail-value profit">8.0000 USDT</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Order 2 -->
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-number">Order number47326</div>
+                        <div class="order-time">2023-08-15 14:45:22</div>
+                    </div>
+                </div>
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Delegate contract</span>
+                        <span class="detail-value">ETH/USDT, 60s</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Entrusted direction</span>
+                        <span class="detail-value direction-down">
+                            3520.4000
+                            <img class="direction-icon" src="/assets/icons/down-arrow.png" alt="Down">
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Order price</span>
+                        <span class="detail-value">3520.4000</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Order quantity</span>
+                        <span class="detail-value">1.2500</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Settlement Price</span>
+                        <span class="detail-value">3520.4000</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Profit and loss</span>
+                        <span class="detail-value loss">-4950.0000 USDT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-more">No more</div>
+        </div>
+    </div>
+
+    <div id="closedContent" style="display: none;">
+        <!-- Empty State for Closed Orders -->
+        <div class="empty-state">
+            <div class="empty-illustration">
+                <img src="/assets/icons/no-records-illustration.png" alt="No Records">
+            </div>
+            <div class="empty-text">No closed orders</div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Tab switching functionality
+        function switchTab(tab) {
+            if (tab === 'trading') {
+                document.getElementById('tradingTab').classList.add('active');
+                document.getElementById('closedTab').classList.remove('active');
+                document.getElementById('tradingContent').style.display = 'block';
+                document.getElementById('closedContent').style.display = 'none';
+
+                // In a real app, you would load trading records here
+                // For demo purposes, we'll randomly show/hide empty state
+                if (Math.random() > 0.5) {
+                    document.getElementById('emptyTrading').style.display = 'none';
+                    document.getElementById('tradingRecords').style.display = 'block';
+                } else {
+                    document.getElementById('emptyTrading').style.display = 'flex';
+                    document.getElementById('tradingRecords').style.display = 'none';
+                }
+            } else {
+                document.getElementById('tradingTab').classList.remove('active');
+                document.getElementById('closedTab').classList.add('active');
+                document.getElementById('tradingContent').style.display = 'none';
+                document.getElementById('closedContent').style.display = 'block';
+            }
+        }
+
+        // Initialize with trading tab active
+        switchTab('trading');
+    </script>
+</body>
+
+</html>

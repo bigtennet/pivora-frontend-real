@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Test - Pivora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #00ffb7;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #00e6a8;
+        }
+        .code-block {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .info { color: #2196F3; }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+<body>
+    <h1>Deposit Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>📋 Test Instructions</h2>
+        <p>This page helps you test the deposit functionality. Follow these steps:</p>
+        
+        <ol>
+            <li><strong>Login First:</strong> Make sure you're logged in to get an authentication token</li>
+            <li><strong>Navigate to Deposit:</strong> Go to the deposit page</li>
+            <li><strong>Select Currency:</strong> Choose a cryptocurrency (USDT, USDC, ETH, or BTC)</li>
+            <li><strong>Enter Amount:</strong> Input a valid deposit amount</li>
+            <li><strong>Upload Screenshot:</strong> Upload a transaction screenshot (JPEG, PNG, or WebP)</li>
+            <li><strong>Submit:</strong> Click submit to send the deposit request</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Quick Navigation</h2>
+        <button class="test-button" onclick="window.open('login.html', '_blank')">Open Login Page</button>
+        <button class="test-button" onclick="window.open('home_deposit.html', '_blank')">Open Deposit Page</button>
+        <button class="test-button" onclick="window.open('index.html', '_blank')">Open Home Page</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 API Endpoint Test</h2>
+        <p>Test the deposit API endpoint directly:</p>
+        
+        <div class="code-block">
+curl -X POST https://pivora-back-end.pxxl.xyz/api/user/deposit \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \
+  -F "user=USER_ID" \
+  -F "currency=BTC" \
+  -F "network=Bitcoin" \
+  -F "amount=0.001" \
+  -F "screenshot=@/path/to/screenshot.jpg"
+        </div>
+        
+        <p class="info">Replace YOUR_TOKEN_HERE with your actual authentication token and USER_ID with your user ID.</p>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ Expected Behavior</h2>
+        <ul>
+            <li class="success">✅ Form validation for required fields</li>
+            <li class="success">✅ File type validation (JPEG, PNG, WebP only)</li>
+            <li class="success">✅ File size validation (max 5MB)</li>
+            <li class="success">✅ Amount validation (positive number)</li>
+            <li class="success">✅ File preview with drag & drop support</li>
+            <li class="success">✅ Authentication token validation</li>
+            <li class="success">✅ FormData submission to API</li>
+            <li class="success">✅ Success/error notifications</li>
+            <li class="success">✅ Form reset after successful submission</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Common Issues & Solutions</h2>
+        <ul>
+            <li><strong>Authentication Error:</strong> Make sure you're logged in and have a valid token</li>
+            <li><strong>File Upload Error:</strong> Check file type and size restrictions</li>
+            <li><strong>Network Error:</strong> Ensure the backend server is running on https://pivora-back-end.pxxl.xyz</li>
+            <li><strong>CORS Error:</strong> Make sure the backend allows requests from your frontend domain</li>
+            <li><strong>Address Not Found:</strong> Verify that deposit addresses are configured in the database</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>📱 Features Implemented</h2>
+        <ul>
+            <li>✅ <strong>File Upload:</strong> Drag & drop support with preview</li>
+            <li>✅ <strong>Form Validation:</strong> Client-side validation for all fields</li>
+            <li>✅ <strong>Authentication:</strong> Token-based authentication</li>
+            <li>✅ <strong>Error Handling:</strong> Comprehensive error messages</li>
+            <li>✅ <strong>User Feedback:</strong> Loading states and notifications</li>
+            <li>✅ <strong>Responsive Design:</strong> Works on mobile and desktop</li>
+            <li>✅ <strong>Theme Support:</strong> Dark/light mode toggle</li>
+        </ul>
+    </div>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Add some interactive testing features
+        function testAuthentication() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                alert('✅ Authentication token found!');
+            } else {
+                alert('❌ No authentication token found. Please login first.');
+            }
+        }
+
+        function clearTestData() {
+            if (confirm('Clear all test data (tokens, user data)?')) {
+                localStorage.clear();
+                alert('Test data cleared!');
+            }
+        }
+    </script>
+
+    <div class="test-section">
+        <h2>🔧 Test Tools</h2>
+        <button class="test-button" onclick="testAuthentication()">Check Authentication</button>
+        <button class="test-button" onclick="clearTestData()">Clear Test Data</button>
+        <button class="test-button" onclick="console.log('Token:', localStorage.getItem('authToken'))">Log Token to Console</button>
+    </div>
+</body>
+</html> 

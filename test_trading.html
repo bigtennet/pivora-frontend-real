@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading API Test - Pivora</title>
+    <style>
+        :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --text-light: #ffffff;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: var(--main-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: var(--main-color);
+            margin-top: 0;
+        }
+        
+        .api-example {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .endpoint {
+            color: var(--main-color);
+            font-weight: bold;
+        }
+        
+        .method {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .response {
+            color: #4ecdc4;
+        }
+        
+        .test-form {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .test-button {
+            background: var(--main-color);
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .test-button:hover {
+            background: #00e6a8;
+        }
+        
+        .result {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            border-color: var(--main-color);
+        }
+        
+        .error {
+            border-color: #ff4d4d;
+        }
+        
+        .instructions {
+            background: rgba(0, 255, 183, 0.1);
+            border: 1px solid var(--main-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            color: var(--main-color);
+            margin-top: 0;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .auth-status {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .auth-status.authenticated {
+            border-color: var(--main-color);
+        }
+        
+        .auth-status.not-authenticated {
+            border-color: #ff4d4d;
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Trading API Test Page</h1>
+        
+        <div class="instructions">
+            <h3>📋 Testing Instructions</h3>
+            <ol>
+                <li><strong>Authentication:</strong> First, make sure you're logged in. The trading features require authentication.</li>
+                <li><strong>Submit Order:</strong> Test creating a new futures trading order (Long/Short).</li>
+                <li><strong>Active Orders:</strong> View your currently active trading orders.</li>
+                <li><strong>Order History:</strong> View all your past orders including closed ones.</li>
+                <li><strong>Real-time Updates:</strong> The main trading page shows real-time price data and active trades.</li>
+            </ol>
+        </div>
+        
+        <div class="auth-status" id="authStatus">
+            <h3>🔐 Authentication Status</h3>
+            <div id="authInfo">Checking authentication...</div>
+        </div>
+        
+        <!-- Submit Order Test -->
+        <div class="test-section">
+            <h2>📤 Submit Order API</h2>
+            <div class="api-example">
+                <span class="method">POST</span> <span class="endpoint">/api/user/submit-order</span><br>
+                <strong>Headers:</strong> Authorization: Bearer {token}, Content-Type: application/json<br>
+                <strong>Body:</strong> { "direction": "long", "ticker": "BTC/USDT" }
+            </div>
+            
+            <div class="test-form">
+                <div class="form-group">
+                    <label for="orderDirection">Direction:</label>
+                    <select id="orderDirection">
+                        <option value="long">Long</option>
+                        <option value="short">Short</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="orderTicker">Ticker:</label>
+                    <select id="orderTicker">
+                        <option value="BTC/USDT">BTC/USDT</option>
+                        <option value="ETH/USDT">ETH/USDT</option>
+                        <option value="SOL/USDT">SOL/USDT</option>
+                        <option value="XRP/USDT">XRP/USDT</option>
+                    </select>
+                </div>
+                <button class="test-button" onclick="testSubmitOrder()">Submit Order</button>
+                <div class="result" id="submitOrderResult"></div>
+            </div>
+        </div>
+        
+        <!-- Active Orders Test -->
+        <div class="test-section">
+            <h2>📊 Active Orders API</h2>
+            <div class="api-example">
+                <span class="method">GET</span> <span class="endpoint">/api/user/active-orders</span><br>
+                <strong>Headers:</strong> Authorization: Bearer {token}
+            </div>
+            
+            <div class="test-form">
+                <button class="test-button" onclick="testActiveOrders()">Get Active Orders</button>
+                <div class="result" id="activeOrdersResult"></div>
+            </div>
+        </div>
+        
+        <!-- Order History Test -->
+        <div class="test-section">
+            <h2>📈 Order History API</h2>
+            <div class="api-example">
+                <span class="method">GET</span> <span class="endpoint">/api/user/order-history</span><br>
+                <strong>Headers:</strong> Authorization: Bearer {token}
+            </div>
+            
+            <div class="test-form">
+                <button class="test-button" onclick="testOrderHistory()">Get Order History</button>
+                <div class="result" id="orderHistoryResult"></div>
+            </div>
+        </div>
+        
+        <!-- API Response Examples -->
+        <div class="test-section">
+            <h2>📋 API Response Examples</h2>
+            
+            <h3>Submit Order Response (Success)</h3>
+            <div class="api-example response">
+{
+  "success": true,
+  "message": "LONG order submitted successfully",
+  "data": {
+    "orderId": "507f1f77bcf86cd799439011",
+    "direction": "long",
+    "ticker": "BTC/USDT",
+    "entryPrice": 45000.5,
+    "currentPrice": 45000.5,
+    "status": "active",
+    "createdAt": "2025-06-30T02:36:36.571Z"
+  }
+}
+            </div>
+            
+            <h3>Active Orders Response</h3>
+            <div class="api-example response">
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "6861f58a620ff781ef4b76b3",
+      "user": "685b6b1fce756c7b34982de2",
+      "direction": "long",
+      "ticker": "BTC/USDT",
+      "entryPrice": 108597.6,
+      "currentPrice": 108597.6,
+      "status": "active",
+      "pnl": 0,
+      "createdAt": "2025-06-30T02:25:14.166Z",
+      "updatedAt": "2025-06-30T02:25:14.177Z"
+    }
+  ],
+  "count": 1
+}
+            </div>
+            
+            <h3>Order History Response</h3>
+            <div class="api-example response">
+{
+  "success": true,
+  "data": [
+    {
+      "_id": "6861f58a620ff781ef4b76b3",
+      "user": "685b6b1fce756c7b34982de2",
+      "direction": "long",
+      "ticker": "BTC/USDT",
+      "entryPrice": 108597.6,
+      "currentPrice": 108587.99,
+      "status": "active",
+      "pnl": -0.1,
+      "createdAt": "2025-06-30T02:25:14.166Z",
+      "updatedAt": "2025-06-30T02:30:03.557Z"
+    }
+  ],
+  "count": 1
+}
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="test-section">
+            <h2>🔗 Navigation</h2>
+            <button class="test-button" onclick="window.location.href='transactions.html'">Go to Trading Page</button>
+            <button class="test-button" onclick="window.location.href='login.html'">Login Page</button>
+            <button class="test-button" onclick="window.location.href='index.html'">Home Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+        
+        // Check authentication status
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            const authStatus = document.getElementById('authStatus');
+            const authInfo = document.getElementById('authInfo');
+            
+            if (token) {
+                authStatus.className = 'auth-status authenticated';
+                authInfo.innerHTML = `
+                    ✅ <strong>Authenticated</strong><br>
+                    Token: ${token.substring(0, 20)}...<br>
+                    You can now test the trading APIs.
+                `;
+            } else {
+                authStatus.className = 'auth-status not-authenticated';
+                authInfo.innerHTML = `
+                    ❌ <strong>Not Authenticated</strong><br>
+                    Please login first to test the trading APIs.<br>
+                    <button class="test-button" onclick="window.location.href='login.html'">Go to Login</button>
+                `;
+            }
+        }
+        
+        // Test submit order
+        async function testSubmitOrder() {
+            const resultDiv = document.getElementById('submitOrderResult');
+            resultDiv.textContent = 'Submitting order...';
+            resultDiv.className = 'result';
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                resultDiv.textContent = 'Error: Not authenticated. Please login first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            const direction = document.getElementById('orderDirection').value;
+            const ticker = document.getElementById('orderTicker').value;
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/submit-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        direction: direction,
+                        ticker: ticker
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.textContent = `✅ Success!\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Error: ${data.message}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        // Test active orders
+        async function testActiveOrders() {
+            const resultDiv = document.getElementById('activeOrdersResult');
+            resultDiv.textContent = 'Loading active orders...';
+            resultDiv.className = 'result';
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                resultDiv.textContent = 'Error: Not authenticated. Please login first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/active-orders`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.textContent = `✅ Success!\n\nActive Orders: ${data.count}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Error: ${data.message}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        // Test order history
+        async function testOrderHistory() {
+            const resultDiv = document.getElementById('orderHistoryResult');
+            resultDiv.textContent = 'Loading order history...';
+            resultDiv.className = 'result';
+            
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                resultDiv.textContent = 'Error: Not authenticated. Please login first.';
+                resultDiv.className = 'result error';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/order-history`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    resultDiv.textContent = `✅ Success!\n\nTotal Orders: ${data.count}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Error: ${data.message}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.textContent = `❌ Network Error: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuthStatus();
+        });
+    </script>
+</body>
+</html> 

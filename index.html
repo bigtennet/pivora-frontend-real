@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Pivora - Home</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --text-light: #ffffff;
+            --text-dark: #000000;
+            --subtle-light: #cccccc;
+            --subtle-dark: #666666;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding-bottom: 80px;
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #1e1e1e;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--main-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-info {
+            color: var(--main-color);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .language-icon:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            min-height: 300px;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        
+        @media (min-width: 768px) {
+            .hero {
+                height: 50vh;
+                min-height: 400px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .hero {
+                height: 45vh;
+                min-height: 450px;
+            }
+        }
+        
+        .slider {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            animation: slide 15s linear infinite;
+        }
+        
+        .slide {
+            width: 100%;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            33% { transform: translateX(-100%); }
+            66% { transform: translateX(-200%); }
+            100% { transform: translateX(0); }
+        }
+        
+        .hero-caption {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 183, 0.3);
+            max-width: 90%;
+            width: 400px;
+        }
+        
+        .hero-caption h1 {
+            font-size: 24px;
+            color: var(--main-color);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 255, 183, 0.5);
+        }
+        
+        .hero-caption p {
+            margin: 0 0 20px 0;
+            font-size: 14px;
+            color: var(--subtle-light);
+            line-height: 1.4;
+        }
+        
+        .cta-button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--main-color), #00e6a8);
+            color: var(--text-dark);
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 183, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 183, 0.4);
+        }
+        
+        /* Responsive Hero Caption */
+        @media (max-width: 480px) {
+            .hero-caption {
+                padding: 15px;
+                width: 95%;
+            }
+            
+            .hero-caption h1 {
+                font-size: 20px;
+            }
+            
+            .hero-caption p {
+                font-size: 13px;
+            }
+            
+            .cta-button {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+        
+        /* Ticker Section */
+        .ticker {
+            background-color: #111;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+            border-top: 1px solid #222;
+            border-bottom: 1px solid #222;
+            position: relative;
+        }
+        
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: scroll-left 25s linear infinite;
+        }
+        
+        .ticker-item {
+            display: inline-block;
+            margin-right: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--subtle-light);
+        }
+        
+        @keyframes scroll-left {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* Icon Section */
+        .icon-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 25px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @media (min-width: 480px) {
+            .icon-section {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .icon-section {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 25px;
+                padding: 40px 30px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .icon-section {
+                grid-template-columns: repeat(6, 1fr);
+                gap: 30px;
+                padding: 50px 40px;
+            }
+        }
+        
+        .icon-link {
+            text-decoration: none;
+            color: var(--text-light);
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            padding: 20px 15px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .icon-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 255, 183, 0.2);
+            border-color: var(--main-color);
+        }
+        
+        .icon-link img {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        
+        .icon-link:hover img {
+            transform: scale(1.1);
+        }
+        
+        .icon-link div {
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+        
+        /* Lockup Section */
+        .lockup-section {
+            padding: 20px 16px;
+            display: flex;
+            justify-content: center;
+            animation: fadeInUp 1.5s ease;
+        }
+        
+        .lockup-card {
+            background: linear-gradient(145deg, #111, #1a1a1a);
+            border: 1px solid #2a2a2a;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 450px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            box-shadow: 0 8px 30px rgba(0, 255, 183, 0.2);
+            transition: all 0.4s ease;
+        }
+        
+        .lockup-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 255, 183, 0.3);
+            border-color: var(--main-color);
+        }
+        
+        .lockup-card img {
+            width: 50px;
+            height: 50px;
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+        
+        .lockup-text h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--main-color);
+            font-weight: 600;
+        }
+        
+        .lockup-text p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            color: var(--subtle-light);
+        }
+        
+        /* Market Section */
+        .market-section {
+            background-color: #111;
+            padding: 20px 16px;
+            margin: 20px 16px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid #222;
+        }
+        
+        @media (min-width: 768px) {
+            .market-section {
+                margin: 30px auto;
+                max-width: 1000px;
+                padding: 30px 25px;
+            }
+        }
+        
+        .market-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .market-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--main-color);
+            font-weight: 600;
+        }
+        
+        .market-toggle {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .market-toggle button {
+            padding: 8px 16px;
+            background-color: #222;
+            color: var(--text-light);
+            border: 1px solid #333;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .market-toggle button.active {
+            background: linear-gradient(135deg, var(--main-color), #00e6a8);
+            color: var(--text-dark);
+            border-color: var(--main-color);
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.3);
+        }
+        
+        .market-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 15px;
+            overflow-x: auto;
+        }
+        
+        .market-table th,
+        .market-table td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        
+        .market-table th {
+            color: var(--main-color);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .market-table td {
+            color: var(--subtle-light);
+            font-size: 13px;
+        }
+        
+        .market-table tr:hover {
+            background-color: rgba(0, 255, 183, 0.05);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 70px;
+            border-top: 1px solid #333;
+            z-index: 999;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            padding: 8px 4px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+        
+        .bottom-nav button:hover {
+            background-color: rgba(0, 255, 183, 0.1);
+            color: var(--main-color);
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 4px;
+            transition: transform 0.3s ease;
+        }
+        
+        .bottom-nav button:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 85px;
+            right: 16px;
+            background: linear-gradient(135deg, var(--main-color), #00e6a8);
+            color: var(--text-dark);
+            border: none;
+            padding: 12px;
+            font-size: 14px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(0, 255, 183, 0.4);
+            transition: all 0.3s ease;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 255, 183, 0.6);
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            0% {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 4px var(--main-color));
+            }
+            50% {
+                filter: drop-shadow(0 0 8px var(--main-color));
+            }
+        }
+        
+        /* Light Mode Styles */
+        body.light-mode {
+            background-color: #f8f9fa;
+            color: var(--text-dark);
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav {
+            background-color: #ffffff !important;
+            color: var(--text-dark) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .ticker {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        
+        body.light-mode .ticker-item {
+            color: var(--text-dark);
+        }
+        
+        body.light-mode .icon-link {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-color: #dee2e6;
+            color: var(--text-dark);
+        }
+        
+        body.light-mode .lockup-card {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            border-color: #dee2e6;
+            color: var(--text-dark);
+        }
+        
+        body.light-mode .market-section {
+            background-color: #ffffff;
+            border-color: #dee2e6;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .market-table th {
+            color: var(--main-color);
+        }
+        
+        body.light-mode .market-table td {
+            color: var(--text-dark);
+        }
+        
+        body.light-mode .market-table tr:hover {
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            header {
+                padding: 10px 12px;
+            }
+            
+            .logo {
+                font-size: 18px;
+            }
+            
+            .user-info {
+                font-size: 11px;
+            }
+            
+            .logout-btn {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+            
+            .hero {
+                height: 50vh;
+                min-height: 250px;
+            }
+            
+            .hero-caption {
+                padding: 12px;
+            }
+            
+            .hero-caption h1 {
+                font-size: 18px;
+            }
+            
+            .hero-caption p {
+                font-size: 12px;
+            }
+            
+            .cta-button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            
+            .icon-section {
+                gap: 12px;
+                padding: 20px 12px;
+            }
+            
+            .icon-link {
+                padding: 15px 10px;
+            }
+            
+            .icon-link img {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .icon-link div {
+                font-size: 11px;
+            }
+            
+            .market-section {
+                margin: 15px 12px;
+                padding: 15px 12px;
+            }
+            
+            .market-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .market-toggle {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .market-toggle button {
+                flex: 1;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            
+            .market-table {
+                font-size: 11px;
+            }
+            
+            .market-table th,
+            .market-table td {
+                padding: 8px 4px;
+            }
+            
+            .bottom-nav {
+                height: 65px;
+            }
+            
+            .bottom-nav button {
+                font-size: 9px;
+                min-width: 50px;
+            }
+            
+            .bottom-nav img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .theme-toggle {
+                bottom: 80px;
+                right: 12px;
+                width: 40px;
+                height: 40px;
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .hero-caption h1 {
+                font-size: 16px;
+            }
+            
+            .hero-caption p {
+                font-size: 11px;
+            }
+            
+            .cta-button {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            
+            .icon-section {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 15px 10px;
+            }
+            
+            .icon-link {
+                padding: 12px 8px;
+            }
+            
+            .icon-link img {
+                width: 25px;
+                height: 25px;
+            }
+            
+            .icon-link div {
+                font-size: 10px;
+            }
+        }
+        
+        /* Prevent horizontal scrolling */
+        .container {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="/assets/icons/logo.png" alt="Pivora Logo">
+            </div>
+            <div class="header-right">
+                <span id="userInfo" class="user-info" style="display: none;"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+                <a href="language.html">
+                    <img src="/assets/icons/worlwide.png" class="language-icon" alt="Language">
+                </a>
+            </div>
+        </header>
+
+        <div class="hero">
+            <div class="slider">
+                <div class="slide">
+                    <img src="/assets/images/closeup-golden-bitcoins-dark-reflective-surface-histogram-decreasing-crypto_11zon.jpg" alt="Crypto Trading">
+                </div>
+                <div class="slide">
+                    <img src="/assets/images/cyberpunk-bitcoin-illustration_11zon.jpg" alt="Bitcoin Trading">
+                </div>
+                <div class="slide">
+                    <img src="/assets/images/minimalistic-still-life-assortment-with-cryptocurrency.jpg" alt="Cryptocurrency">
+                </div>
+            </div>
+            <div class="hero-caption">
+                <h1>Invest Smart, Trade Secure</h1>
+                <p>Join the most trusted crypto investment platform.</p>
+                <button class="cta-button" id="ctaButton" onclick="window.location.href='signup.html'">Get Started</button>
+            </div>
+        </div>
+
+        <div class="ticker">
+            <div class="ticker-content" id="tickerContent"></div>
+        </div>
+
+        <div class="icon-section">
+            <a href="home_deposit.html" class="icon-link">
+                <img src="/assets/icons/deposit.png" alt="Deposit">
+                <div>Deposit</div>
+            </a>
+            <a href="home_withdrawal.html" class="icon-link">
+                <img src="/assets/icons/withdraw.png" alt="Withdrawal">
+                <div>Withdrawal</div>
+            </a>
+            <a href="home_subscription.html" class="icon-link">
+                <img src="/assets/icons/subscription.png" alt="Subscription">
+                <div>Subscription</div>
+            </a>
+            <a href="https://t.me/YourTelegramUsername" target="_blank" class="icon-link">
+                <img src="/assets/icons/customer-service.png" alt="Customer Service">
+                <div>Customer Service</div>
+            </a>
+            <a href="home_download.html" class="icon-link">
+                <img src="/assets/icons/download.png" alt="Download App">
+                <div>Download App</div>
+            </a>
+            <a href="transactions.html" class="icon-link">
+                <img src="/assets/icons/free-trade.png" alt="Contract">
+                <div>Contract</div>
+            </a>
+        </div>
+
+        <div class="lockup-section" onclick="window.location.href='lockup.html'">
+            <div class="lockup-card">
+                <img src="/assets/icons/investment.png" alt="Lockup Icon" />
+                <div class="lockup-text">
+                    <h3>Mining by Lockup</h3>
+                    <p>Earn daily rewards by locking your assets!</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="market-section">
+            <div class="market-header">
+                <h3>Market</h3>
+                <div class="market-toggle">
+                    <button id="gainersBtn" class="active">Top Gainers</button>
+                    <button id="volumeBtn">Volume List</button>
+                </div>
+            </div>
+
+            <!-- Top Gainers Table -->
+            <table class="market-table" id="gainersTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Price</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody id="gainersBody"></tbody>
+            </table>
+
+            <!-- Volume List Table -->
+            <table class="market-table hidden" id="volumeTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Price</th>
+                        <th>24H Turnover (Million)</th>
+                    </tr>
+                </thead>
+                <tbody id="volumeBody"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+
+    <!-- Auth Utilities -->
+    <script src="/assets/js/auth-utils.js"></script>
+    
+    <script>
+        // Theme toggle function
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            
+            // Check authentication
+            checkAuthentication();
+        })();
+
+        // Check if user is authenticated
+        function checkAuthentication() {
+            // Use the auth manager to check authentication
+            if (!window.authManager) {
+                // Fallback to old method if auth manager not loaded
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } else {
+                // Use auth manager
+                window.authManager.checkTokenValidity().then(isValid => {
+                    if (isValid) {
+                        displayUserInfo();
+                    }
+                });
+                return;
+            }
+            
+            // Show user info and update CTA button
+            displayUserInfo();
+        }
+
+        // Display user information
+        function displayUserInfo() {
+            const userData = localStorage.getItem('userData');
+            const userInfoElement = document.getElementById('userInfo');
+            const ctaButton = document.getElementById('ctaButton');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    userInfoElement.textContent = `Welcome, ${user.fullName || user.email}`;
+                    userInfoElement.style.display = 'block';
+                    
+                    // Update CTA button for logged in users
+                    ctaButton.textContent = 'Dashboard';
+                    ctaButton.onclick = function() {
+                        window.location.href = 'profile.html';
+                    };
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                }
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                if (window.authManager) {
+                    window.authManager.logout();
+                } else {
+                    // Fallback to old method
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.html';
+                }
+            }
+        }
+
+        // CoinGecko API implementation
+        async function fetchMarketData() {
+            try {
+                // Fetch top cryptocurrencies by market cap
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
+                const data = await response.json();
+
+                // Update ticker
+                updateTicker(data);
+
+                // Update market tables
+                updateTables(data);
+            } catch (error) {
+                console.error('Error fetching market data:', error);
+                // Fallback to original random data if API fails
+                fallbackMarketData();
+            }
+        }
+
+        function updateTicker(data) {
+            const ticker = document.getElementById("tickerContent");
+            ticker.innerHTML = data.map(coin => {
+                return `<span class="ticker-item">${coin.symbol.toUpperCase()}: $${coin.current_price.toLocaleString()}</span>`;
+            }).join('');
+        }
+
+        function updateTables(data) {
+            const gainersBody = document.getElementById("gainersBody");
+            const volumeBody = document.getElementById("volumeBody");
+
+            gainersBody.innerHTML = '';
+            volumeBody.innerHTML = '';
+
+            // Sort by price change percentage (for gainers)
+            const sortedByChange = [...data].sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+
+            // Sort by volume (for volume list)
+            const sortedByVolume = [...data].sort((a, b) => b.total_volume - a.total_volume);
+
+            // Top Gainers
+            sortedByChange.forEach(coin => {
+                const gainersRow = `
+                    <tr>
+                        <td>${coin.symbol.toUpperCase()}/USDT</td>
+                        <td>$${coin.current_price.toLocaleString()}</td>
+                        <td style="color: ${coin.price_change_percentage_24h >= 0 ? 'lime' : 'red'}">
+                            ${coin.price_change_percentage_24h ? coin.price_change_percentage_24h.toFixed(2) : '0.00'}%
+                        </td>
+                    </tr>
+                `;
+                gainersBody.innerHTML += gainersRow;
+            });
+
+            // Volume List
+            sortedByVolume.forEach(coin => {
+                const volumeRow = `
+                    <tr>
+                        <td>${coin.symbol.toUpperCase()}/USDT</td>
+                        <td>$${coin.current_price.toLocaleString()}</td>
+                        <td>${(coin.total_volume / 1000000).toFixed(2)}M</td>
+                    </tr>
+                `;
+                volumeBody.innerHTML += volumeRow;
+            });
+        }
+
+        // Fallback function if API fails
+        function fallbackMarketData() {
+            const coins = [{
+                symbol: "BTC",
+                current_price: 68000,
+                price_change_percentage_24h: 2.5,
+                total_volume: 2500000000
+            }, {
+                symbol: "ETH",
+                current_price: 3500,
+                price_change_percentage_24h: 1.8,
+                total_volume: 1800000000
+            }, {
+                symbol: "SOL",
+                current_price: 145,
+                price_change_percentage_24h: 5.2,
+                total_volume: 1200000000
+            }, {
+                symbol: "XRP",
+                current_price: 0.59,
+                price_change_percentage_24h: -0.8,
+                total_volume: 900000000
+            }, {
+                symbol: "ADA",
+                current_price: 0.39,
+                price_change_percentage_24h: -1.2,
+                total_volume: 700000000
+            }, {
+                symbol: "DOGE",
+                current_price: 0.084,
+                price_change_percentage_24h: 3.1,
+                total_volume: 600000000
+            }, {
+                symbol: "LTC",
+                current_price: 95,
+                price_change_percentage_24h: 0.5,
+                total_volume: 500000000
+            }, {
+                symbol: "BNB",
+                current_price: 560,
+                price_change_percentage_24h: 2.1,
+                total_volume: 400000000
+            }, {
+                symbol: "TRX",
+                current_price: 0.13,
+                price_change_percentage_24h: -2.3,
+                total_volume: 300000000
+            }, {
+                symbol: "AVAX",
+                current_price: 34,
+                price_change_percentage_24h: 4.7,
+                total_volume: 200000000
+            }];
+
+            updateTicker(coins);
+            updateTables(coins);
+        }
+
+        // Toggle logic for market tables
+        const gainersBtn = document.getElementById("gainersBtn");
+        const volumeBtn = document.getElementById("volumeBtn");
+        const gainersTable = document.getElementById("gainersTable");
+        const volumeTable = document.getElementById("volumeTable");
+
+        gainersBtn.onclick = () => {
+            gainersTable.classList.remove("hidden");
+            volumeTable.classList.add("hidden");
+            gainersBtn.classList.add("active");
+            volumeBtn.classList.remove("active");
+        };
+
+        volumeBtn.onclick = () => {
+            volumeTable.classList.remove("hidden");
+            gainersTable.classList.add("hidden");
+            volumeBtn.classList.add("active");
+            gainersBtn.classList.remove("active");
+        };
+
+        // Initial fetch
+        fetchMarketData();
+
+        // Update every 7 seconds
+        setInterval(fetchMarketData, 7000);
+    </script>
+</body>
+
+</html>

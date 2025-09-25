@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - Transfer</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #333333;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            padding-bottom: 70px;
+        }
+        /* Header - Consistent with index.html */
+        
+        header {
+            background-color: var(--bg-footer);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .language-icon:hover {
+            transform: rotate(15deg);
+        }
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Exchange Header */
+        
+        .exchange-header {
+            background: linear-gradient(135deg, #00a382, #007a5e);
+            padding: 20px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            animation: gradientShift 8s ease infinite;
+            background-size: 200% 200%;
+        }
+        
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        .currency-selector {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            min-width: 100px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .currency-selector:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .currency-selector span {
+            font-weight: bold;
+            margin-right: 8px;
+            color: #333;
+        }
+        
+        .exchange-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .exchange-circle {
+            width: 50px;
+            height: 50px;
+            background-color: var(--main-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 5px;
+            box-shadow: 0 0 20px rgba(0, 255, 183, 0.6);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .exchange-circle:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 183, 0.8);
+            transform: rotate(180deg);
+        }
+        
+        .exchange-circle img {
+            width: 30px;
+            height: 30px;
+        }
+        /* Exchange Card */
+        
+        .exchange-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
+        }
+        
+        .exchange-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 255, 183, 0.2);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--main-color);
+            text-shadow: 0 0 5px rgba(0, 255, 183, 0.3);
+        }
+        /* Currency Dropdown Styles */
+        
+        .currency-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .dropdown-toggle {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .dropdown-toggle:hover {
+            border-color: var(--main-color);
+        }
+        
+        .dropdown-toggle span {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .dropdown-toggle img {
+            width: 12px;
+            transition: transform 0.3s;
+        }
+        
+        .dropdown-toggle.open img {
+            transform: rotate(180deg);
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .dropdown-menu.open {
+            display: block;
+        }
+        
+        .currency-item {
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .currency-item:last-child {
+            border-bottom: none;
+        }
+        
+        .currency-item:hover {
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+        
+        .currency-item.selected {
+            color: var(--main-color);
+        }
+        
+        .currency-item .ticker {
+            font-weight: bold;
+        }
+        
+        .currency-item .checkmark {
+            width: 16px;
+            height: 16px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .currency-item.selected .checkmark {
+            opacity: 1;
+        }
+        /* Scrollbar styling */
+        
+        .dropdown-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .dropdown-menu::-webkit-scrollbar-track {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        
+        .dropdown-menu::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 3px;
+        }
+        /* Amount Input Section */
+        
+        .amount-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .currency-label {
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 60px;
+        }
+        
+        .input-field {
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+        
+        .input-field input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            color: var(--text-color);
+            padding: 8px 0;
+        }
+        
+        .input-field input:focus {
+            outline: none;
+            border-bottom: 1px solid var(--main-color);
+        }
+        
+        .input-field input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .exchange-all {
+            color: var(--main-color);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        
+        .exchange-all:hover {
+            text-shadow: 0 0 5px rgba(0, 255, 183, 0.5);
+        }
+        
+        .exchange-details {
+            margin-top: 15px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            animation: fadeInRow 0.5s ease-out forwards;
+        }
+        
+        @keyframes fadeInRow {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .exchange-button {
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 15px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 0 rgba(0, 200, 150, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .exchange-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 rgba(0, 200, 150, 0.5);
+            background-color: #00e8ab;
+        }
+        
+        .exchange-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 0 rgba(0, 200, 150, 0.5);
+        }
+
+        /* Spinner animation for loading states */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Exchange Record */
+        
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .record-table th {
+            text-align: left;
+            padding: 10px 5px;
+            color: var(--main-color);
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+        }
+        
+        .record-table td {
+            padding: 12px 5px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .status-approved {
+            color: var(--main-color);
+            font-weight: bold;
+        }
+        /* Bottom Nav - Consistent with index.html */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid var(--border-color);
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        .bottom-nav button:hover {
+            color: var(--main-color);
+            transform: translateY(-3px);
+        }
+        
+        .bottom-nav button.active {
+            color: var(--main-color);
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+        
+        .bottom-nav button:hover img {
+            filter: brightness(0) saturate(100%) invert(73%) sepia(63%) saturate(999%) hue-rotate(110deg) brightness(101%) contrast(101%);
+        }
+        /* Theme Toggle - Consistent with index.html */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            background-color: #00e8ab;
+            transform: scale(1.1);
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: #111;
+            --card-bg: #ffffff;
+            --text-color: #111111;
+            --text-secondary: #666666;
+            --border-color: #dddddd;
+        }
+        
+        body.light-mode .currency-selector {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .exchange-card {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .input-field input::placeholder {
+            color: #999;
+        }
+        
+        body.light-mode .record-table th,
+        body.light-mode .record-table td {
+            border-bottom: 1px solid #eee;
+        }
+        
+        body.light-mode .bottom-nav {
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: #333;
+        }
+        
+        body.light-mode .dropdown-toggle img,
+        body.light-mode .currency-item .checkmark {
+            filter: brightness(0) saturate(100%);
+        }
+        
+        body.light-mode .currency-item.selected .checkmark {
+            filter: brightness(0) saturate(100%) invert(73%) sepia(63%) saturate(999%) hue-rotate(110deg) brightness(101%) contrast(101%);
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 768px) {
+            .exchange-header {
+                padding: 15px 10px;
+            }
+            .currency-selector {
+                padding: 10px 12px;
+                min-width: 80px;
+            }
+            .exchange-circle {
+                width: 40px;
+                height: 40px;
+            }
+            .exchange-card {
+                margin: 15px 10px;
+                padding: 15px;
+            }
+            .currency-label {
+                font-size: 20px;
+            }
+            .record-table th,
+            .record-table td {
+                font-size: 12px;
+                padding: 8px 3px;
+            }
+            .theme-toggle {
+                bottom: 70px;
+                right: 10px;
+                padding: 8px 12px;
+            }
+        }
+        /* Animation for table rows */
+        
+        .record-table tr {
+            animation: fadeInRow 0.3s ease-out forwards;
+        }
+        
+        .record-table tr:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        
+        .record-table tr:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .record-table tr:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        
+        .record-table tr:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+        /* Install Prompt */
+        
+        .install-prompt {
+            position: fixed;
+            bottom: 130px;
+            right: 15px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--main-color);
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 9998;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .install-prompt p {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        
+        .install-btn {
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        
+        .cancel-btn {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-secondary);
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 600px) {
+            .form-section,
+            .page-header {
+                padding: 10px;
+            }
+            .currency-selector,
+            .address-input,
+            .amount-input {
+                font-size: 14px;
+            }
+        }
+        
+        .address-input,
+        .amount-input {
+            word-wrap: break-word;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt="Pivora Logo"></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Transfer</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer for alignment -->
+    </div>
+    <div class="exchange-header">
+        <div class="currency-selector" id="fromCurrencyToggle" onclick="toggleDropdown('from')">
+            <span id="fromCurrencyDisplay">USDT</span>
+            <img src="/assets/icons/down_arrow.png" alt="">
+        </div>
+
+        <div class="exchange-icon" onclick="swapCurrencies()">
+            <div class="exchange-circle">
+                <img src="/assets/icons/loop.png" alt="Exchange">
+            </div>
+            <div>Exchange</div>
+        </div>
+
+        <div class="currency-selector" id="toCurrencyToggle" onclick="toggleDropdown('to')">
+            <span id="toCurrencyDisplay">BTC</span>
+            <img src="/assets/icons/down_arrow.png" alt="">
+        </div>
+    </div>
+
+    <div class="exchange-card">
+        <div class="card-title">Transfer</div>
+
+        <!-- From Currency Dropdown -->
+        <div class="currency-dropdown">
+            <div class="dropdown-toggle" id="fromCurrencyToggle" onclick="toggleDropdown('from')">
+                <span id="fromCurrencyDisplay">USDT</span>
+                <img src="/assets/icons/down-arrow.png" alt="">
+            </div>
+            <div class="dropdown-menu" id="fromCurrencyMenu">
+                <div class="currency-item selected" onclick="selectCurrency('from', 'USDT')">
+                    <span class="ticker">USDT</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="Selected">
+                </div>
+                <div class="currency-item" onclick="selectCurrency('from', 'BTC')">
+                    <span class="ticker">BTC</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="">
+                </div>
+                <div class="currency-item" onclick="selectCurrency('from', 'ETH')">
+                    <span class="ticker">ETH</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="">
+                </div>
+                <div class="currency-item" onclick="selectCurrency('from', 'XRP')">
+                    <span class="ticker">XRP</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="">
+                </div>
+                <div class="currency-item" onclick="selectCurrency('from', 'LTC')">
+                    <span class="ticker">LTC</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="">
+                </div>
+                <div class="currency-item" onclick="selectCurrency('from', 'EOS')">
+                    <span class="ticker">EOS</span>
+                    <img class="checkmark" src="/assets/icons/checkmark.png" alt="">
+                </div>
+            </div>
+        </div>
+
+        <div class="amount-input">
+            <div class="currency-label" id="fromCurrencyLabel">USDT</div>
+            <div class="input-field">
+                <input type="number" placeholder="Please enter the quantity" id="exchangeAmount" oninput="calculateAmount()">
+            </div>
+            <div class="exchange-all" onclick="exchangeAll()">Transfer all</div>
+        </div>
+
+        <div class="exchange-details">
+            <div class="detail-row">
+                <span class="detail-label">Transfer rate</span>
+                <span class="detail-value" id="exchangeRate">0.0000093</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Balance</span>
+                <span class="detail-value" id="balance">0.000000 USDT</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">You will get</span>
+                <span class="detail-value" id="toAmount">0.000000 BTC</span>
+            </div>
+        </div>
+
+        <button class="exchange-button" onclick="exchangeNow()">Transfer now</button>
+    </div>
+
+    <div class="exchange-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div class="card-title">Transfer Record</div>
+            <button onclick="refreshSwapHistory()" style="background: none; border: none; color: var(--main-color); cursor: pointer; font-size: 14px; padding: 5px 10px; border-radius: 5px; transition: all 0.2s;" title="Refresh">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+
+        <table class="record-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Network</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px; color: #aaa;">
+                        Loading swap history...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt" id="installPrompt">
+        <p>Install Pivora for better experience?</p>
+        <button class="install-btn" id="installBtn">Install</button>
+        <button class="cancel-btn" id="cancelInstall">Later</button>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+
+    <script>
+        // Global variables
+        let realTimePrices = {};
+        let priceUpdateInterval;
+
+        // Binance symbol mappings for price fetching
+        const binanceSymbols = {
+            "BTC": "BTCUSDT",
+            "ETH": "ETHUSDT",
+            "USDT": "USDTUSDT",
+            "USDC": "USDCUSDT",
+            "BNB": "BNBUSDT",
+            "SOL": "SOLUSDT",
+            "XRP": "XRPUSDT",
+            "DOGE": "DOGEUSDT",
+            "ADA": "ADAUSDT",
+            "DOT": "DOTUSDT"
+        };
+
+        // Theme toggle function
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (document.body.classList.contains('light-mode')) {
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+            updateThemeIcon();
+            
+            // Initialize price fetching
+            startPriceUpdates();
+        })();
+
+        // Start periodic price updates
+        function startPriceUpdates() {
+            // Update exchange rate every 30 seconds
+            priceUpdateInterval = setInterval(() => {
+                updateExchangeRate().catch(console.error);
+            }, 30000);
+        }
+
+        // Stop price updates
+        function stopPriceUpdates() {
+            if (priceUpdateInterval) {
+                clearInterval(priceUpdateInterval);
+            }
+        }
+
+        // Currency dropdown functionality
+        function toggleDropdown(type) {
+            const menu = document.getElementById(`${type}CurrencyMenu`);
+            const toggle = document.getElementById(`${type}CurrencyToggle`);
+
+            // Close all other dropdowns first
+            document.querySelectorAll('.dropdown-menu').forEach(dropdown => {
+                if (dropdown !== menu) {
+                    dropdown.classList.remove('open');
+                    dropdown.previousElementSibling.classList.remove('open');
+                }
+            });
+
+            menu.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function selectCurrency(type, currency) {
+            // Update toggle button
+            const toggle = document.getElementById(`${type}CurrencyToggle`);
+            toggle.querySelector('span').textContent = currency;
+            document.getElementById(`${type}CurrencyDisplay`).textContent = currency;
+
+            // Update currency label if it's the "from" currency
+            if (type === 'from') {
+                document.getElementById('fromCurrencyLabel').textContent = currency;
+            }
+
+            // Update selected state in menu
+            const menu = document.getElementById(`${type}CurrencyMenu`);
+            menu.querySelectorAll('.currency-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.querySelector('.ticker').textContent === currency) {
+                    item.classList.add('selected');
+                }
+            });
+
+            // Close dropdown
+            toggleDropdown(type);
+
+            // Update exchange rates
+            updateExchangeRate().catch(console.error);
+        }
+
+        // Swap currencies function
+        function swapCurrencies() {
+            const fromCurrency = document.getElementById('fromCurrencyDisplay').textContent;
+            const toCurrency = document.getElementById('toCurrencyDisplay').textContent;
+
+            // Swap the values
+            selectCurrency('from', toCurrency);
+            selectCurrency('to', fromCurrency);
+
+            // Update the display
+            document.getElementById('fromCurrencyLabel').textContent = toCurrency;
+
+            // Recalculate amounts
+            updateExchangeRate().catch(console.error);
+        }
+
+        // Exchange functionality
+        function exchangeAll() {
+            // In a real app, this would fetch the user's balance
+            const balance = 1000.00; // Example balance
+            document.getElementById('exchangeAmount').value = balance;
+            calculateAmount();
+
+            // Animate the "Exchange all" text
+            const exchangeAll = document.querySelector('.exchange-all');
+            exchangeAll.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                exchangeAll.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        function calculateAmount() {
+            const amount = parseFloat(document.getElementById('exchangeAmount').value) || 0;
+            const rate = parseFloat(document.getElementById('exchangeRate').textContent);
+            const toAmount = amount * rate;
+            document.getElementById('toAmount').textContent = toAmount.toFixed(8) + ' ' + document.getElementById('toCurrencyDisplay').textContent;
+        }
+
+        async function updateExchangeRate() {
+            const fromCurrency = document.getElementById('fromCurrencyDisplay').textContent;
+            const toCurrency = document.getElementById('toCurrencyDisplay').textContent;
+
+            try {
+                // Try to get the direct pair price first
+                const pair = `${fromCurrency}${toCurrency}`;
+                let price = await getCurrentPrice(pair);
+                
+                // Display rate with appropriate precision
+                let displayRate;
+                if (price < 0.01) {
+                    displayRate = price.toFixed(8);
+                } else if (price < 1) {
+                    displayRate = price.toFixed(6);
+                } else if (price < 100) {
+                    displayRate = price.toFixed(4);
+                } else {
+                    displayRate = price.toFixed(2);
+                }
+                
+                document.getElementById('exchangeRate').textContent = displayRate;
+                calculateAmount();
+                
+            } catch (error) {
+                // Try reverse pair if direct pair fails
+                try {
+                    const reversePair = `${toCurrency}${fromCurrency}`;
+                    const reversePrice = await getCurrentPrice(reversePair);
+                    const price = 1 / reversePrice;
+                    
+                    let displayRate;
+                    if (price < 0.01) {
+                        displayRate = price.toFixed(8);
+                    } else if (price < 1) {
+                        displayRate = price.toFixed(6);
+                    } else if (price < 100) {
+                        displayRate = price.toFixed(4);
+            } else {
+                        displayRate = price.toFixed(2);
+                    }
+                    
+                    document.getElementById('exchangeRate').textContent = displayRate;
+                    calculateAmount();
+                    
+                } catch (err) {
+                    console.error('Unable to fetch price for swap:', err);
+                    document.getElementById('exchangeRate').textContent = '0.00000000';
+                    document.getElementById('toAmount').textContent = '0.00000000 ' + toCurrency;
+                }
+            }
+
+            // Update balance display based on selected currency
+            const balances = {
+                'USDT': '1000.00',
+                'BTC': '0.0428',
+                'ETH': '2.5',
+                'XRP': '1500',
+                'LTC': '15',
+                'EOS': '120'
+            };
+            document.getElementById('balance').textContent = balances[fromCurrency] + ' ' + fromCurrency;
+        }
+
+        // Get current price from Binance API (matching backend logic)
+        async function getCurrentPrice(symbol) {
+            try {
+                // Convert ticker format from BTC/USDT to BTCUSDT (already in correct format)
+                const binanceSymbol = symbol.replace('/', '');
+                
+                const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${binanceSymbol}`, {
+                    timeout: 10000 // 10 second timeout
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data && data.price) {
+                    return parseFloat(data.price);
+                } else {
+                    throw new Error('Invalid response from Binance API');
+                }
+            } catch (error) {
+                console.error(`Error fetching price for ${symbol}:`, error.message);
+                throw new Error(`Failed to get price for ${symbol}: ${error.message}`);
+            }
+        }
+
+        // Set SERVER_URL
+        const SERVER_URL = 'https://pivora-back-end.pxxl.xyz';
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndLoadData();
+        });
+
+        // Check if user is authenticated and load data
+        function checkAuthAndLoadData() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login to access the exchange');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load swap history
+            loadSwapHistory(token);
+        }
+
+        // Load swap history from API
+        async function loadSwapHistory(token) {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/swap-history`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    renderSwapHistory(data.data);
+                } else {
+                    console.error('Failed to load swap history:', data.message);
+                    // Show empty state or fallback
+                    renderSwapHistory([]);
+                }
+            } catch (error) {
+                console.error('Error loading swap history:', error);
+                // Show empty state on error
+                renderSwapHistory([]);
+            }
+        }
+
+        // Render swap history in table
+        function renderSwapHistory(swapHistory) {
+            const tbody = document.querySelector('.record-table tbody');
+            tbody.innerHTML = '';
+            
+            if (swapHistory.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px; color: #aaa;">
+                            No swap history found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            swapHistory.forEach(swap => {
+                const amountSwapped = parseFloat(swap.amount);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${swap.from} → ${swap.to}</td>
+                    <td>${amountSwapped.toFixed(8)} ${swap.from}</td>
+                    <td>${swap.network}</td>
+                    <td>${new Date(swap.createdAt).toLocaleString()}</td>
+                    <td class="status-approved">${swap.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function exchangeNow() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login to perform exchanges');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('exchangeAmount').value) || 0;
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            const fromCurrency = document.getElementById('fromCurrencyDisplay').textContent;
+            const toCurrency = document.getElementById('toCurrencyDisplay').textContent;
+
+            // Show loading state with animation
+            const btn = document.querySelector('.exchange-button');
+            const originalText = btn.textContent;
+            btn.innerHTML = '<div class="spinner"></div> Processing...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/swap`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from: fromCurrency,
+                        to: toCurrency,
+                        amount: amount
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                // Success animation
+                btn.innerHTML = '✓ Success!';
+                setTimeout(() => {
+                        btn.textContent = originalText;
+                    btn.disabled = false;
+
+                        // Show success message
+                        alert(`Successfully swapped ${amount} ${fromCurrency} to ${toCurrency}`);
+                        
+                        // Clear the amount input
+                        document.getElementById('exchangeAmount').value = '';
+                        calculateAmount();
+                        
+                        // Reload swap history to show the new transaction
+                        loadSwapHistory(token);
+                }, 1000);
+                } else {
+                    // Error handling
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    alert(data.message || 'Swap failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Swap error:', error);
+                btn.textContent = originalText;
+                btn.disabled = false;
+                alert('Network error. Please check your connection and try again.');
+            }
+        }
+
+        // Refresh swap history
+        function refreshSwapHistory() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Please login again');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Show loading state
+            const tbody = document.querySelector('.record-table tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 20px; color: #aaa;">
+                        Refreshing...
+                    </td>
+                </tr>
+            `;
+            
+            // Reload swap history
+            loadSwapHistory(token);
+        }
+
+        // Close dropdowns when clicking outside (more specific)
+        document.addEventListener('click', function(event) {
+            // Only handle if any dropdown is open
+            const openDropdowns = document.querySelectorAll('.dropdown-menu.open');
+            if (openDropdowns.length > 0) {
+                if (!event.target.closest('.currency-dropdown')) {
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.remove('open');
+                        if (menu.previousElementSibling) {
+                            menu.previousElementSibling.classList.remove('open');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Initialize exchange rates
+            updateExchangeRate().catch(console.error);
+
+        // PWA Installation for Android
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const installBtn = document.getElementById('installBtn');
+        const cancelBtn = document.getElementById('cancelInstall');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Show install prompt after 5 seconds
+            setTimeout(() => {
+                installPrompt.style.display = 'block';
+            }, 5000);
+        });
+
+        installBtn.addEventListener('click', async() => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const {
+                    outcome
+                } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                deferredPrompt = null;
+                installPrompt.style.display = 'none';
+            }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+        });
+
+        // iOS Add to Home Screen
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+        if (isIOS) {
+            // Show iOS specific instructions
+            document.querySelector('.install-prompt p').textContent = 'Add Pivora to your home screen for fullscreen experience:';
+            document.querySelector('.install-btn').textContent = 'Show Instructions';
+
+            installBtn.addEventListener('click', () => {
+                alert('1. Tap the Share button\n2. Select "Add to Home Screen"\n3. Tap "Add" in the top right');
+                installPrompt.style.display = 'none';
+            });
+        }
+
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

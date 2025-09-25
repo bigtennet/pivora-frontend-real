@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coinwybi - Agent Distribution</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --tab-inactive: #2e2e2e;
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            padding-bottom: 70px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        /* Page Header */
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Tab Navigation */
+        
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #333;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: var(--tab-inactive);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-btn.active {
+            background: var(--main-color);
+            color: #000;
+            font-weight: bold;
+        }
+        /* Tab Content */
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        /* Content Sections */
+        
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-code {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .invitation-code {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .code-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        
+        .code-value {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            color: var(--main-color);
+            animation: pulseGlow 2s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                text-shadow: 0 0 5px var(--main-color);
+            }
+            50% {
+                text-shadow: 0 0 15px var(--main-color);
+            }
+        }
+        /* Record Table */
+        
+        .record-headers {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .header-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .no-record {
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .record-illustration {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            opacity: 0.1;
+        }
+        
+        .record-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .no-record-text {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+        /* Stats Cards */
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        /* Commission Table */
+        
+        .commission-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .commission-table th,
+        .commission-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .commission-table th {
+            color: var(--text-secondary);
+            font-weight: normal;
+            font-size: 13px;
+        }
+        
+        .commission-table td {
+            color: var(--text-primary);
+        }
+        /* Floating Animation Elements */
+        
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(0, 255, 183, 0.05);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(50px, 50px) rotate(180deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        /* Bottom Navigation - Same as index.html */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle - Same as index.html */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --tab-inactive: #e0e0e0;
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav,
+        body.light-mode .stat-card,
+        body.light-mode .commission-table th {
+            background-color: #ffffff;
+            color: #333;
+        }
+        
+        body.light-mode .page-header,
+        body.light-mode .tab-nav,
+        body.light-mode .record-headers,
+        body.light-mode .commission-table th,
+        body.light-mode .commission-table td {
+            border-color: #ddd;
+        }
+        
+        body.light-mode .bottom-nav {
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .tab-btn {
+            background: #e0e0e0;
+            color: #666;
+        }
+        
+        body.light-mode .tab-btn.active {
+            background: var(--main-color);
+            color: #000;
+        }
+        
+        body.light-mode .no-record-text,
+        body.light-mode .section-title,
+        body.light-mode .code-label {
+            color: #666;
+        }
+        
+        body.light-mode .commission-table th {
+            color: #666;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width:200px;height:200px;top:10%;left:10%;animation-delay:0s;"></div>
+        <div class="floating-element" style="width:300px;height:300px;bottom:10%;right:10%;animation-delay:3s;"></div>
+    </div>
+
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Agent distribution</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer for alignment -->
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="record">Record</button>
+        <button class="tab-btn" data-tab="commission">Commission</button>
+        <button class="tab-btn" data-tab="newcoin">New Coin</button>
+    </div>
+
+    <!-- Record Tab -->
+    <div class="tab-content active" id="record">
+        <div class="section">
+            <div class="section-title">QR code sharing</div>
+            <div class="qr-code-container">
+                <div class="qr-code">
+                    <img src="/assets/icons/ios_qr.png" alt="Agent QR Code">
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Agent distribution</div>
+            <div class="invitation-code">
+                <div class="code-label">Your invitation code</div>
+                <div class="code-value">kz4i</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Commission record</div>
+            <div class="record-headers">
+                <div class="header-item">User ID</div>
+                <div class="header-item">Rake Time</div>
+                <div class="header-item">Amount</div>
+            </div>
+            <div class="no-record">
+                <div class="record-illustration">
+                    <img src="/assets/icons/coins-stack.png" alt="No Records">
+                </div>
+                <div class="no-record-text">No record</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commission Tab -->
+    <div class="tab-content" id="commission">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Number of agents in the current tertiary relationship</div>
+                <div class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Currently, you can enjoy up to the distribution rake level</div>
+                <div class="stat-value">3</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Fission Description</div>
+            <table class="commission-table">
+                <thead>
+                    <tr>
+                        <th>Distribution level</th>
+                        <th>Commission rate</th>
+                        <th>Number of tertiary relationship agents</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>0%</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>0%</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>0%</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- New Coin Tab -->
+    <div class="tab-content" id="newcoin">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Number of agents in the current tertiary relationship</div>
+                <div class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Number of participants in new coin within the current tertiary relationship</div>
+                <div class="stat-value">0</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">New Coin Fission Description</div>
+            <table class="commission-table">
+                <thead>
+                    <tr>
+                        <th>Revenue commission ratio</th>
+                        <th>The number of agents in the third-level relationship</th>
+                        <th>Number of participants in new coin within the tertiary relationship</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0%</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>0%</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                    <tr>
+                        <td>0%</td>
+                        <td>0</td>
+                        <td>0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                // Show corresponding content
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Floating elements animation
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach((el, index) => {
+            // Randomize animation
+            const duration = 15 + Math.random() * 15;
+            const delay = Math.random() * 10;
+            el.style.animationDuration = `${duration}s`;
+            el.style.animationDelay = `${delay}s`;
+        });
+
+        // Dynamic glow effect for code value
+        const codeValue = document.querySelector('.code-value');
+        setInterval(() => {
+            codeValue.style.textShadow = `0 0 ${5 + Math.random() * 10}px var(--main-color)`;
+        }, 2000);
+    </script>
+</body>
+
+</html>

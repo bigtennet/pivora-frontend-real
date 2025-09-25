@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - I Want to Share</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --text-dark: #333;
+            --text-light: #aaa;
+            --highlight-blue: #00ffb7;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            color: var(--text-dark);
+            padding-bottom: 70px;
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        /* Page Header */
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Content Sections */
+        
+        .content-section {
+            padding: 20px;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        
+        .qr-code-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: white;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .link-sharing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .link-text {
+            font-size: 14px;
+            word-break: break-all;
+            margin-right: 10px;
+        }
+        
+        .copy-button {
+            background: none;
+            border: none;
+            color: var(--highlight-blue);
+            font-weight: bold;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
+        .invitation-code {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .invitation-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .code-value {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+        
+        .reward-link {
+            display: block;
+            text-align: center;
+            color: var(--highlight-blue);
+            font-weight: bold;
+            margin: 25px 0;
+            text-decoration: none;
+        }
+        
+        .record-section {
+            margin-top: 30px;
+        }
+        
+        .record-headers {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .header-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .no-record {
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .record-illustration {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            opacity: 0.1;
+        }
+        
+        .record-illustration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .no-record-text {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .referral-item:last-child {
+            border-bottom: none;
+        }
+
+        .referral-email {
+            flex: 2;
+            text-align: left;
+            word-break: break-all;
+            padding-right: 10px;
+        }
+
+        .referral-date {
+            flex: 1;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        .referral-deposit {
+            flex: 1;
+            text-align: center;
+        }
+
+        .deposit-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .deposit-status.yes {
+            background-color: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .deposit-status.no {
+            background-color: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        /* Dark mode adjustments for referral items */
+        body.dark-mode .referral-item {
+            border-bottom: 1px solid #333;
+        }
+        /* Bottom Navigation - Same as index.html */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle - Same as index.html */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: var(--text-dark);
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.light-mode .page-header {
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.light-mode .link-sharing {
+            background: #f0f0f0;
+        }
+        
+        body.light-mode .record-headers {
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.light-mode .bottom-nav {
+            border-top: 1px solid #ddd;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: #333;
+        }
+        /* Dark Mode Styles */
+        
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: white;
+        }
+        
+        body.dark-mode .page-header,
+        body.dark-mode .section-title,
+        body.dark-mode .invitation-label,
+        body.dark-mode .record-headers {
+            color: #aaa;
+        }
+        
+        body.dark-mode .link-sharing {
+            background: #1e1e1e;
+        }
+        
+        body.dark-mode .qr-code {
+            border: 1px solid #333;
+        }
+        
+        body.dark-mode .record-headers {
+            border-bottom: 1px solid #333;
+        }
+        /* Animation */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .content-section {
+            animation: fadeIn 0.5s ease;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">I want to share</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer for alignment -->
+    </div>
+
+    <div class="content-section">
+        <div class="section-title">QR code sharing</div>
+        <div class="qr-code-container">
+            <div class="qr-code">
+                <img src="/assets/icons/share_qr.png" alt="Share QR Code">
+            </div>
+        </div>
+
+        <div class="section-title">Link sharing</div>
+        <div class="link-sharing">
+            <span class="link-text" id="invitationLink">Loading...</span>
+            <button class="copy-button" id="copyButton">Copy</button>
+        </div>
+
+        <div class="invitation-code">
+            <div class="invitation-label">Your invitation code</div>
+            <div class="code-value" id="referralCode">Loading...</div>
+        </div>
+
+        <a href="reward-description.html" class="reward-link">Invitation Reward Description</a>
+
+        <div class="record-section">
+            <div class="section-title">Invitation record</div>
+            <div class="record-headers">
+                <div class="header-item">User Email</div>
+                <div class="header-item">Registration Time</div>
+                <div class="header-item">First Deposit</div>
+            </div>
+            <div id="referralsList">
+                <div class="no-record">
+                    <div class="record-illustration">
+                        <img src="/assets/icons/coins-stack.png" alt="No Records">
+                    </div>
+                    <div class="no-record-text">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
+        })();
+
+        // Check authentication and load user data
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndLoadProfile();
+        });
+
+        // Check if user is authenticated
+        function checkAuthAndLoadProfile() {
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                // No token found, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Load user profile
+            loadUserProfile(token);
+        }
+
+        // Load user profile from API
+        async function loadUserProfile(token) {
+            try {
+                const response = await fetch(`${SERVER_URL}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    console.log('API response:', data); // Debug log
+                    // Update referral code and invitation link
+                    updateReferralInfo(data.data);
+                    
+                    // Store updated user data
+                    localStorage.setItem('userData', JSON.stringify(data.data));
+                } else {
+                    // Token might be invalid, redirect to login
+                    console.error('Profile load failed:', data.message);
+                    localStorage.removeItem('authToken');
+                    localStorage.removeItem('userData');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                // Network error, try to use cached data
+                const cachedUserData = localStorage.getItem('userData');
+                if (cachedUserData) {
+                    const userData = JSON.parse(cachedUserData);
+                    updateReferralInfo(userData);
+                } else {
+                    // No cached data, redirect to login
+                    window.location.href = 'login.html';
+                }
+            }
+        }
+
+        // Update referral code and invitation link
+        function updateReferralInfo(userData) {
+            console.log('User data received:', userData); // Debug log
+            
+            const referralCode = userData.referralCode || 'N/A';
+            const invitationLink = `https://Pivora.org/signup.html?code=${referralCode}`;
+            
+            // Update referral code display
+            document.getElementById('referralCode').textContent = referralCode;
+            
+            // Update invitation link
+            document.getElementById('invitationLink').textContent = invitationLink;
+            
+            // Update QR code if needed (you can generate QR code for the invitation link)
+            updateQRCode(invitationLink);
+            
+            // Update referrals list with debugging
+            console.log('Referrals data:', userData.referrals); // Debug log
+            console.log('Full userData structure:', JSON.stringify(userData, null, 2)); // Debug log
+            
+            // Check for referrals in different possible locations
+            const referrals = userData.referrals || userData.data?.referrals || [];
+            updateReferralsList(referrals);
+        }
+
+        // Update QR code for the invitation link
+        function updateQRCode(invitationLink) {
+            const qrCodeImg = document.querySelector('.qr-code img');
+            // You can use a QR code generation service or library here
+            // For now, we'll keep the existing QR code image
+            // qrCodeImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(invitationLink)}`;
+        }
+
+        // Update referrals list
+        function updateReferralsList(referrals) {
+            console.log('updateReferralsList called with:', referrals); // Debug log
+            const referralsListDiv = document.getElementById('referralsList');
+            
+            if (!referrals || referrals.length === 0) {
+                console.log('No referrals found, showing empty state'); // Debug log
+                referralsListDiv.innerHTML = `
+                    <div class="no-record">
+                        <div class="record-illustration">
+                            <img src="/assets/icons/coins-stack.png" alt="No Records">
+                        </div>
+                        <div class="no-record-text">No referrals yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort referrals by creation date (newest first)
+            referrals.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            const referralsHTML = referrals.map(referral => {
+                const date = new Date(referral.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const depositStatus = referral.firstDeposit ? 'Yes' : 'No';
+                const statusClass = referral.firstDeposit ? 'yes' : 'no';
+
+                return `
+                    <div class="referral-item">
+                        <div class="referral-email">${referral.email}</div>
+                        <div class="referral-date">${date}</div>
+                        <div class="referral-deposit">
+                            <span class="deposit-status ${statusClass}">${depositStatus}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            referralsListDiv.innerHTML = referralsHTML;
+        }
+
+        // Copy link functionality
+        const copyButton = document.getElementById('copyButton');
+        copyButton.addEventListener('click', () => {
+            const linkText = document.getElementById('invitationLink').textContent;
+            
+            if (linkText === 'Loading...') {
+                alert('Please wait while we load your invitation link...');
+                return;
+            }
+            
+            navigator.clipboard.writeText(linkText).then(() => {
+                // Change button text temporarily
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                // Fallback for browsers that don't support clipboard API
+                const textarea = document.createElement('textarea');
+                textarea.value = linkText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy';
+                }, 2000);
+            });
+        });
+
+        // Animation on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.content-section > *');
+            elements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+
+</html>

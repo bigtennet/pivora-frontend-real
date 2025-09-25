@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Funds - Pivora Admin</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-light: #ffffff;
+            --text-dark: #ffffff;
+            --text-light: #000000;
+            --card-dark: #1e1e1e;
+            --card-light: #f1f1f1;
+            --nav-width: 220px;
+            --nav-collapsed-width: 70px;
+            --transition-speed: 0.3s;
+            --input-bg-dark: rgba(255, 255, 255, 0.1);
+            --input-bg-light: rgba(0, 0, 0, 0.05);
+            --border-dark: #333;
+            --border-light: #ddd;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Navigation */
+        
+        nav {
+            width: var(--nav-width);
+            background-color: var(--card-dark);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            transition: width var(--transition-speed);
+            z-index: 1000;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: var(--main-color) rgba(255, 255, 255, 0.1);
+        }
+
+        nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        nav::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb {
+            background: var(--main-color);
+            border-radius: 3px;
+        }
+
+        nav::-webkit-scrollbar-thumb:hover {
+            background: #00e6a8;
+        }
+        
+        nav.collapsed {
+            width: var(--nav-collapsed-width);
+        }
+        
+        nav .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+            white-space: nowrap;
+            transition: opacity var(--transition-speed);
+        }
+        
+        nav.collapsed .logo {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        nav .logo-icon {
+            display: none;
+            font-size: 1.8rem;
+            color: var(--main-color);
+            margin-bottom: 2rem;
+        }
+        
+        nav.collapsed .logo-icon {
+            display: block;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        nav ul li {
+            margin-bottom: 1rem;
+            white-space: nowrap;
+        }
+        
+        nav ul li a {
+            color: var(--text-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            transition: all var(--transition-speed);
+        }
+        
+        nav ul li a:hover {
+            background-color: var(--main-color);
+            color: #000;
+        }
+        
+        nav ul li a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+            min-width: 20px;
+        }
+        
+        nav.collapsed ul li a span {
+            opacity: 0;
+            width: 0;
+            transition: opacity var(--transition-speed), width var(--transition-speed);
+        }
+        /* Main Content */
+        
+        .main {
+            margin-left: var(--nav-width);
+            width: calc(100% - var(--nav-width));
+            transition: margin-left var(--transition-speed);
+            padding-bottom: 2rem;
+        }
+        
+        .main.expanded {
+            margin-left: var(--nav-collapsed-width);
+        }
+        /* Header */
+        
+        header {
+            background-color: var(--card-dark);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color var(--transition-speed);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-nav {
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            display: none;
+        }
+        
+        .toggle-mode {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            background-color: var(--main-color);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            transition: all var(--transition-speed);
+        }
+        
+        .toggle-mode:hover {
+            transform: scale(1.05);
+        }
+        /* Content */
+        
+        .content {
+            padding: 1.5rem;
+        }
+        /* Deposit Form */
+        
+        .deposit-form {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 183, 0.1);
+            border: 1px solid var(--border-dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-dark);
+            background-color: var(--input-bg-dark);
+            color: var(--text-dark);
+            transition: all var(--transition-speed);
+        }
+        
+        .form-control:focus {
+            outline: 2px solid var(--main-color);
+            background-color: rgba(0, 255, 183, 0.1);
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--main-color);
+            color: #000;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.3);
+        }
+        /* Crypto Options */
+        
+        .crypto-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .crypto-option {
+            padding: 0.75rem;
+            border-radius: 5px;
+            background-color: var(--input-bg-dark);
+            border: 1px solid var(--border-dark);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .crypto-option:hover {
+            background-color: rgba(0, 255, 183, 0.1);
+            border-color: var(--main-color);
+        }
+        
+        .crypto-option.selected {
+            background-color: rgba(0, 255, 183, 0.2);
+            border-color: var(--main-color);
+            box-shadow: 0 0 0 2px var(--main-color);
+        }
+        
+        .crypto-option img {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 0.5rem;
+        }
+        /* Recent Deposits */
+        
+        .recent-deposits {
+            background-color: var(--card-dark);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 255, 183, 0.1);
+            border: 1px solid var(--border-dark);
+        }
+        
+        .recent-deposits h3 {
+            margin-top: 0;
+            color: var(--main-color);
+        }
+        
+        .deposit-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .deposit-item:last-child {
+            border-bottom: none;
+        }
+        
+        .deposit-info {
+            flex: 1;
+        }
+        
+        .deposit-user {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            color: var(--text-dark);
+        }
+        
+        .deposit-amount {
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .deposit-date {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            color: var(--text-dark);
+        }
+        
+        .deposit-crypto {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* Mobile Menu Button */
+        
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            font-size: 1.5rem;
+            z-index: 1001;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 992px) {
+            nav {
+                width: var(--nav-collapsed-width);
+            }
+            nav .logo {
+                opacity: 0;
+            }
+            nav .logo-icon {
+                display: block;
+            }
+            nav ul li a span {
+                opacity: 0;
+                width: 0;
+            }
+            .main {
+                margin-left: var(--nav-collapsed-width);
+            }
+            .toggle-nav {
+                display: block;
+            }
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        
+        .mobile-overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            nav.mobile-open {
+                transform: translateX(0);
+            }
+            nav .logo {
+                opacity: 1;
+            }
+            nav ul li a span {
+                opacity: 1;
+                width: auto;
+            }
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .crypto-options {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-left {
+                margin-bottom: 1rem;
+            }
+            .deposit-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            .crypto-options {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: var(--bg-light);
+            color: var(--text-light);
+        }
+        
+        body.light-mode nav,
+        body.light-mode header,
+        body.light-mode .deposit-form,
+        body.light-mode .recent-deposits {
+            background-color: var(--card-light);
+            border-color: var(--border-light);
+        }
+        
+        body.light-mode .form-control,
+        body.light-mode .crypto-option {
+            background-color: var(--input-bg-light);
+            border-color: var(--border-light);
+            color: var(--text-light);
+        }
+        
+        body.light-mode .form-group label,
+        body.light-mode .deposit-user,
+        body.light-mode .deposit-date {
+            color: var(--text-light);
+        }
+        
+        body.light-mode nav ul li a {
+            color: var(--text-light);
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+    
+    <nav id="sidebar">
+        <div class="logo">Pivora</div>
+        <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+        <ul>
+            <li>
+                <a href="dashboard.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="users.html">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+            </li>
+            <li>
+                <a href="withdrawal.html">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Withdrawals</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit_requests.html">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="deposit.html" class="active">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Admin Deposits</span>
+                </a>
+            </li>
+            <li>
+                <a href="trading-management.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Trading Management</span>
+                </a>
+            </li>
+            <li>
+                <a href="verifications.html">
+                    <i class="fas fa-id-card"></i>
+                    <span>Verifications</span>
+                </a>
+            </li>
+            <li>
+                <a href="transactions.html">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+            </li>
+            <!-- <li>
+                <a href="packages.html">
+                    <i class="fas fa-box-open"></i>
+                    <span>Packages</span>
+                </a>
+            </li> -->
+            <li>
+                <a href="logs.html">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Logs</span>
+                </a>
+            </li>
+            <li>
+                <a href="settings.html">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li>
+                <a href="admins.html">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admins</span>
+                </a>
+            </li>
+            <li>
+                <a href="support.html">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main" id="main">
+        <header>
+            <div class="header-left">
+                <button class="toggle-nav" id="toggleNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2>Deposit Funds</h2>
+            </div>
+            <button class="toggle-mode" onclick="toggleMode()">
+                <i class="fas fa-moon"></i> Dark Mode
+            </button>
+        </header>
+
+        <div class="content">
+            <div class="deposit-form">
+                <h3>Credit User Account (Crypto Only)</h3>
+                <form id="fundUserForm">
+                    <div class="form-group">
+                        <label for="userIdentifier">User ID or Email</label>
+                        <input type="text" id="userIdentifier" class="form-control" placeholder="Enter user ID or email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Amount (USD)</label>
+                        <input type="number" id="amount" class="form-control" placeholder="Enter amount in USD" min="1" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currency">Currency</label>
+                        <select id="currency" class="form-control" required>
+                            <option value="USDT">USDT</option>
+                            <option value="BTC">BTC</option>
+                            <option value="ETH">ETH</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="operation">Operation</label>
+                        <select id="operation" class="form-control" required>
+                            <option value="add">Add</option>
+                            <option value="substract">Subtract</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Reason for Update</label>
+                        <input type="text" id="reason" class="form-control" placeholder="Enter reason for update" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Credit User
+                    </button>
+                </form>
+            </div>
+
+            <div class="recent-deposits" id="adminDepositsSection">
+                <h3>All Admin Deposits</h3>
+                <div id="adminDepositsList">
+                    <div style="text-align:center; color:#aaa;">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <script>
+        // Dark/Light Mode Toggle
+        let darkMode = true;
+
+        function toggleMode() {
+            darkMode = !darkMode;
+            document.body.classList.toggle('light-mode');
+            document.body.style.backgroundColor = darkMode ? 'var(--bg-dark)' : 'var(--bg-light)';
+            document.body.style.color = darkMode ? 'var(--text-dark)' : 'var(--text-light)';
+
+            const modeIcon = document.querySelector('.toggle-mode i');
+            const modeText = document.querySelector('.toggle-mode');
+
+            if (darkMode) {
+                modeIcon.className = 'fas fa-moon';
+                modeText.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            } else {
+                modeIcon.className = 'fas fa-sun';
+                modeText.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            }
+        }
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('main');
+        const toggleNav = document.getElementById('toggleNav');
+
+        function toggleSidebar() {
+            const nav = document.getElementById('sidebar');
+            const main = document.getElementById('main');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            // Check if we're on mobile
+            if (window.innerWidth <= 768) {
+                nav.classList.toggle('mobile-open');
+                overlay.classList.toggle('active');
+            } else {
+                nav.classList.toggle('collapsed');
+                main.classList.toggle('expanded');
+            }
+        }
+        
+        // Close mobile menu
+        function closeMobileMenu() {
+            const nav = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            nav.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+        }
+
+        toggleNav.addEventListener('click', toggleSidebar);
+
+        // Auto-collapse sidebar on mobile
+        function handleResize() {
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('collapsed');
+                main.classList.remove('expanded');
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize(); // Run on initial load
+        
+        // Mobile overlay event listener
+        document.getElementById('mobileOverlay').addEventListener('click', closeMobileMenu);
+
+        // Crypto selection
+        document.querySelectorAll('.crypto-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.crypto-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                document.getElementById('cryptoType').value = this.dataset.crypto;
+            });
+        });
+
+        // Form submission
+        document.getElementById('fundUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const userIdentifier = document.getElementById('userIdentifier').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const operation = document.getElementById('operation').value;
+            const reason = document.getElementById('reason').value.trim();
+            if (!userIdentifier || !amount || !currency || !operation || !reason) {
+                alert('Please fill in all fields.');
+                return;
+            }
+            // Only allow user ID (not email) for the endpoint
+            const userId = userIdentifier;
+            try {
+                const token = localStorage.getItem('adminToken');
+                const res = await fetch(`${window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz'}/api/admin/users/${userId}/balance`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify({ amount, currency, operation, reason })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Deposit successful!');
+            this.reset();
+                } else {
+                    alert(data.message || 'Failed to update balance.');
+                }
+            } catch (err) {
+                alert('Failed to update balance.');
+            }
+        });
+
+        async function fetchAdminDeposits() {
+            const list = document.getElementById('adminDepositsList');
+            list.innerHTML = '<div style="text-align:center; color:#aaa;">Loading...</div>';
+            try {
+                const token = localStorage.getItem('adminToken');
+                const res = await fetch(`${window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz'}/api/admin/transactions?type=admin_deposit`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                if (data.success && data.data.length > 0) {
+                    const deposits = data.data.filter(tx => tx.type === 'admin_deposit' || tx.transactionType === 'admin_deposit');
+                    if (deposits.length === 0) {
+                        list.innerHTML = '<div style="text-align:center; color:#aaa;">No admin deposits found.</div>';
+                        return;
+                    }
+                    list.innerHTML = deposits.map(tx => `
+                        <div class="deposit-item">
+                            <div class="deposit-info">
+                                <div class="deposit-user">${tx.user?.fullName || '-'} (${tx.user?.email || '-'})</div>
+                                <div class="deposit-amount">${tx.amount} ${tx.currency}</div>
+                                <div class="deposit-date">${new Date(tx.createdAt).toLocaleString()}</div>
+                                <div class="deposit-status">Status: <span style="color:${tx.status === 'completed' ? '#28a745' : '#ff9800'}">${tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}</span></div>
+                                <div class="deposit-network">Network: ${tx.network || '-'}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<div style="text-align:center; color:#aaa;">No admin deposits found.</div>';
+                }
+            } catch (e) {
+                list.innerHTML = '<div style="text-align:center; color:#ff4d4d;">Failed to load admin deposits.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchAdminDeposits);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - Transactions</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --bg-light: #f4f4f4;
+            --text-dark: #111111;
+            /* dark text for light mode */
+            --text-light: #fefefe;
+            /* bright white text for dark mode */
+            --subtle-light: #999;
+            /* for minor text in light mode */
+            --subtle-dark: #ccc;
+            /* for minor text in dark mode */
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            background-color: var(--bg-dark);
+            transition: background 0.3s ease, color 0.3s ease;
+            padding-bottom: 70px;
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        /* Transaction Page Specific Styles */
+        
+        .transaction-toggle {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            position: relative;
+        }
+        
+        .transaction-toggle button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .transaction-toggle button.active {
+            color: var(--main-color);
+            border-bottom: 2px solid var(--main-color);
+        }
+        
+        .position-button {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: rgba(0, 255, 183, 0.1);
+            border: 1px solid var(--main-color);
+            color: var(--main-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 183, 0.3);
+        }
+        
+        .currency-selector {
+            background: #111;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            margin: 15px;
+        }
+        
+        .side-nav {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 1001;
+            transition: left 0.3s ease-out;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #333;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .side-nav.open {
+            left: 0;
+        }
+        
+        .side-nav h2 {
+            color: var(--main-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .pair-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .pair-item {
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .pair-item:hover {
+            background: rgba(0, 255, 183, 0.1);
+        }
+        
+        .pair-item span:first-child {
+            color: #ccc;
+        }
+        
+        .pair-item span:last-child {
+            font-weight: bold;
+        }
+        /* Trading View Chart Styles */
+        
+        .tradingview-widget-container {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .tradingview-widget-copyright {
+            display: none;
+        }
+        
+        #tradingview-chart {
+            height: 300px;
+            width: 100%;
+            background: #111;
+        }
+        /* Rest of your existing styles... */
+        
+        .price-overview {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .current-price {
+            font-size: 28px;
+            color: #00ffb7;
+        }
+        
+        .price-change {
+            color: #00ffb7;
+        }
+        
+        .price-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .metric {
+            font-size: 12px;
+            color: #ccc;
+        }
+        
+        .metric-value {
+            font-size: 14px;
+        }
+        
+        .chart-container {
+            padding: 15px;
+            height: 350px;
+            margin: 15px;
+            border-radius: 10px;
+        }
+        
+        .timeframe-selector {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .timeframe-selector button {
+            background: #222;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .timeframe-selector button.active {
+            background: var(--main-color);
+            color: black;
+        }
+        
+        .candle-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 12px;
+            margin-top: 10px;
+            color: #ccc;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+        }
+        
+        .action-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .long-button {
+            background: #00ffb7;
+            color: black;
+        }
+        
+        .short-button {
+            background: #ff4d4d;
+            color: white;
+        }
+        /* Exchange Tab Styles */
+        
+        .exchange-tab {
+            padding: 15px;
+            display: none;
+        }
+        
+        .exchange-tab.active {
+            display: block;
+        }
+        
+        /* Order History Styles */
+        .order-history-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .history-header h3 {
+            color: var(--main-color);
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .refresh-button {
+            background: rgba(0, 255, 183, 0.1);
+            border: 1px solid var(--main-color);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-button:hover {
+            background: rgba(0, 255, 183, 0.2);
+            transform: rotate(180deg);
+        }
+        
+        .order-filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-btn {
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: var(--main-color);
+            color: black;
+            border-color: var(--main-color);
+        }
+        
+        .orders-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .order-item-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .order-item-card:hover {
+            border-color: var(--main-color);
+            box-shadow: 0 0 10px rgba(0, 255, 183, 0.2);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .order-direction {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .order-direction.long {
+            background: rgba(0, 255, 183, 0.2);
+            color: var(--main-color);
+        }
+        
+        .order-direction.short {
+            background: rgba(255, 77, 77, 0.2);
+            color: #ff4d4d;
+        }
+        
+        .order-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .order-status.active {
+            background: rgba(0, 255, 183, 0.2);
+            color: var(--main-color);
+        }
+        
+        .order-status.closed {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+        }
+        
+        .order-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .order-detail {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .order-detail-label {
+            color: #ccc;
+        }
+        
+        .order-detail-value {
+            font-weight: bold;
+        }
+        
+        .time-remaining {
+            color: var(--main-color);
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .time-remaining.expired {
+            color: #ff4d4d;
+        }
+        
+        .order-pnl {
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .order-pnl.positive {
+            color: var(--main-color);
+        }
+        
+        .order-pnl.negative {
+            color: #ff4d4d;
+        }
+        
+        .order-pnl.neutral {
+            color: #ccc;
+        }
+        
+        .order-amount-received {
+            text-align: right;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+            color: var(--main-color);
+        }
+        
+        /* Active Trades Section */
+        .active-trades-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .section-header h3 {
+            color: var(--main-color);
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .active-trades-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        /* Loading States */
+        .loading-orders,
+        .loading-trades {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #333;
+            border-top: 3px solid var(--main-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* No Records State */
+        .no-orders {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+        
+        /* Updated Order Modal Styles */
+        .order-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        
+        .order-modal.active {
+            display: flex;
+        }
+        
+        .order-modal-content {
+            background: var(--bg-dark);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .order-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .order-modal-header h3 {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .close-modal {
+            background: #222;
+            border: none;
+            color: var(--text-light);
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .order-details-section {
+            margin-bottom: 20px;
+        }
+        
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .order-detail-label {
+            color: var(--subtle-dark);
+            font-size: 14px;
+        }
+        
+        .order-detail-value {
+            color: var(--text-light);
+            font-weight: bold;
+        }
+        
+        .period-selection {
+            margin-bottom: 20px;
+        }
+        
+        .period-selection h4 {
+            color: var(--text-light);
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        
+        .period-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .period-option {
+            flex: 1;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .period-option.active {
+            background: rgba(0, 255, 183, 0.2);
+            border-color: var(--main-color);
+        }
+        
+        .period-option span:first-child {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .period-option span:last-child {
+            font-size: 12px;
+            color: var(--main-color);
+        }
+        
+        .quantity-input {
+            margin-bottom: 20px;
+        }
+        
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .input-label {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .quantity-input input {
+            width: 100%;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .balance-info {
+            font-size: 12px;
+            color: var(--subtle-dark);
+        }
+        
+        .balance-info span {
+            color: var(--text-light);
+            font-weight: bold;
+        }
+        
+        .confirm-order-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--main-color);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .confirm-order-btn:hover {
+            background: #00e6a8;
+        }
+        
+        /* Processing Modal Styles */
+        .processing-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .processing-header h3 {
+            color: var(--text-light);
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .countdown-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        
+        .countdown-svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .countdown-background {
+            fill: none;
+            stroke: #222;
+            stroke-width: 8;
+        }
+        
+        .countdown-progress {
+            fill: none;
+            stroke: var(--main-color);
+            stroke-width: 8;
+            stroke-dasharray: 283;
+            stroke-dashoffset: 283;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        .countdown-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+        
+        .processing-details {
+            margin-top: 20px;
+        }
+        
+        .processing-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .processing-detail-label {
+            color: var(--subtle-dark);
+            font-size: 14px;
+        }
+        
+        .processing-detail-value {
+            color: var(--text-light);
+            font-weight: bold;
+        }
+        
+        /* Message Toast */
+        .message-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 10001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .message-toast.show {
+            transform: translateX(0);
+        }
+        
+        .message-toast.success {
+            background: var(--main-color);
+            color: black;
+        }
+        
+        .message-toast.error {
+            background: #ff4d4d;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav,
+        body.light-mode .side-nav,
+        body.light-mode .chart-container,
+        body.light-mode .order-type,
+        body.light-mode .input-group input {
+            background-color: #ffffff !important;
+            color: #111111 !important;
+        }
+        
+        body.light-mode .transaction-toggle button,
+        body.light-mode .history-tabs button {
+            color: #000;
+        }
+        
+        body.light-mode .current-price,
+        body.light-mode .price-change {
+            color: #0066ff;
+        }
+        
+        body.light-mode .metric {
+            color: #666;
+        }
+        
+        body.light-mode .action-buttons button,
+        body.light-mode .buy-button {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .order-item {
+            border-bottom: 1px solid #eee;
+        }
+        /* Overlay for when side nav is open */
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            pointer-events: none; /* Prevent overlay from blocking clicks when not active */
+        }
+        
+        .overlay.active {
+            display: block;
+            pointer-events: auto; /* Only allow clicks when active */
+        }
+        /* Add this to your existing styles */
+        
+        .price-flash {
+            animation: priceFlash 0.5s ease-in-out;
+        }
+        
+        @keyframes priceFlash {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .current-price,
+        .best-price {
+            transition: color 0.3s ease;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+    <!-- TradingView Lightweight Chart script -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <!-- Overlay for side nav -->
+    <div class="overlay" id="overlay"></div>
+
+    <div class="transaction-toggle">
+        <button class="active" id="tradingTab">Trading</button>
+        <button id="exchangeTab">Order History</button><br><br>
+        <button class="position-button" onclick="window.location.href='position.html'">
+            <!-- Position -->
+            <img src="/assets/icons/database.png" width="16" alt="">
+        </button>
+    </div>
+
+    <button class="currency-selector" id="currencySelector">
+        BTC
+        <img src="/assets/icons/menu.png" width="16" alt="">
+    </button>
+
+    <!-- Side Navigation - Completely hidden until clicked -->
+    <div class="side-nav" id="sideNav">
+        <h2>Trading Pairs</h2>
+        <div class="pair-list">
+            <div class="pair-item">
+                <span>BTC/USDT</span>
+                <span>68,542.10</span>
+            </div>
+            <div class="pair-item">
+                <span>ETH/USDT</span>
+                <span>3,542.30</span>
+            </div>
+            <div class="pair-item">
+                <span>SOL/USDT</span>
+                <span>145.25</span>
+            </div>
+            <div class="pair-item">
+                <span>XRP/USDT</span>
+                <span>0.59</span>
+            </div>
+            <div class="pair-item">
+                <span>ADA/USDT</span>
+                <span>0.39</span>
+            </div>
+            <div class="pair-item">
+                <span>DOGE/USDT</span>
+                <span>0.084</span>
+            </div>
+            <div class="pair-item">
+                <span>BNB/USDT</span>
+                <span>560.25</span>
+            </div>
+            <div class="pair-item">
+                <span>DOT/USDT</span>
+                <span>6.42</span>
+            </div>
+            <div class="pair-item">
+                <span>AVAX/USDT</span>
+                <span>34.10</span>
+            </div>
+            <div class="pair-item">
+                <span>LINK/USDT</span>
+                <span>18.25</span>
+            </div>
+            <div class="pair-item">
+                <span>MATIC/USDT</span>
+                <span>0.75</span>
+            </div>
+            <div class="pair-item">
+                <span>ATOM/USDT</span>
+                <span>9.85</span>
+            </div>
+            <div class="pair-item">
+                <span>FIL/USDT</span>
+                <span>5.60</span>
+            </div>
+            <div class="pair-item">
+                <span>LTC/USDT</span>
+                <span>95.30</span>
+            </div>
+            <div class="pair-item">
+                <span>UNI/USDT</span>
+                <span>7.25</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trading Tab Content -->
+    <div id="tradingContent">
+        <div class="price-overview">
+            <div>
+                <div>Current</div>
+                <div class="current-price">105540.0100</div>
+                <div class="price-change">+0.11%</div>
+            </div>
+            <div class="price-metrics">
+                <div class="metric">
+                    <div>H (High)</div>
+                    <div class="metric-value">105934.00</div>
+                </div>
+                <div class="metric">
+                    <div>L (Low)</div>
+                    <div class="metric-value">105310.00</div>
+                </div>
+                <div class="metric">
+                    <div>Opening</div>
+                    <div class="metric-value">105612.36</div>
+                </div>
+                <div class="metric">
+                    <div>24H Vol</div>
+                    <div class="metric-value">58.48</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="timeframe-selector">
+                <button class="active">30sec</button>
+                <button>1min</button>
+                <button>5min</button>
+                <button>15min</button>
+                <button>30min</button>
+                <button>1hour</button>
+                <button>4hour</button>
+                <button>1day</button>
+                <button>1week</button>
+                <button>1mon</button>
+            </div>
+
+            <!-- TradingView Chart Widget -->
+            <div id="tradingview-chart"></div>
+
+            <div class="candle-info" style="color: #00ffb7;">
+                <div>Open: 105612.3600</div>
+                <div>High: 105621.8600</div>
+                <div>Low: 105539.9600</div>
+                <div>Close: 105540.0100</div>
+            </div>
+        </div>
+
+        <!-- Active Trades Section -->
+        <div class="active-trades-section">
+            <div class="section-header">
+                <h3>Active Trades</h3>
+                <div class="refresh-button" onclick="loadActiveOrders()">
+                    <img src="/assets/icons/loop.png" width="16" alt="Refresh">
+                </div>
+            </div>
+            
+            <div class="active-trades-list" id="activeTradesList">
+                <div class="loading-trades">
+                    <div class="spinner"></div>
+                    <p>Loading active trades...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="long-button" onclick="submitOrder('long')">Buy Up</button>
+            <button class="short-button" onclick="submitOrder('short')">Buy Down</button>
+        </div>
+    </div>
+
+    <!-- Exchange Tab Content -->
+    <div class="exchange-tab" id="exchangeContent">
+        <div class="order-history-container">
+            <div class="history-header">
+                <h3>Order History</h3>
+                <div class="refresh-button" onclick="loadOrderHistory()">
+                    <img src="/assets/icons/loop.png" width="16" alt="Refresh">
+                </div>
+            </div>
+            
+            <div class="order-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="closed">Closed</button>
+            </div>
+            
+            <div class="orders-list" id="ordersList">
+                <div class="loading-orders">
+                    <div class="spinner"></div>
+                    <p>Loading orders...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div class="order-modal" id="orderModal">
+        <div class="order-modal-content">
+            <div class="order-modal-header">
+                <h3>Order Confirmation</h3>
+                <button class="close-modal" onclick="closeOrderModal()">✕</button>
+            </div>
+            
+            <div class="order-details-section">
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Name:</span>
+                    <span class="order-detail-value" id="modalName">BTC</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Direction:</span>
+                    <span class="order-detail-value" id="modalDirection" style="color: var(--main-color)">BUY UP</span>
+                </div>
+                <div class="order-detail-row">
+                    <span class="order-detail-label">Current price:</span>
+                    <span class="order-detail-value" id="modalCurrentPrice">0.00</span>
+                </div>
+            </div>
+            
+            <div class="period-selection">
+                <h4>Choose period</h4>
+                <div class="period-options">
+                    <button class="period-option active" data-period="30" data-return="40.00">
+                        <span>30S</span>
+                        <span>40.00%</span>
+                    </button>
+                    <button class="period-option" data-period="60" data-return="50.00">
+                        <span>60S</span>
+                        <span>50.00%</span>
+                    </button>
+                    <button class="period-option" data-period="120" data-return="70.00">
+                        <span>120S</span>
+                        <span>70.00%</span>
+                    </button>
+                    <button class="period-option" data-period="300" data-return="100.00">
+                        <span>300S</span>
+                        <span>100.00%</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="quantity-input">
+                <div class="input-header">
+                    <span class="input-label">Quantity to buy</span>
+                </div>
+                <input type="text" id="orderQuantity" placeholder="Quantity you want to buy">
+                <div class="balance-info">Available Balance: <span id="availableBalance">0.00</span> USDT</div>
+            </div>
+            
+            <button class="confirm-order-btn" onclick="confirmOrder()">Order Confirmation</button>
+        </div>
+    </div>
+
+
+
+    <!-- Message Toast -->
+    <div class="message-toast" id="messageToast"></div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+
+    <script>
+        // Theme toggle (keep your existing theme code)
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            if (window.tvWidget) {
+                window.tvWidget.changeTheme(document.body.classList.contains('light-mode') ? 'light' : 'dark');
+            }
+        }
+
+        // Auto-load theme (keep your existing code)
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Current selected pair (default to BTC/USDT)
+        let currentPair = 'BTC/USDT';
+        let currentSymbol = 'BTCUSDT';
+        let currentPrice = 0;
+        let previousPrice = 0;
+        let priceChange24h = 0;
+        let priceHigh24h = 0;
+        let priceLow24h = 0;
+        let volume24h = 0;
+        let binanceSocket = null;
+        let priceUpdateInterval = null;
+
+        // Binance API mappings
+        const binanceSymbols = {
+            'BTC/USDT': 'BTCUSDT',
+            'ETH/USDT': 'ETHUSDT',
+            'SOL/USDT': 'SOLUSDT',
+            'XRP/USDT': 'XRPUSDT',
+            'ADA/USDT': 'ADAUSDT',
+            'DOGE/USDT': 'DOGEUSDT',
+            'BNB/USDT': 'BNBUSDT',
+            'DOT/USDT': 'DOTUSDT',
+            'AVAX/USDT': 'AVAXUSDT',
+            'LINK/USDT': 'LINKUSDT',
+            'MATIC/USDT': 'MATICUSDT',
+            'ATOM/USDT': 'ATOMUSDT',
+            'FIL/USDT': 'FILUSDT',
+            'LTC/USDT': 'LTCUSDT',
+            'UNI/USDT': 'UNIUSDT'
+        };
+
+        // Tab switching functionality (keep your existing code)
+        const tradingTab = document.getElementById('tradingTab');
+        const exchangeTab = document.getElementById('exchangeTab');
+        const tradingContent = document.getElementById('tradingContent');
+        const exchangeContent = document.getElementById('exchangeContent');
+
+        tradingTab.addEventListener('click', () => {
+            tradingTab.classList.add('active');
+            exchangeTab.classList.remove('active');
+            tradingContent.style.display = 'block';
+            exchangeContent.classList.remove('active');
+        });
+
+        exchangeTab.addEventListener('click', () => {
+            exchangeTab.classList.add('active');
+            tradingTab.classList.remove('active');
+            tradingContent.style.display = 'none';
+            exchangeContent.classList.add('active');
+        });
+
+        // Side nav toggle with overlay (keep your existing code)
+        const currencySelector = document.getElementById('currencySelector');
+        const sideNav = document.getElementById('sideNav');
+        const overlay = document.getElementById('overlay');
+
+        currencySelector.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sideNav.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sideNav.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        // Close side nav when clicking outside (more specific)
+        document.addEventListener('click', (e) => {
+            // Only handle if side nav is open and click is outside
+            if (sideNav.classList.contains('open')) {
+                if (!sideNav.contains(e.target) && e.target !== currencySelector) {
+                    sideNav.classList.remove('open');
+                    overlay.classList.remove('active');
+                }
+            }
+        });
+
+        // Fetch real-time market data from Binance API
+        async function fetchMarketData() {
+            try {
+                // Get 24hr ticker data
+                const tickerResponse = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${currentSymbol}`);
+                const tickerData = await tickerResponse.json();
+
+                // Get current order book price
+                const bookResponse = await fetch(`https://api.binance.com/api/v3/ticker/bookTicker?symbol=${currentSymbol}`);
+                const bookData = await bookResponse.json();
+
+                previousPrice = currentPrice;
+                currentPrice = parseFloat(bookData.bidPrice);
+                priceChange24h = parseFloat(tickerData.priceChangePercent);
+                priceHigh24h = parseFloat(tickerData.highPrice);
+                priceLow24h = parseFloat(tickerData.lowPrice);
+                volume24h = parseFloat(tickerData.volume);
+
+                updatePriceDisplay();
+                updateSidebarPrices();
+            } catch (error) {
+                console.error('Binance API error:', error);
+                await fetchCoinGeckoData();
+            }
+        }
+
+        // Fallback to CoinGecko API
+        async function fetchCoinGeckoData() {
+            try {
+                const coinGeckoIds = {
+                    'BTC/USDT': 'bitcoin',
+                    'ETH/USDT': 'ethereum',
+                    'SOL/USDT': 'solana',
+                    'XRP/USDT': 'ripple',
+                    'ADA/USDT': 'cardano',
+                    'DOGE/USDT': 'dogecoin',
+                    'BNB/USDT': 'binancecoin',
+                    'DOT/USDT': 'polkadot',
+                    'AVAX/USDT': 'avalanche-2',
+                    'LINK/USDT': 'chainlink',
+                    'MATIC/USDT': 'matic-network',
+                    'ATOM/USDT': 'cosmos',
+                    'FIL/USDT': 'filecoin',
+                    'LTC/USDT': 'litecoin',
+                    'UNI/USDT': 'uniswap'
+                };
+
+                const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinGeckoIds[currentPair]}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false`);
+                const data = await response.json();
+
+                previousPrice = currentPrice;
+                currentPrice = data.market_data.current_price.usd;
+                priceChange24h = data.market_data.price_change_percentage_24h;
+                priceHigh24h = data.market_data.high_24h.usd;
+                priceLow24h = data.market_data.low_24h.usd;
+                volume24h = data.market_data.total_volume.usd;
+
+                updatePriceDisplay();
+                updateSidebarPrices();
+            } catch (error) {
+                console.error('CoinGecko fallback failed:', error);
+            }
+        }
+
+        // Update all price displays with color coding
+        function updatePriceDisplay() {
+            const formatPrice = (price) => {
+                return price >= 1 ? price.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6
+                    }) :
+                    price.toLocaleString(undefined, {
+                        minimumFractionDigits: 6,
+                        maximumFractionDigits: 6
+                    });
+            };
+
+            const currentPriceElement = document.querySelector('.current-price');
+            const bestPriceElement = document.querySelector('.best-price');
+
+            // Update prices with color animation (only if elements exist)
+            if (currentPriceElement) {
+                if (currentPrice > previousPrice) {
+                    currentPriceElement.style.color = '#00ffb7';
+                    flashElement(currentPriceElement);
+                } else if (currentPrice < previousPrice) {
+                    currentPriceElement.style.color = '#ff4d4d';
+                    flashElement(currentPriceElement);
+                }
+                currentPriceElement.textContent = formatPrice(currentPrice);
+            }
+
+            if (bestPriceElement) {
+                if (currentPrice > previousPrice) {
+                    bestPriceElement.style.color = '#00ffb7';
+                    flashElement(bestPriceElement);
+                } else if (currentPrice < previousPrice) {
+                    bestPriceElement.style.color = '#ff4d4d';
+                    flashElement(bestPriceElement);
+                }
+                bestPriceElement.textContent = formatPrice(currentPrice);
+            }
+
+            // Update percentage change
+            const changeElement = document.querySelector('.price-change');
+            if (changeElement) {
+                changeElement.textContent = `${priceChange24h > 0 ? '+' : ''}${priceChange24h.toFixed(2)}%`;
+                changeElement.style.color = priceChange24h >= 0 ? '#00ffb7' : '#ff4d4d';
+            }
+
+            // Update all metric values
+            const metrics = [
+                formatPrice(priceHigh24h), // High
+                formatPrice(priceLow24h), // Low
+                formatPrice(currentPrice / (1 + (priceChange24h / 100))), // Open
+                formatVolume(volume24h) // Volume
+            ];
+
+            document.querySelectorAll('.metric-value').forEach((el, i) => {
+                if (el && metrics[i]) {
+                    el.textContent = metrics[i];
+                }
+            });
+
+            // Update candle info
+            const candleInfo = [
+                `Open: ${formatPrice(currentPrice / (1 + (priceChange24h/100)))}`,
+                `High: ${formatPrice(priceHigh24h)}`,
+                `Low: ${formatPrice(priceLow24h)}`,
+                `Close: ${formatPrice(currentPrice)}`
+            ];
+
+            document.querySelectorAll('.candle-info div').forEach((el, i) => {
+                if (el && candleInfo[i]) {
+                    el.textContent = candleInfo[i];
+                }
+            });
+        }
+
+        // Flash animation for price changes
+        function flashElement(element) {
+            if (!element) return;
+            element.classList.add('price-flash');
+            setTimeout(() => {
+                if (element) {
+                    element.classList.remove('price-flash');
+                }
+            }, 500);
+        }
+
+        // Update sidebar prices
+        function updateSidebarPrices() {
+            document.querySelectorAll('.pair-item').forEach(item => {
+                const pair = item.querySelector('span:first-child');
+                const priceElement = item.querySelector('span:last-child');
+                
+                if (!pair || !priceElement) return;
+                
+                const pairText = pair.textContent;
+                if (pairText === currentPair) {
+                    const newPrice = currentPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 6
+                    });
+
+                    // Only update and animate if price changed
+                    if (priceElement.textContent !== newPrice) {
+                        const oldPrice = parseFloat(priceElement.textContent.replace(/,/g, ''));
+                        if (!isNaN(oldPrice)) {
+                            priceElement.style.color = currentPrice > oldPrice ? '#00ffb7' : '#ff4d4d';
+                            flashElement(priceElement);
+                        }
+                        priceElement.textContent = newPrice;
+                    }
+                }
+            });
+        }
+
+        // Format large volume numbers
+        function formatVolume(volume) {
+            if (volume >= 1000000000) {
+                return `${(volume / 1000000000).toFixed(2)}B`;
+            } else if (volume >= 1000000) {
+                return `${(volume / 1000000).toFixed(2)}M`;
+            } else if (volume >= 1000) {
+                return `${(volume / 1000).toFixed(2)}K`;
+            }
+            return volume.toFixed(2);
+        }
+
+        // Initialize WebSocket for real-time updates
+        function initializeWebSocket() {
+            if (binanceSocket) {
+                binanceSocket.close();
+            }
+
+            binanceSocket = new WebSocket(`wss://stream.binance.com:9443/ws/${currentSymbol.toLowerCase()}@ticker`);
+
+            binanceSocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                previousPrice = currentPrice;
+                currentPrice = parseFloat(data.c);
+                priceChange24h = parseFloat(data.P);
+                priceHigh24h = parseFloat(data.h);
+                priceLow24h = parseFloat(data.l);
+                volume24h = parseFloat(data.v);
+
+                updatePriceDisplay();
+                updateSidebarPrices();
+            };
+
+            binanceSocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                // Fallback to API polling
+                clearInterval(priceUpdateInterval);
+                priceUpdateInterval = setInterval(fetchMarketData, 2000);
+            };
+        }
+
+        // Initialize TradingView Widget with proper timeframe handling
+        function initializeTradingViewChart(interval = '30') {
+            if (window.tvWidget) {
+                window.tvWidget.remove();
+            }
+
+            const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+
+            window.tvWidget = new TradingView.widget({
+                "autosize": true,
+                "symbol": `BINANCE:${currentSymbol}`,
+                "interval": interval,
+                "timezone": "Etc/UTC",
+                "theme": theme,
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#0e0e0e",
+                "enable_publishing": false,
+                "hide_top_toolbar": true,
+                "hide_side_toolbar": true,
+                "allow_symbol_change": false,
+                "container_id": "tradingview-chart",
+                "studies": ["MAExp@tv-basicstudies"],
+                "disabled_features": [
+                    "header_widget", "left_toolbar", "timeframes_toolbar",
+                    "edit_buttons_in_legend", "context_menus", "control_bar",
+                    "border_around_the_chart", "header_settings", "header_chart_type",
+                    "header_compare", "header_undo_redo", "header_screenshot",
+                    "header_fullscreen_button"
+                ]
+            });
+        }
+
+        // Pair selection handler
+        document.querySelectorAll('.pair-item').forEach(item => {
+            item.addEventListener('click', function() {
+                currentPair = this.querySelector('span:first-child').textContent;
+                currentSymbol = binanceSymbols[currentPair];
+
+                // Update UI
+                currencySelector.innerHTML = `${currentPair.split('/')[0]} <img src="/assets/icons/menu.png" width="16" alt="">`;
+
+                // Close side nav
+                sideNav.classList.remove('open');
+                overlay.classList.remove('active');
+
+                // Refresh data
+                fetchMarketData();
+                initializeWebSocket();
+
+                // Reinitialize chart with current timeframe
+                const activeTimeframe = document.querySelector('.timeframe-selector button.active');
+                if (activeTimeframe) {
+                    const intervals = {
+                        '30sec': '30',
+                        '1min': '1',
+                        '5min': '5',
+                        '15min': '15',
+                        '30min': '30',
+                        '1hour': '60',
+                        '4hour': '240',
+                        '1day': 'D',
+                        '1week': 'W',
+                        '1mon': 'M'
+                    };
+                    initializeTradingViewChart(intervals[activeTimeframe.textContent]);
+                } else {
+                    initializeTradingViewChart();
+                }
+            });
+        });
+
+        // Timeframe selector functionality with proper chart updates
+        const timeframeButtons = document.querySelectorAll('.timeframe-selector button');
+        timeframeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                timeframeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const intervals = {
+                    '30sec': '30',
+                    '1min': '1',
+                    '5min': '5',
+                    '15min': '15',
+                    '30min': '30',
+                    '1hour': '60',
+                    '4hour': '240',
+                    '1day': 'D',
+                    '1week': 'W',
+                    '1mon': 'M'
+                };
+
+                if (window.tvWidget) {
+                    window.tvWidget.setInterval(intervals[button.textContent]);
+                } else {
+                    initializeTradingViewChart(intervals[button.textContent]);
+                }
+            });
+        });
+
+        // Simulate order book updates
+        function simulateOrderBookUpdates() {
+            const orderList = document.querySelector('.order-list');
+
+            function updateOrders() {
+                const basePrice = currentPrice;
+                orderList.innerHTML = '';
+
+                for (let i = 0; i < 5; i++) {
+                    const price = (basePrice - (i * 0.01) - Math.random() * 0.1).toFixed(4);
+                    const amount = (Math.random() * 100).toFixed(2);
+
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'order-item';
+                    orderItem.innerHTML = `
+                    <span class="order-price">${price}</span>
+                    <span class="order-amount">${amount}</span>
+                `;
+                    orderList.appendChild(orderItem);
+                }
+            }
+
+            updateOrders();
+            setInterval(updateOrders, 5000);
+        }
+
+        // Trading functionality variables
+        let activeOrders = [];
+        let orderHistory = [];
+        let currentFilter = 'all';
+        let pendingOrder = null;
+        let activeOrdersCountdownInterval = null;
+        let modalPriceUpdateInterval = null;
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                console.log('No auth token found');
+                return false;
+            }
+            console.log('Auth token found');
+            return true;
+        }
+
+        // Load active orders
+        async function loadActiveOrders() {
+            console.log('loadActiveOrders called');
+            
+            const activeTradesList = document.getElementById('activeTradesList');
+            if (!activeTradesList) {
+                console.log('activeTradesList element not found');
+                return;
+            }
+            
+            if (!checkAuth()) {
+                console.log('Authentication failed');
+                activeTradesList.innerHTML = `
+                    <div class="no-orders">
+                        <div style="color: #ff4d4d; font-size: 24px; margin-bottom: 10px;">🔐</div>
+                        <div>Please login to view active trades</div>
+                        <button class="test-button" onclick="window.location.href='login.html'" style="margin-top: 10px; background: var(--main-color); color: black; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Login</button>
+                    </div>
+                `;
+                return;
+            }
+
+            activeTradesList.innerHTML = '<div class="loading-trades"><div class="spinner"></div><p>Loading active trades...</p></div>';
+
+            try {
+                const token = localStorage.getItem('authToken');
+                console.log('Making API call to active-orders');
+                
+                const response = await fetch(`${SERVER_URL}/api/user/active-orders`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (response.ok && data.success) {
+                    activeOrders = data.data || [];
+                    displayActiveOrders();
+                } else {
+                    throw new Error(data.message || 'Failed to load active orders');
+                }
+            } catch (error) {
+                console.error('Error loading active orders:', error);
+                if (activeTradesList) {
+                    activeTradesList.innerHTML = `
+                        <div class="no-orders">
+                            <div style="color: #ff4d4d; font-size: 24px; margin-bottom: 10px;">⚠️</div>
+                            <div>Failed to load active trades</div>
+                            <div style="font-size: 12px; margin-top: 10px;">${error.message}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Calculate time remaining for an order
+        function calculateTimeRemaining(displayDuration, status) {
+            // For closed or completed orders, show N/A instead of calculating time
+            if (status === 'closed' || status === 'pending_profit' || status === 'cancelled') {
+                return 'N/A';
+            }
+            
+            if (!displayDuration) {
+                return 'N/A';
+            }
+            
+            const now = new Date();
+            const expirationTime = new Date(displayDuration);
+            const timeRemaining = Math.max(0, Math.floor((expirationTime - now) / 1000)); // seconds
+            
+            if (timeRemaining <= 0) {
+                return 'Expired';
+            }
+            
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            
+            if (minutes > 0) {
+                return `${minutes}m ${seconds}s`;
+            } else {
+                return `${seconds}s`;
+            }
+        }
+
+        // Display active orders
+        function displayActiveOrders() {
+            const activeTradesList = document.getElementById('activeTradesList');
+            if (!activeTradesList) {
+                console.log('activeTradesList element not found in displayActiveOrders');
+                return;
+            }
+            
+            if (activeOrders.length === 0) {
+                activeTradesList.innerHTML = `
+                    <div class="no-orders">
+                        <div style="color: #00ffb7; font-size: 24px; margin-bottom: 10px;">📈</div>
+                        <div>No active trades</div>
+                    </div>
+                `;
+                return;
+            }
+
+            activeTradesList.innerHTML = activeOrders.map((order, index) => {
+                const timeRemaining = calculateTimeRemaining(order.displayDuration, order.status);
+                const isExpired = timeRemaining === 'Expired';
+                
+                return `
+                    <div class="order-item-card" data-order-index="${index}">
+                        <div class="order-header">
+                            <span class="order-direction ${order.direction}">${order.direction.toUpperCase()}</span>
+                            <span class="order-status active">ACTIVE</span>
+                        </div>
+                        <div class="order-details">
+                            <div class="order-detail">
+                                <span class="order-detail-label">Ticker:</span>
+                                <span class="order-detail-value">${order.ticker}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">Entry Price:</span>
+                                <span class="order-detail-value">$${parseFloat(order.entryPrice).toFixed(2)}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">Current Price:</span>
+                                <span class="order-detail-value">$${parseFloat(order.currentPrice).toFixed(2)}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">Duration:</span>
+                                <span class="order-detail-value">${order.duration || 'N/A'}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">Time Remaining:</span>
+                                <span class="order-detail-value time-remaining ${isExpired ? 'expired' : ''}" data-display-duration="${order.displayDuration}" data-status="${order.status}">${timeRemaining}</span>
+                            </div>
+                            <div class="order-detail">
+                                <span class="order-detail-label">Percentage:</span>
+                                <span class="order-detail-value">${order.percentage ? order.percentage + '%' : 'N/A'}</span>
+                            </div>
+                        </div>
+                        <div class="order-pnl ${order.pnl > 0 ? 'positive' : order.pnl < 0 ? 'negative' : 'neutral'}">
+                            P&L: ${order.pnl > 0 ? '+' : ''}${parseFloat(order.pnl).toFixed(2)}%
+                        </div>
+                        <div class="order-amount-received">
+                            Amount: $${order.amount ? parseFloat(order.amount).toFixed(2) : '0.00'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Start countdown timer for active orders
+            startActiveOrdersCountdown();
+        }
+
+        // Start countdown timer for active orders
+        function startActiveOrdersCountdown() {
+            // Clear any existing interval
+            if (activeOrdersCountdownInterval) {
+                clearInterval(activeOrdersCountdownInterval);
+            }
+            
+            // Update countdown every second
+            activeOrdersCountdownInterval = setInterval(() => {
+                const timeRemainingElements = document.querySelectorAll('.time-remaining');
+                
+                timeRemainingElements.forEach(element => {
+                    const displayDuration = element.getAttribute('data-display-duration');
+                    const status = element.getAttribute('data-status');
+                    if (displayDuration) {
+                        const timeRemaining = calculateTimeRemaining(displayDuration, status);
+                        element.textContent = timeRemaining;
+                        
+                        // Add expired class if time is up
+                        if (timeRemaining === 'Expired') {
+                            element.classList.add('expired');
+                        } else {
+                            element.classList.remove('expired');
+                        }
+                    }
+                });
+            }, 1000);
+        }
+
+        // Load order history
+        async function loadOrderHistory() {
+            console.log('loadOrderHistory called');
+            
+            const ordersList = document.getElementById('ordersList');
+            if (!ordersList) {
+                console.log('ordersList element not found');
+                return;
+            }
+            
+            if (!checkAuth()) {
+                console.log('Authentication failed for order history');
+                ordersList.innerHTML = `
+                    <div class="no-orders">
+                        <div style="color: #ff4d4d; font-size: 24px; margin-bottom: 10px;">🔐</div>
+                        <div>Please login to view order history</div>
+                        <button class="test-button" onclick="window.location.href='login.html'" style="margin-top: 10px; background: var(--main-color); color: black; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer;">Login</button>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersList.innerHTML = '<div class="loading-orders"><div class="spinner"></div><p>Loading orders...</p></div>';
+
+            try {
+                const token = localStorage.getItem('authToken');
+                console.log('Making API call to order-history');
+                
+                const response = await fetch(`${SERVER_URL}/api/user/order-history`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Order history response status:', response.status);
+                const data = await response.json();
+                console.log('Order history response data:', data);
+
+                if (response.ok && data.success) {
+                    orderHistory = data.data || [];
+                    displayOrderHistory();
+                } else {
+                    throw new Error(data.message || 'Failed to load order history');
+                }
+            } catch (error) {
+                console.error('Error loading order history:', error);
+                if (ordersList) {
+                    ordersList.innerHTML = `
+                        <div class="no-orders">
+                            <div style="color: #ff4d4d; font-size: 24px; margin-bottom: 10px;">⚠️</div>
+                            <div>Failed to load order history</div>
+                            <div style="font-size: 12px; margin-top: 10px;">${error.message}</div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        // Display order history
+        function displayOrderHistory() {
+            const ordersList = document.getElementById('ordersList');
+            if (!ordersList) {
+                console.log('ordersList element not found in displayOrderHistory');
+                return;
+            }
+            
+            let filteredOrders = orderHistory;
+            if (currentFilter === 'active') {
+                filteredOrders = orderHistory.filter(order => order.status === 'active');
+            } else if (currentFilter === 'closed') {
+                filteredOrders = orderHistory.filter(order => order.status === 'closed');
+            }
+
+            if (filteredOrders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="no-orders">
+                        <div style="color: #00ffb7; font-size: 24px; margin-bottom: 10px;">📊</div>
+                        <div>No orders found</div>
+                    </div>
+                `;
+                return;
+            }
+
+            ordersList.innerHTML = filteredOrders.map(order => `
+                <div class="order-item-card">
+                    <div class="order-header">
+                        <span class="order-direction ${order.direction}">${order.direction.toUpperCase()}</span>
+                        <span class="order-status ${order.status}">${order.status.toUpperCase()}</span>
+                    </div>
+                    <div class="order-details">
+                        <div class="order-detail">
+                            <span class="order-detail-label">Ticker:</span>
+                            <span class="order-detail-value">${order.ticker}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">Entry Price:</span>
+                            <span class="order-detail-value">$${parseFloat(order.entryPrice).toFixed(2)}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">Current Price:</span>
+                            <span class="order-detail-value">$${parseFloat(order.currentPrice).toFixed(2)}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">Duration:</span>
+                            <span class="order-detail-value">${order.duration || 'N/A'}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">Percentage:</span>
+                            <span class="order-detail-value">${order.percentage ? order.percentage + '%' : 'N/A'}</span>
+                        </div>
+                        <div class="order-detail">
+                            <span class="order-detail-label">Created:</span>
+                            <span class="order-detail-value">${new Date(order.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    <div class="order-pnl ${order.pnl > 0 ? 'positive' : order.pnl < 0 ? 'negative' : 'neutral'}">
+                        P&L: ${order.pnl > 0 ? '+' : ''}${parseFloat(order.pnl).toFixed(2)}%
+                    </div>
+                    <div class="order-amount-received">
+                        Amount: $${order.amount ? parseFloat(order.amount).toFixed(2) : '0.00'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update modal price in real-time
+        function updateModalPrice() {
+            // Update order modal price
+            const modalCurrentPriceElement = document.getElementById('modalCurrentPrice');
+            if (modalCurrentPriceElement && currentPrice > 0) {
+                modalCurrentPriceElement.textContent = currentPrice.toFixed(4);
+            }
+            
+            // Update processing modal price
+            const processingCurrentPriceElement = document.getElementById('processingCurrentPrice');
+            if (processingCurrentPriceElement && currentPrice > 0) {
+                processingCurrentPriceElement.textContent = currentPrice.toFixed(4);
+            }
+            
+            // Update processing modal price (second instance)
+            const processingPriceElement = document.getElementById('processingPrice');
+            if (processingPriceElement && currentPrice > 0) {
+                processingPriceElement.textContent = currentPrice.toFixed(4);
+            }
+            
+            // Update pending order with current price
+            if (pendingOrder) {
+                pendingOrder.currentPrice = currentPrice;
+            }
+        }
+
+        // Start real-time price updates for modal
+        function startModalPriceUpdates() {
+            // Clear any existing interval
+            if (modalPriceUpdateInterval) {
+                clearInterval(modalPriceUpdateInterval);
+            }
+            
+            // Update price every second
+            modalPriceUpdateInterval = setInterval(updateModalPrice, 1000);
+        }
+
+        // Stop real-time price updates for modal
+        function stopModalPriceUpdates() {
+            if (modalPriceUpdateInterval) {
+                clearInterval(modalPriceUpdateInterval);
+                modalPriceUpdateInterval = null;
+            }
+        }
+
+        // Load user balance
+        async function loadUserBalance() {
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    console.log('No auth token found for balance');
+                    return 0;
+                }
+                
+                const response = await fetch(`${SERVER_URL}/api/user/balances`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Balance response:', data);
+
+                if (response.ok && data.success) {
+                    // Check if data.data is an array
+                    if (Array.isArray(data.data)) {
+                        // Find USDT balance
+                        const usdtBalance = data.data.find(balance => balance.currency === 'USDT');
+                        console.log('USDT balance found:', usdtBalance);
+                        
+                        if (usdtBalance && usdtBalance.amount !== undefined) {
+                            const balanceValue = parseFloat(usdtBalance.amount);
+                            console.log('Parsed balance value:', balanceValue);
+                            return isNaN(balanceValue) ? 0 : balanceValue;
+                        }
+                    } else if (data.data && typeof data.data === 'object') {
+                        // If data.data is an object, look for USDT property
+                        console.log('Balance data is object:', data.data);
+                        if (data.data.USDT !== undefined) {
+                            const balanceValue = parseFloat(data.data.USDT);
+                            console.log('USDT balance from object:', balanceValue);
+                            return isNaN(balanceValue) ? 0 : balanceValue;
+                        }
+                    }
+                    
+                    console.log('No USDT balance found in response');
+                    return 0;
+                } else {
+                    console.error('Failed to load balance:', data.message);
+                    return 0;
+                }
+            } catch (error) {
+                console.error('Error loading balance:', error);
+                return 0;
+            }
+        }
+
+        // Submit order function
+        async function submitOrder(direction) {
+            if (!checkAuth()) {
+                showMessage("Please login to place orders", "error");
+                return;
+            }
+
+            // Set up pending order
+            pendingOrder = {
+                direction: direction.toLowerCase(),
+                ticker: currentPair.split('/')[0],
+                pair: currentPair,
+                currentPrice: currentPrice,
+                selectedPeriod: 30, // default
+                selectedReturn: 40.00, // default
+                quantity: 0
+            };
+
+            // Update modal content
+            document.getElementById('modalName').textContent = pendingOrder.ticker;
+            document.getElementById('modalDirection').textContent = direction === 'long' ? 'BUY UP' : 'BUY DOWN';
+            document.getElementById('modalDirection').style.color = direction === 'long' ? 'var(--main-color)' : '#ff4d4d';
+            document.getElementById('modalCurrentPrice').textContent = currentPrice.toFixed(4);
+            
+            // Load and display user balance
+            const balance = await loadUserBalance();
+            console.log('Final balance value:', balance);
+            
+            if (isNaN(balance)) {
+                console.error('Balance is NaN, setting to 0');
+                document.getElementById('availableBalance').textContent = '0.00';
+            } else {
+                document.getElementById('availableBalance').textContent = balance.toFixed(2);
+            }
+            
+            // Reset period selection
+            document.querySelectorAll('.period-option').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.period === '30') {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Set up period selection event listeners
+            document.querySelectorAll('.period-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-option').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (pendingOrder) {
+                        pendingOrder.selectedPeriod = parseInt(this.dataset.period);
+                        pendingOrder.selectedReturn = parseFloat(this.dataset.return);
+                        console.log('Period selected:', pendingOrder.selectedPeriod, 'Return:', pendingOrder.selectedReturn);
+                    }
+                });
+            });
+            
+            // Reset quantity input
+            document.getElementById('orderQuantity').value = '';
+            
+            // Show modal
+            document.getElementById('orderModal').classList.add('active');
+            
+            // Start real-time price updates for the modal
+            startModalPriceUpdates();
+        }
+
+        // Confirm order (first modal)
+        async function confirmOrder() {
+            const quantityInput = document.getElementById('orderQuantity');
+            const quantity = parseFloat(quantityInput.value);
+            
+            if (isNaN(quantity) || quantity <= 0) {
+                showMessage("Please enter a valid quantity", "error");
+                return;
+            }
+            
+            if (!pendingOrder) {
+                showMessage("Order data missing", "error");
+                return;
+            }
+            
+            // Check if user has enough balance
+            const availableBalanceText = document.getElementById('availableBalance').textContent;
+            const availableBalance = parseFloat(availableBalanceText);
+            
+            if (isNaN(availableBalance)) {
+                showMessage("Error loading balance. Please try again.", "error");
+                return;
+            }
+            
+            if (quantity > availableBalance) {
+                showMessage("Insufficient balance. Available: " + availableBalance.toFixed(2) + " USDT", "error");
+                return;
+            }
+            
+            pendingOrder.quantity = quantity;
+            
+            // Close modal
+            document.getElementById('orderModal').classList.remove('active');
+            
+            // Submit order immediately
+            await submitActualOrder();
+        }
+
+
+
+        // Submit actual order to server
+        async function submitActualOrder() {
+            if (!pendingOrder) return;
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                
+                // Transform the order data to match the new API structure
+                const orderData = {
+                    direction: pendingOrder.direction,
+                    ticker: pendingOrder.pair, // Use full pair like "BTC/USDT"
+                    duration: pendingOrder.selectedPeriod + 's', // Time in seconds with 's' suffix
+                    displayDuration: new Date(Date.now() + (pendingOrder.selectedPeriod * 1000)).toISOString(), // Calculate expiration time
+                    quantity: pendingOrder.quantity // Add the quantity field
+                };
+                
+                console.log('Submitting order with new structure:', orderData);
+                
+                const response = await fetch(`${SERVER_URL}/api/user/submit-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showMessage("Order placed successfully", "success");
+                    // Refresh orders
+                    loadActiveOrders();
+                    loadOrderHistory();
+                } else {
+                    throw new Error(data.message || 'Failed to submit order');
+                }
+            } catch (error) {
+                console.error('Error submitting order:', error);
+                showMessage(error.message, "error");
+            } finally {
+                pendingOrder = null;
+            }
+        }
+
+        // Close order modal
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            
+            // Stop modal price updates
+            stopModalPriceUpdates();
+            
+            pendingOrder = null;
+        }
+
+        // Show message toast
+        function showMessage(message, type) {
+            const toast = document.getElementById('messageToast');
+            toast.textContent = message;
+            toast.className = `message-toast ${type}`;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Filter orders
+        function filterOrders(filter) {
+            currentFilter = filter;
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            displayOrderHistory();
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMarketData();
+            initializeWebSocket();
+            initializeTradingViewChart();
+            simulateOrderBookUpdates();
+
+            // Backup polling in case WebSocket fails
+            priceUpdateInterval = setInterval(fetchMarketData, 30000);
+            
+            // Load trading data with a small delay to ensure DOM is ready
+            setTimeout(() => {
+                console.log('Loading trading data after DOM ready');
+                loadActiveOrders();
+                loadOrderHistory();
+            }, 500);
+            
+            // Add event listeners for filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterOrders(btn.dataset.filter);
+                });
+            });
+            
+            // Add event listeners for period selection
+            document.querySelectorAll('.period-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-option').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (pendingOrder) {
+                        pendingOrder.selectedPeriod = parseInt(this.dataset.period);
+                        pendingOrder.selectedReturn = parseFloat(this.dataset.return);
+                    }
+                });
+            });
+        });
+
+        // Cleanup intervals when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            if (activeOrdersCountdownInterval) {
+                clearInterval(activeOrdersCountdownInterval);
+            }
+            if (priceUpdateInterval) {
+                clearInterval(priceUpdateInterval);
+            }
+            if (modalPriceUpdateInterval) {
+                clearInterval(modalPriceUpdateInterval);
+            }
+        });
+    </script>
+</body>
+</html>

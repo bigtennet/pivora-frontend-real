@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coinwybi - Help Center</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+            --divider-color: #333;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            padding-bottom: 70px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        header {
+            background-color: #1e1e1e;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        /* Page Header */
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--divider-color);
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Help Center List */
+        
+        .help-list {
+            padding: 20px;
+            list-style-type: none;
+        }
+        
+        .help-item {
+            position: relative;
+            padding: 18px 0 18px 30px;
+            border-bottom: 1px solid var(--divider-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .help-item:last-child {
+            border-bottom: none;
+        }
+        
+        .help-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 24px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--text-secondary);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .help-item:hover {
+            padding-left: 35px;
+        }
+        
+        .help-item:hover::before {
+            background-color: var(--main-color);
+            transform: scale(1.2);
+        }
+        
+        .help-question {
+            font-size: 16px;
+            margin: 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .help-item:hover .help-question {
+            color: var(--main-color);
+        }
+        /* Floating Animation Elements */
+        
+        .floating-elements {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(0, 255, 183, 0.05);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                transform: translate(50px, 50px) rotate(180deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        /* Bottom Navigation - Same as index.html */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid #333;
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle - Same as index.html */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+            transition: background 0.3s;
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --divider-color: #ddd;
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav {
+            background-color: #ffffff;
+            border-color: #ddd;
+        }
+        
+        body.light-mode .page-header {
+            border-bottom-color: #ddd;
+        }
+        
+        body.light-mode .help-item {
+            border-bottom-color: #ddd;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: #333;
+        }
+        /* Answer Section (hidden by default) */
+        
+        .help-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 0;
+        }
+        
+        .help-item.active .help-answer {
+            max-height: 500px;
+            margin-top: 15px;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width:150px;height:150px;top:20%;left:10%;animation-delay:0s;"></div>
+        <div class="floating-element" style="width:250px;height:250px;bottom:20%;right:10%;animation-delay:3s;"></div>
+    </div>
+
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Help Center</div>
+        <div style="width: 24px;"></div>
+        <!-- Spacer for alignment -->
+    </div>
+
+    <ul class="help-list">
+        <li class="help-item">
+            <h3 class="help-question">Forgot the PIN code processing method for platform transactions</h3>
+            <div class="help-answer">
+                <p>To reset your PIN code, please contact our customer support team through the in-app chat or email support@coinwybi.com with your account verification details.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">What is the value of the stop loss and profit setting in opening a position? How should it be set?</h3>
+            <div class="help-answer">
+                <p>Stop loss and take profit settings help manage risk. Set stop loss at a price where you want to limit losses, and take profit at your target price. These can be adjusted in the order settings before confirmation.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">How to reduce contract risk?</h3>
+            <div class="help-answer">
+                <p>Use proper position sizing, set stop-loss orders, diversify your trades, and avoid over-leveraging. Regularly monitor market conditions and your open positions.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">What does the quantity in the contract opening mean?</h3>
+            <div class="help-answer">
+                <p>Quantity represents the number of contracts you're trading. Each contract corresponds to a specific amount of the underlying asset (e.g., 1 BTC contract = 1 BTC).</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">How is the handling fee in the contract calculated?</h3>
+            <div class="help-answer">
+                <p>Fees are typically calculated as a percentage of the order value. For example, if the fee is 0.05%, a $1,000 order would incur a $0.50 fee. Check our fee schedule for exact rates.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">Notes on forced liquidation</h3>
+            <div class="help-answer">
+                <p>Liquidation occurs when your margin balance can't cover losses. Maintain adequate margin, monitor positions, and consider using stop-loss orders to prevent liquidation.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">What are the contract trading rules?</h3>
+            <div class="help-answer">
+                <p>Our contracts follow standardized specifications including size, expiration (for futures), and settlement procedures. Refer to the contract details before trading.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">What are limit order and market order?</h3>
+            <div class="help-answer">
+                <p>Limit orders execute at your specified price or better. Market orders execute immediately at current market prices. Limit orders provide price control while market orders guarantee execution.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">What does the risk level of contract transactions represent</h3>
+            <div class="help-answer">
+                <p>Risk level indicates your account's liquidation risk based on current positions and market volatility. Higher levels mean greater risk of liquidation.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">Why is currency exchange necessary?</h3>
+            <div class="help-answer">
+                <p>Exchange allows converting between cryptocurrencies and stablecoins like USDT for trading pairs not directly available or to manage volatility exposure.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">How to buy USDT through the platform?</h3>
+            <div class="help-answer">
+                <p>Navigate to Buy Crypto, select USDT, choose your payment method, enter amount, and follow the on-screen instructions to complete the purchase.</p>
+            </div>
+        </li>
+        <li class="help-item">
+            <h3 class="help-question">Why does the converted amount of assets change?</h3>
+            <div class="help-answer">
+                <p>Converted values fluctuate with market prices. The displayed amount reflects real-time conversion rates between the assets.</p>
+            </div>
+        </li>
+    </ul>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // FAQ accordion functionality
+        const helpItems = document.querySelectorAll('.help-item');
+        helpItems.forEach(item => {
+            item.addEventListener('click', function() {
+                this.classList.toggle('active');
+
+                // Close other open items
+                helpItems.forEach(otherItem => {
+                    if (otherItem !== this && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // Floating elements animation
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach((el, index) => {
+            const duration = 15 + Math.random() * 15;
+            const delay = Math.random() * 10;
+            el.style.animationDuration = `${duration}s`;
+            el.style.animationDelay = `${delay}s`;
+        });
+
+        // Animate list items on load
+        const helpListItems = document.querySelectorAll('.help-item');
+        helpListItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+            item.style.transition = `all 0.5s ease ${index * 0.1}s`;
+
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+
+</html>

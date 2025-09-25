@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pivora - Order Record</title>
+    <style>
+         :root {
+            --main-color: #00ffb7;
+            --bg-dark: #0e0e0e;
+            --bg-footer: #1e1e1e;
+            --text-dark: #333;
+            --text-light: #fff;
+            --divider-color: #333;
+            --card-bg: #1e1e1e;
+            --table-header: #111;
+        }
+        
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding-bottom: 70px;
+            overflow-x: hidden;
+        }
+        
+        header {
+            background-color: var(--bg-footer);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .language-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        /* Page Header */
+        
+        .page-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--divider-color);
+            background-color: var(--bg-footer);
+            position: sticky;
+            top: 60px;
+            z-index: 999;
+        }
+        
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .page-title {
+            flex: 1;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Order List */
+        
+        .order-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            border-bottom: 1px solid var(--divider-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .order-item:hover {
+            background-color: rgba(0, 255, 183, 0.05);
+        }
+        
+        .order-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+        }
+        
+        .order-label {
+            flex: 1;
+            font-size: 16px;
+        }
+        
+        .order-arrow {
+            width: 16px;
+            height: 16px;
+            opacity: 0.5;
+        }
+        /* Popup Modal */
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 10001;
+            box-shadow: 0 0 20px rgba(0, 255, 183, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--divider-color);
+            position: sticky;
+            top: 0;
+            background-color: var(--card-bg);
+            z-index: 1;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--main-color);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .order-table th {
+            background-color: var(--table-header);
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 14px;
+            color: var(--main-color);
+            position: sticky;
+            top: 50px;
+        }
+        
+        .order-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--divider-color);
+            font-size: 13px;
+        }
+        
+        .order-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status-approved {
+            color: var(--main-color);
+        }
+        
+        .status-rejected {
+            color: #ff4d4d;
+        }
+        
+        .status-pending {
+            color: var(--text-secondary);
+        }
+        
+        .address-cell {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        /* Bottom Navigation */
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--bg-footer);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            border-top: 1px solid var(--divider-color);
+            z-index: 999;
+        }
+        
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+        
+        .bottom-nav img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-bottom: 2px;
+        }
+        /* Theme Toggle */
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 75px;
+            right: 15px;
+            background-color: var(--main-color);
+            color: #000;
+            border: none;
+            padding: 10px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 2px 10px rgba(0, 255, 183, 0.5);
+        }
+        /* Light Mode Styles */
+        
+        body.light-mode {
+            background-color: #f4f4f4;
+            color: var(--text-dark);
+            --card-bg: #ffffff;
+            --divider-color: #ddd;
+            --table-header: #f5f5f5;
+            --text-secondary: #666;
+        }
+        
+        body.light-mode header,
+        body.light-mode .bottom-nav,
+        body.light-mode .page-header {
+            background-color: #ffffff !important;
+            border-color: #ddd !important;
+        }
+        
+        body.light-mode .order-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        body.light-mode .order-table th {
+            background-color: #f5f5f5;
+        }
+        
+        body.light-mode .bottom-nav button {
+            color: var(--text-dark);
+        }
+        /* Animations */
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translate(-50%, -60%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, -50%);
+                opacity: 1;
+            }
+        }
+        
+        .order-item {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        .order-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        
+        .order-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .order-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+        
+        .modal-content {
+            animation: slideIn 0.3s ease forwards;
+        }
+        /* Prevent horizontal scrolling and wiggling */
+        
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+        /* Optional: Add subtle overscroll behavior for iOS */
+        
+        body {
+            overscroll-behavior-x: none;
+        }
+        /* Ensure all elements stay within viewport */
+        
+        * {
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        /* Optional: Add this if you have any absolutely positioned elements */
+        
+        .container {
+            width: 100vw;
+            overflow: hidden;
+        }
+    </style>
+    <script>window.SERVER_URL = 'https://pivora-back-end.pxxl.xyz';</script>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><img src="/assets/icons/logo.png" width="30px" alt=""></div>
+        <a href="language.html"><img src="/assets/icons/worlwide.png" class="language-icon" alt="Language"></a>
+    </header>
+
+    <div class="page-header">
+        <button class="back-button" onclick="window.history.back()">
+            <img src="/assets/icons/previous.png" width="24" alt="Back">
+        </button>
+        <div class="page-title">Order record</div>
+        <div style="width: 24px;"></div>
+    </div>
+
+    <ul class="order-list">
+        <li class="order-item" onclick="window.location.href='position.html'">
+            <img src="/assets/icons/document.png" class="order-icon" alt="Trading">
+            <div class="order-label">Trading orders</div>
+            <img src="/assets/icons/next.png" class="order-arrow" alt=">">
+        </li>
+        <li class="order-item" id="deposit-order-popup">
+            <img src="/assets/icons/document.png" class="order-icon" alt="Deposit">
+            <div class="order-label">Deposit orders</div>
+            <img src="/assets/icons/next.png" class="order-arrow" alt=">">
+        </li>
+        <li class="order-item" id="withdrawal-order-popup">
+            <img src="/assets/icons/document.png" class="order-icon" alt="Withdrawal">
+            <div class="order-label">Withdrawal orders</div>
+            <img src="/assets/icons/next.png" class="order-arrow" alt=">">
+        </li>
+    </ul>
+
+    <!-- Deposit Orders Popup -->
+    <div class="modal-overlay" id="deposit-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Deposit Orders</div>
+                <button class="close-modal" onclick="closeModal('deposit-modal')">&times;</button>
+            </div>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Time</th>
+                        <th>Amount</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>USDT</td>
+                        <td>2025-05-14 21:25:13</td>
+                        <td>5000.0000</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                    <tr>
+                        <td>USDT</td>
+                        <td>2025-05-14 20:33:15</td>
+                        <td>5000.0000</td>
+                        <td class="status-rejected">Rejected</td>
+                    </tr>
+                    <tr>
+                        <td>USDT</td>
+                        <td>2025-05-14 20:28:28</td>
+                        <td>5000.0000</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                    <tr>
+                        <td>BTC</td>
+                        <td>2025-02-22 15:31:40</td>
+                        <td>0.0030</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                    <tr>
+                        <td>BTC</td>
+                        <td>2025-02-17 15:32:57</td>
+                        <td>0.0014</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Withdrawal Orders Popup -->
+    <div class="modal-overlay" id="withdrawal-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Withdrawal Orders</div>
+                <button class="close-modal" onclick="closeModal('withdrawal-modal')">&times;</button>
+            </div>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Time</th>
+                        <th>Amount</th>
+                        <th>Withdrawal Address</th>
+                        <th>State</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>USDT</td>
+                        <td>2025-05-15 11:47:44</td>
+                        <td>8540.0500</td>
+                        <td class="address-cell">4482330205814379</td>
+                        <td class="status-pending">Pending review</td>
+                    </tr>
+                    <tr>
+                        <td>BTC</td>
+                        <td>2025-02-21 14:31:10</td>
+                        <td>0.0018</td>
+                        <td class="address-cell">bc1q9e50g8a97qnvhbcctql59gt6fy...</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                    <tr>
+                        <td>ETH</td>
+                        <td>2025-02-20 10:15:33</td>
+                        <td>1.2500</td>
+                        <td class="address-cell">0x742d35Cc6634C0532925a3b844Bc454e4438f44e</td>
+                        <td class="status-approved">Approved</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <button onclick="window.location.href='index.html'">
+            <img src="/assets/icons/home.png" alt="Home">
+            Home
+        </button>
+        <button onclick="window.location.href='market.html'">
+            <img src="/assets/icons/bull-market.png" alt="Market">
+            Market
+        </button>
+        <button onclick="window.location.href='transactions.html'">
+            <img src="/assets/icons/invoice.png" alt="Transactions">
+            Transact
+        </button>
+        <button onclick="window.location.href='balance.html'">
+            <img src="/assets/icons/money.png" alt="Balance">
+            Balance
+        </button>
+        <button onclick="window.location.href='profile.html'">
+            <img src="/assets/icons/user.png" alt="Profile">
+            Profile
+        </button>
+    </div>
+
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <script>
+        // Set SERVER_URL from environment or default
+        const SERVER_URL = window.SERVER_URL || 'https://pivora-back-end.pxxl.xyz';
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        }
+
+        // Auto-load theme on page load
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+            }
+        })();
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Fetch and render deposit requests
+        async function fetchAndRenderDeposits() {
+            const tbody = document.querySelector('#deposit-modal .order-table tbody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#aaa;">Loading...</td></tr>';
+            try {
+                const token = localStorage.getItem('authToken');
+                const res = await fetch(`${SERVER_URL}/api/user/deposit-requests`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                if (data.success && data.data.length > 0) {
+                    tbody.innerHTML = data.data.map(item => `
+                        <tr>
+                            <td>${item.currency}</td>
+                            <td>${new Date(item.createdAt).toLocaleString()}</td>
+                            <td>${parseFloat(item.amount).toFixed(4)}</td>
+                            <td class="${item.status === 'completed' ? 'status-approved' : item.status === 'rejected' ? 'status-rejected' : 'status-pending'}">${item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#aaa;">No deposit records found</td></tr>';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ff4d4d;">Failed to load deposits</td></tr>';
+            }
+        }
+
+        // Fetch and render withdrawal requests
+        async function fetchAndRenderWithdrawals() {
+            const tbody = document.querySelector('#withdrawal-modal .order-table tbody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#aaa;">Loading...</td></tr>';
+            try {
+                const token = localStorage.getItem('authToken');
+                const res = await fetch(`${SERVER_URL}/api/user/withdrawal-requests`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                if (data.success && data.data.length > 0) {
+                    tbody.innerHTML = data.data.map(item => `
+                        <tr>
+                            <td>${item.currency}</td>
+                            <td>${new Date(item.createdAt).toLocaleString()}</td>
+                            <td>${parseFloat(item.amount).toFixed(4)}</td>
+                            <td class="address-cell">${item.address}</td>
+                            <td class="${item.status === 'completed' ? 'status-approved' : item.status === 'rejected' ? 'status-rejected' : 'status-pending'}">${item.status === 'pending' ? 'Pending review' : item.status.charAt(0).toUpperCase() + item.status.slice(1)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#aaa;">No withdrawal records found</td></tr>';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ff4d4d;">Failed to load withdrawals</td></tr>';
+            }
+        }
+
+        // Event listeners for popups
+        document.getElementById('deposit-order-popup').addEventListener('click', function() {
+            fetchAndRenderDeposits();
+            openModal('deposit-modal');
+        });
+
+        document.getElementById('withdrawal-order-popup').addEventListener('click', function() {
+            fetchAndRenderWithdrawals();
+            openModal('withdrawal-modal');
+        });
+
+        // Close modal when clicking outside content
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal(this.id);
+                }
+            });
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal-overlay').forEach(modal => {
+                    if (modal.style.display === 'block') {
+                        closeModal(modal.id);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
