@@ -93,8 +93,8 @@ class AuthManager {
 
     // Redirect to login page
     redirectToLogin() {
-        if (window.location.pathname !== '/x7k9m2n4p8q3r5s1t6u9v2w4y7z0.html' && !window.location.pathname.includes('x7k9m2n4p8q3r5s1t6u9v2w4y7z0.html')) {
-            window.location.href = 'x7k9m2n4p8q3r5s1t6u9v2w4y7z0.html';
+        if (window.location.pathname !== '/login.html' && !window.location.pathname.includes('login.html')) {
+            window.location.href = 'login.html';
         }
     }
 
